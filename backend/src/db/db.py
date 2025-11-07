@@ -14,7 +14,6 @@ async_engine = AsyncEngine(
     )
 )
 
-
 async def get_session() -> AsyncIterator[AsyncSession]:
     Session = sessionmaker(
         bind=async_engine, class_=AsyncSession, expire_on_commit=False
