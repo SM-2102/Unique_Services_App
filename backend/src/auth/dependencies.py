@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio.session import AsyncSession
 from src.auth.models import User
 from src.db.db import get_session
 
-# from src.db.redis import jti_in_blocklist
+from src.db.redis import jti_in_blocklist
 from src.exceptions import (
     AccessDenied,
     AccessTokenRequired,
@@ -34,8 +34,8 @@ class TokenBearer(HTTPBearer):
         if not self.token_valid(token):
             raise InvalidToken()
 
-        # if await jti_in_blocklist(token_data["jti"]):
-        #     raise InvalidToken()
+        if await jti_in_blocklist(token_data["jti"]):
+            raise InvalidToken()
 
         self.verify_token_data(token_data)
         return token_data
