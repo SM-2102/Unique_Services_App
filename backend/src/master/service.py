@@ -1,5 +1,5 @@
 from sqlalchemy.ext.asyncio.session import AsyncSession
-from sqlalchemy.future import select
+from sqlalchemy import select, func
 
 from src.exceptions import IncorrectCodeFormat, MasterAlreadyExists, MasterNotFound
 
@@ -77,3 +77,8 @@ class MasterService:
         await session.commit()
         await session.refresh(existing_master)
         return existing_master
+    
+    async def number_of_masters(self, session: AsyncSession):
+        statement = select(func.count(Master.code))
+        result = await session.execute(statement)
+        return result.scalar()
