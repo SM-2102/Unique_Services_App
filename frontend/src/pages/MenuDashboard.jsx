@@ -5,12 +5,75 @@ import { FaUser, FaTools, FaShoppingBag, FaStore, FaReceipt } from 'react-icons/
 import { MdOutlineBuild } from 'react-icons/md';
 
 const cards = [
-	{ key: 'customer', title: 'Customer Entry', icon: <FaUser /> , navigateTo: '/not-available' },
-	{ key: 'warranty', title: 'Warranty Replacement / Repair', icon: <FaTools />, navigateTo: '/not-available' },
-	{ key: 'out_of_warranty', title: 'Out of Warranty Repair', icon: <MdOutlineBuild /> , navigateTo: '/not-available'},
-	{ key: 'market', title: 'Direct Market Replacement', icon: <FaShoppingBag /> , navigateTo: '/not-available'},
-	{ key: 'retail', title: 'Retail Sales / Services', icon: <FaStore /> , navigateTo: '/not-available'},
-	{ key: 'challan', title: 'Road Challan', icon: <FaReceipt /> , navigateTo: '/not-available'},
+	{
+		key: 'customer',
+		title: 'Customer Entry',
+		icon: <FaUser />,
+		actions: [
+			{ label: 'Add Record', path: '/customer/create' },
+			{ label: 'Update Record', path: '/customer/update' },
+		],
+	},
+	{
+		key: 'warranty',
+		title: 'Warranty Replacement / Repair',
+		icon: <FaTools />,
+		actions: [
+			{ label: 'Create SRF', path: '/warranty/create' },
+			{ label: 'Create CNF Challan', path: '/warranty/create_cnf' },
+			{ label: 'Print SRF', path: '/warranty/print' },
+			{ label: 'Print CNF Challan', path: '/warranty/print_cnf' },
+			{ label: 'Update SRF', path: '/warranty/update' },
+		],
+	},
+	{
+		key: 'out_of_warranty',
+		title: 'Out of Warranty Repair',
+		icon: <MdOutlineBuild />,
+		actions: [
+			{ label: 'Create SRF', path: '/oow/inspection' },
+			{ label: 'Print SRF', path: '/oow/estimate' },
+			{ label: 'Update SRF', path: '/oow/approve' },
+			{ label: 'Create Vendor Challan', path: '/oow/repair' },
+			{ label: 'Print Vendor Challan', path: '/oow/replace' },
+			{ label: 'Print Estimate', path: '/oow/parts-order' },
+			{ label: 'Settle Vendor', path: '/oow/quality-check' },
+			{ label: 'Settle SRF', path: '/oow/invoice' },
+			{ label: 'Enquiry', path: '/oow/close' },
+		],
+		actionsGridCols: 3,
+	},
+	{
+		key: 'market',
+		title: 'Direct Market Replacement',
+		icon: <FaShoppingBag />,
+		actions: [
+			{ label: 'Add Record', path: '/market/create' },
+			{ label: 'Update Record', path: '/market/update' },
+			{ label: 'Enquiry', path: '/market/enquiry/' },
+		],
+	},
+	{
+		key: 'retail',
+		title: 'Retail Sales / Services',
+		icon: <FaStore />,
+		actions: [
+			{ label: 'New Sale', path: '/retail/new' },
+			{ label: 'Invoice', path: '/retail/invoice' },
+			{ label: 'Service', path: '/retail/service' },
+			{ label: 'Refund', path: '/retail/refund' },
+			{ label: 'Reports', path: '/retail/reports' },
+		],
+	},
+	{
+		key: 'challan',
+		title: 'Road Challan',
+		icon: <FaReceipt />,
+		actions: [
+			{ label: 'Create Challan', path: '/challan/create' },
+			{ label: 'Print Challan', path: '/challan/print' },
+		],
+	},
 ];
 
 const MenuDashboard = () => {
@@ -30,14 +93,14 @@ const MenuDashboard = () => {
 			</div>
 
 			<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 flex-grow overflow-hidden">
-				{cards.map(({ key, title, icon , navigateTo }) => (
+				{cards.map(({ key, title, icon, actions, actionsGridCols }) => (
 					<MenuCard
 						key={key}
 						title={title}
 						icon={icon}
-						onClick={() => navigate(navigateTo)}
-					>
-					</MenuCard>
+						actions={actions}
+						actionsGridCols={actionsGridCols}
+					/>
 				))}
 			</div>
 		</div>

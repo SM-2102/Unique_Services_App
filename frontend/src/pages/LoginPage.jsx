@@ -44,16 +44,12 @@ function LoginPage() {
               {showPassword ? <FaEyeSlash className="w-5 h-5" /> : <FaEye className="w-5 h-5" />}
             </button>
           </div>
-          <button
-            type="submit"
-            className="w-full py-2 rounded-lg bg-blue-600 text-white font-bold text-base shadow hover:bg-blue-700 transition-colors duration-200"
-          >
-            Login
-          </button>
+          <div className="flex justify-center">
+            <button className="py-2 px-8 rounded-lg bg-blue-600 text-white font-bold text-base shadow hover:bg-blue-700 transition-colors duration-200 mt-2 mb-2 w-fit">
+              Login
+            </button>
+          </div>
         </form>
-        <div className="mt-4 w-full flex justify-end">
-          <button className="text-s text-blue-600 hover:text-red-800 font-medium underline transition-colors duration-150">Change Password</button>
-        </div>
       </div>
     </div>
   );
