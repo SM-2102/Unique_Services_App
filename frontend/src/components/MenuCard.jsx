@@ -1,5 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { IoArrowForward } from 'react-icons/io5';
+import { RiCustomerService2Line } from 'react-icons/ri';
+import { BiLoaderAlt } from 'react-icons/bi';
 
 /**
  * Reusable MenuCard component with action-overlay support.
@@ -10,10 +13,16 @@ import { useNavigate } from 'react-router-dom';
  * - icon: React node (optional)
  * - actions: Array<{ label: string, path: string }> (optional) - action buttons shown on overlay
  */
-const MenuCard = ({ title, children, onClick, icon, actions = [], actionsGridCols = null }) => {
+const MenuCard = ({ title, children, onClick, icon, actions = [] }) => {
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef(null);
   const navigate = useNavigate();
+  
+  // Function to check if the card should show enquiry
+  const shouldShowEnquiry = (cardTitle) => {
+    const normalizedTitle = cardTitle?.toLowerCase().trim() || '';
+    return !normalizedTitle.includes('customer') && !normalizedTitle.includes('challan');
+  };
 
   useEffect(() => {
     const handleOutside = (e) => {
@@ -57,17 +66,13 @@ const MenuCard = ({ title, children, onClick, icon, actions = [], actionsGridCol
         <div className="absolute inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-10 px-4">
           {(() => {
             // determine cols: prefer explicit prop, else default behavior
-            const cols = actionsGridCols || (actions.length === 1 ? 1 : actions.length <= 4 ? 2 : 2);
+            const cols = actions.length === 1 ? 1 : 2;
             // For single button, use flex instead of grid for perfect centering
             const containerClass = actions.length === 1
               ? "flex justify-center items-center w-full"
-              : `grid ${cols === 2 ? 'grid-cols-2 max-w-[350px]' : 'grid-cols-3 max-w-[480px]'} w-full gap-3 place-items-center`;
+              : `grid ${cols === 2 ? 'grid-cols-2 max-w-[350px]' : 'grid-cols-3 max-w-[480px]'} w-full gap-2.5 place-items-center`;
 
-            const buttonClass = actions.length === 1
-              ? "px-6 py-2.5 w-[180px] text-sm mx-auto"
-              : cols === 3
-                ? "px-3 py-1.5 w-[130px] text-xs"
-                : "px-4 py-2 w-[150px] text-sm";
+            const buttonClass = "px-3 py-2 w-[172px] text-sm gap-1.5 flex items-center justify-center border border-transparent shadow-sm";
 
             return (
               <div className={containerClass}>
@@ -114,9 +119,41 @@ const MenuCard = ({ title, children, onClick, icon, actions = [], actionsGridCol
         {children ? (
           children
         ) : (
-          <div className="text-sm italic text-gray-400">No data available</div>
+          <div className="flex flex-col items-center justify-center space-y-2">
+            <BiLoaderAlt className="w-8 h-8 text-blue-600 animate-spin" />
+            <div className="relative">
+              <span className="text-sm font-medium text-blue-600 inline-block animate-[pulse_2s_ease-in-out_infinite] opacity-0">
+                Loading Data ...
+              </span>
+            </div>
+          </div>
         )}
       </div>
+
+      {/* Enquiry Bar - Hidden for customer and challan */}
+      {shouldShowEnquiry(title) && (
+        <div 
+          onClick={(e) => {
+            e.stopPropagation(); // Prevent card click
+            navigate('/page-not-available');
+          }}
+          className="absolute bottom-4 right-4 bg-white rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 group"
+        >
+          <div className="relative overflow-hidden rounded-full">
+            <div className="flex items-center gap-2 px-4 py-2">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+                  Enquiry
+                </span>
+              </div>
+              <div className="bg-gradient-to-r from-white-500 to-white-700 rounded-full p-1 transform  transition-transform duration-300">
+                <RiCustomerService2Line className="w-4 h-4 text-blue-600" />
+              </div>
+            </div>
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-blue-100 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

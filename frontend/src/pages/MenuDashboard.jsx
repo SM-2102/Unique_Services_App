@@ -19,11 +19,11 @@ const cards = [
 		title: 'Warranty Replacement / Repair',
 		icon: <FaTools />,
 		actions: [
-			{ label: 'Create SRF', path: '/warranty/create' },
+			{ label: 'Create SRF', path: '/warranty/create_srf' },
 			{ label: 'Create CNF Challan', path: '/warranty/create_cnf' },
-			{ label: 'Print SRF', path: '/warranty/print' },
+			{ label: 'Print SRF', path: '/warranty/print_srf' },
 			{ label: 'Print CNF Challan', path: '/warranty/print_cnf' },
-			{ label: 'Update SRF', path: '/warranty/update' },
+			{ label: 'Update SRF', path: '/warranty/update_srf' },
 		],
 	},
 	{
@@ -31,17 +31,15 @@ const cards = [
 		title: 'Out of Warranty Repair',
 		icon: <MdOutlineBuild />,
 		actions: [
-			{ label: 'Create SRF', path: '/oow/inspection' },
-			{ label: 'Print SRF', path: '/oow/estimate' },
-			{ label: 'Update SRF', path: '/oow/approve' },
-			{ label: 'Create Vendor Challan', path: '/oow/repair' },
-			{ label: 'Print Vendor Challan', path: '/oow/replace' },
-			{ label: 'Print Estimate', path: '/oow/parts-order' },
-			{ label: 'Settle Vendor', path: '/oow/quality-check' },
-			{ label: 'Settle SRF', path: '/oow/invoice' },
-			{ label: 'Enquiry', path: '/oow/close' },
+			{ label: 'Create SRF', path: '/oow/create_srf' },
+			{ label: 'Print SRF', path: '/oow/print_srf' },
+			{ label: 'Update SRF', path: '/oow/update_srf' },
+			{ label: 'Settle SRF', path: '/oow/settle_srf' },
+			{ label: 'Create Vendor Challan', path: '/oow/create_vendor_challan' },
+			{ label: 'Print Vendor Challan', path: '/oow/print_vendor_challan' },
+			{ label: 'Print Estimate', path: '/oow/print_estimate' },
+			{ label: 'Settle Vendor', path: '/oow/settle_vendor' },
 		],
-		actionsGridCols: 3,
 	},
 	{
 		key: 'market',
@@ -50,7 +48,6 @@ const cards = [
 		actions: [
 			{ label: 'Add Record', path: '/market/create' },
 			{ label: 'Update Record', path: '/market/update' },
-			{ label: 'Enquiry', path: '/market/enquiry/' },
 		],
 	},
 	{
@@ -58,11 +55,10 @@ const cards = [
 		title: 'Retail Sales / Services',
 		icon: <FaStore />,
 		actions: [
-			{ label: 'New Sale', path: '/retail/new' },
-			{ label: 'Invoice', path: '/retail/invoice' },
-			{ label: 'Service', path: '/retail/service' },
-			{ label: 'Refund', path: '/retail/refund' },
-			{ label: 'Reports', path: '/retail/reports' },
+			{ label: 'Add Record', path: '/retail/create' },
+			{ label: 'Update Record', path: '/retail/update' },
+			{ label: 'Settle Record', path: '/retail/settle' },
+			{ label: 'Print Receipt', path: '/retail/print_receipt' },
 		],
 	},
 	{
@@ -93,13 +89,12 @@ const MenuDashboard = () => {
 			</div>
 
 			<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 flex-grow overflow-hidden">
-				{cards.map(({ key, title, icon, actions, actionsGridCols }) => (
+				{cards.map(({ key, title, icon, actions }) => (
 					<MenuCard
 						key={key}
 						title={title}
 						icon={icon}
 						actions={actions}
-						actionsGridCols={actionsGridCols}
 					/>
 				))}
 			</div>
