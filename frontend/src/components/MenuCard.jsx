@@ -62,38 +62,54 @@ const MenuCard = ({ title, children, onClick, icon, actions = [] }) => {
       <div className={`absolute left-0 top-0 h-full bg-gradient-to-r from-blue-600 to-blue-400 opacity-20 ${gradientBarClass}`} aria-hidden="true" />
 
       {/* overlay that contains action buttons when open */}
-      {isOpen && actions && actions.length > 0 && (
-        <div className="absolute inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-10 px-4">
-          {(() => {
-            // determine cols: prefer explicit prop, else default behavior
-            const cols = actions.length === 1 ? 1 : 2;
-            // For single button, use flex instead of grid for perfect centering
-            const containerClass = actions.length === 1
-              ? "flex justify-center items-center w-full"
-              : `grid ${cols === 2 ? 'grid-cols-2 max-w-[350px]' : 'grid-cols-3 max-w-[480px]'} w-full gap-2.5 place-items-center`;
+        {isOpen && actions && actions.length > 0 && (
+          <div className="absolute inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-10 px-4">
+            {(() => {
+              let containerClass = "";
+              const buttonClass =
+                "px-3 py-2 w-[172px] text-sm gap-1.5 flex items-center justify-center border border-transparent shadow-sm";
 
-            const buttonClass = "px-3 py-2 w-[172px] text-sm gap-1.5 flex items-center justify-center border border-transparent shadow-sm";
+              if (actions.length === 1) {
+                // Single button centered
+                containerClass = "flex justify-center items-center w-full";
+              } else if (actions.length === 2) {
+                // Two buttons stacked vertically
+                containerClass = "grid grid-cols-1 max-w-[200px] w-full gap-2.5 place-items-center";
+              } else if (actions.length === 5) {
+                // Special layout: 2x2 grid + 1 centered below
+                containerClass = "grid grid-cols-2 max-w-[350px] w-full gap-2.5 place-items-center";
+              } else {
+                // Default layout: 2-column grid for 3–4 buttons
+                containerClass = "grid grid-cols-2 max-w-[350px] w-full gap-2.5 place-items-center";
+              }
 
-            return (
-              <div className={containerClass}>
-                {actions.map((a, idx) => (
-                  <button
-                    key={idx}
-                    onClick={(ev) => {
-                      ev.stopPropagation();
-                      if (a.path) navigate(a.path);
-                      setIsOpen(false);
-                    }}
-                    className={`${buttonClass} rounded-md bg-white/95 border border-white/40 shadow-sm hover:shadow-md font-medium text-blue-800 hover:bg-white hover:scale-105 transform transition-all duration-150`}
-                  >
-                    {a.label}
-                  </button>
-                ))}
-              </div>
-            );
-          })()}
-        </div>
-      )}
+              return (
+                <div className={containerClass}>
+                  {actions.map((a, idx) => {
+                    // For the 5-button case: center the last one
+                    const specialClass =
+                      actions.length === 5 && idx === 4 ? "col-span-2 justify-self-center" : "";
+
+                    return (
+                      <button
+                        key={idx}
+                        onClick={(ev) => {
+                          ev.stopPropagation();
+                          if (a.path) navigate(a.path);
+                          setIsOpen(false);
+                        }}
+                        className={`${buttonClass} ${specialClass} rounded-md bg-white/95 border border-white/40 shadow-sm hover:shadow-md font-medium text-blue-800 hover:bg-white hover:scale-105 transform transition-all duration-150`}
+                      >
+                        {a.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              );
+            })()}
+          </div>
+        )}
+
 
       <div className="flex items-start justify-between">
         <div className="relative group">

@@ -26,7 +26,7 @@ const UserMenu = () => {
   // Mock user data - replace with actual user context/state
   const user = {
     username: 'Admin User',
-    role: 'USER'  // Changed to ADMIN to test the admin features
+    role: 'ADMIN'  // Changed to ADMIN to test the admin features
   };
 
   const roleLabels = {
