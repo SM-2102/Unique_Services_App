@@ -78,7 +78,7 @@ const MenuDashboard = () => {
 
 	return (
 		// Using flex and max-height to prevent scrolling
-		<div className="flex flex-col h-[calc(100vh-7rem)] pt-8 px-6 md:px-10 lg:px-20 bg-[#f0f4f8]">
+		<div className="flex flex-col min-h-[calc(100vh-7rem)] pt-8 px-6 md:px-10 lg:px-20 bg-[#f0f4f8]">
 			<div className="relative mb-6">
 				<h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-900 via-blue-700 to-blue-800 bg-clip-text text-transparent drop-shadow-sm" 
 					style={{fontFamily: 'Montserrat, sans-serif'}}>
@@ -88,7 +88,7 @@ const MenuDashboard = () => {
 				<div className="absolute -bottom-2 left-0 w-1/4 h-1 bg-gradient-to-r from-blue-400 to-transparent animate-pulse"></div>
 			</div>
 
-			<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 flex-grow overflow-hidden">
+			<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 flex-grow">
 				{cards.map(({ key, title, icon, actions }) => (
 					<MenuCard
 						key={key}
