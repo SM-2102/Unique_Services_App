@@ -8,7 +8,7 @@ from src.auth.dependencies import AccessTokenBearer, RefreshTokenBearer, RoleChe
 from src.auth.service import UserService
 from src.db.db import get_session
 
-# from src.db.redis import add_jti_to_blocklist
+from src.db.redis import add_jti_to_blocklist
 from src.exceptions import InvalidToken, UserAlreadyExists
 
 from .schemas import UserChangePassword, UserCreate, UserLogin, UserResponse
@@ -43,12 +43,13 @@ Check if user exists, create new user if not.
 
 
 @auth_router.post(
-    "/create_user", status_code=status.HTTP_201_CREATED, dependencies=[role_checker]
+    "/create_user", status_code=status.HTTP_201_CREATED, 
+    # dependencies=[role_checker]
 )
 async def create_user(
     user: UserCreate,
     session: AsyncSession = Depends(get_session),
-    _=Depends(access_token_bearer),
+    # _=Depends(access_token_bearer),
 ):
     user_exists = await user_service.user_exists(user.username, session)
     if user_exists:
@@ -91,8 +92,8 @@ Clear the user session and csrf on logout
 
 @auth_router.get("/logout", status_code=status.HTTP_200_OK)
 async def logout(token_details=Depends(access_token_bearer)):
-    token_details["jti"]
-    # await add_jti_to_blocklist(jti)
+    jti = token_details["jti"]
+    await add_jti_to_blocklist(jti)
     return JSONResponse(
         content={
             "message": f"User {token_details['user']['username']} logged out successfully."

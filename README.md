@@ -33,19 +33,4 @@
 	```
 
 ### JWT Token Usage
-1. Create JWT Token - `import secrets` and `secrets.token_hex(16)`
-2. For protected routes, include both:
-	- Header: `X-CSRF-Token` (with the token value)
-	- Header: `Cookie` (`csrf_token=the_token_value`)
-3. Both values must match and be unmodified.
-
-### Quick Test Command
-To quickly test the OpenAPI spec, run:
-```
-$env:PYTHONPATH="C:\\Training\\Unique_Services_App"; pytest src/tests/authtest.py```
-
-### Notes
-- Ensure your `.env` file is configured for database and CSRF secret.
-- For development, set `secure=False` in cookies if not using HTTPS.
-
----
+Create JWT Token - `import secrets` and `secrets.token_hex(16)`
