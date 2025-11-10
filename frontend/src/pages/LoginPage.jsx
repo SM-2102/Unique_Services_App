@@ -7,11 +7,8 @@ function LoginPage() {
   const [password, setPassword] = useState('');
 
   return (
-    <div
-      className="flex items-center justify-center bg-[#f]"
-      style={{ minHeight: 'calc(100vh - 5rem * 2)' }} // 2 x h-15 = 5rem x 2
-    >
-  <div className="w-full max-w-sm bg-white border border-gray-200 rounded-xl shadow-lg p-6 flex flex-col items-center mt-12">
+  <div className="h-[calc(100vh-7rem)] flex items-center justify-center bg-[#f0f4f8]">
+    <div className="w-full max-w-sm bg-white border border-gray-200 rounded-xl shadow-lg p-6 flex flex-col items-center">
         <h2 className="text-2xl font-bold mb-6 text-gray-800 tracking-wide text-center">Unique Services Management App</h2>
         <form className="w-full flex flex-col gap-4">
           <div className="flex items-center gap-2">
@@ -47,16 +44,12 @@ function LoginPage() {
               {showPassword ? <FaEyeSlash className="w-5 h-5" /> : <FaEye className="w-5 h-5" />}
             </button>
           </div>
-          <button
-            type="submit"
-            className="w-full py-2 rounded-lg bg-blue-600 text-white font-bold text-base shadow hover:bg-blue-700 transition-colors duration-200"
-          >
-            Login
-          </button>
+          <div className="flex justify-center">
+            <button className="py-2 px-8 rounded-lg bg-blue-600 text-white font-bold text-base shadow hover:bg-blue-700 transition-colors duration-200 mt-2 mb-2 w-fit">
+              Login
+            </button>
+          </div>
         </form>
-        <div className="mt-4 w-full flex justify-end">
-          <button className="text-s text-blue-600 hover:text-red-800 font-medium underline transition-colors duration-150">Change Password</button>
-        </div>
       </div>
     </div>
   );
