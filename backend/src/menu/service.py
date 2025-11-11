@@ -1,9 +1,17 @@
 from src.master.service import MasterService
 from src.retail.service import RetailService
+from src.challan.service import ChallanService
+from src.market.service import MarketService
+from src.warranty.service import WarrantyService
+from src.out_of_warranty.service import OutOfWarrantyService
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
 master_service = MasterService()
 retail_service = RetailService()
+challan_service = ChallanService()
+market_service = MarketService()
+warranty_service = WarrantyService()
+out_of_warranty_service = OutOfWarrantyService()
 
 class MenuService:
     async def get_dashboard_data(self, session: AsyncSession):
@@ -11,16 +19,36 @@ class MenuService:
         number_of_customers = await master_service.number_of_masters(session)
         dashboard_number_of_customers = (number_of_customers  // 10) * 10
         division_wise_data = await retail_service.number_of_records_per_division(session)
-        settled_vs_unsettled_data = await retail_service.pie_chart_counts(session)
+        received_settled_unsettled = await retail_service.pie_chart_counts(session)
+        number_of_challan = await challan_service.number_of_challan(session)
+        number_of_items = await challan_service.number_of_items(session)
+        status_per_division = await market_service.status_division_wise(session)
+        pending_completed_per_division_warranty = await warranty_service.pending_completed_per_division(session)
+        srf_delivery = await warranty_service.srf_vs_delivery(session)
+        pending_completed_per_division_ow = await out_of_warranty_service.pending_completed_per_division(session)
+        srf_repair_delivery = await out_of_warranty_service.srf_vs_repair_vs_delivery(session)
         dashboard_data = {
-            "number_of_customers": dashboard_number_of_customers,
-            "retail_dashboard": {
-                "division_wise_bar_graph": division_wise_data,
-                "settled_vs_unsettled_pie_chart": settled_vs_unsettled_data,
+            "customer": {
+                "number_of_customers": dashboard_number_of_customers,
             },
-            "market_dashboard": {
-                "month_wise_receive_vs_delivery_bar_graph": {},
-                "final_status_pie_chart": {},
+            "challan": {
+                "number_of_challans": number_of_challan,
+                "number_of_items": number_of_items,
+            },
+            "retail": {
+                "division_wise_donut": division_wise_data,
+                "settled_vs_unsettled_pie_chart": received_settled_unsettled,
+            },
+            "market": {
+                "status_per_division_stacked_bar_chart": status_per_division,
+            },
+            "warranty": {
+                "division_wise_pending_completed_bar_graph": pending_completed_per_division_warranty,
+                "srf_vs_delivery_month_wise_bar_graph": srf_delivery,
+            },
+            "out_of_warranty": {
+                "srf_receive_vs_delivery_bar_graph": srf_repair_delivery,
+                "final_status_bar_graph": pending_completed_per_division_ow,
             },
         }
         return dashboard_data
