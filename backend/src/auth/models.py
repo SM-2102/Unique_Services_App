@@ -10,7 +10,7 @@ class User(SQLModel, table=True):
     role: str = Field(
         sa_column=Column(pg.VARCHAR, nullable=False, server_default="USER")
     )
-    phone_number: str = Field(sa_column=Column(pg.VARCHAR, nullable=True))
+    phone_number: str = Field(sa_column=Column(pg.VARCHAR, nullable=False))
 
     def __repr__(self):
         return f"<User {self.username}>"
