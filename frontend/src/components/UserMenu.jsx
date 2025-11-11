@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { FaUser, FaKey, FaUserPlus, FaUserMinus, FaUsers } from 'react-icons/fa';
+import { FaUser, FaKey, FaUserPlus, FaUserMinus, FaUsers} from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
 const UserMenu = () => {
@@ -26,7 +26,8 @@ const UserMenu = () => {
   // Mock user data - replace with actual user context/state
   const user = {
     username: 'Admin User',
-    role: 'ADMIN'  // Changed to ADMIN to test the admin features
+    role: 'ADMIN',  // Changed to ADMIN to test the admin features
+    phone_number: '1234567890'
   };
 
   const roleLabels = {
@@ -71,6 +72,7 @@ const UserMenu = () => {
             <p className="text-s text-gray-500">
             {roleLabels[user.role] || user.role}
             </p>
+            <p className="text-s text-gray-700">Contact : {user.phone_number}</p>
           </div>
 
           {user.role === 'ADMIN' && (
