@@ -121,3 +121,10 @@ async def update_master(
         raise MasterNotFound()
     new_master = await master_service.update_master(code, master, session, token)
     return f"Master Updated : {new_master.name}"
+
+@master_router.get("/top_customers", status_code=status.HTTP_200_OK)
+async def get_top_customers(
+    session: AsyncSession = Depends(get_session),
+):
+    top_customers = await master_service.top_customers(session)
+    return top_customers

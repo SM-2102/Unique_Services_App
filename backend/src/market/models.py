@@ -5,8 +5,8 @@ from sqlmodel import Column, Field, SQLModel
 
 class Market(SQLModel, table=True):
     __tablename__ = "market"
-    mcode: str = Field(primary_key=True)
-    code: str = Field(sa_column=Column(pg.VARCHAR(5), ForeignKey("master.code"), nullable=False))
+    mcode: str = Field(primary_key=True, index=True)
+    code: str = Field(sa_column=Column(pg.VARCHAR(5), ForeignKey("master.code"), nullable=False, index=True))
     receive_date: date = Field(sa_column=Column(pg.DATE, nullable=False))
     division: str = Field(sa_column=Column(pg.VARCHAR(15), nullable=False))
     # 'FANS','PUMP','LIGHT','SDA','IWH','SWH','COOLER','OTHERS'

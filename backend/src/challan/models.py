@@ -5,8 +5,8 @@ from sqlmodel import Column, Field, SQLModel
 
 class Challan(SQLModel, table=True):
     __tablename__ = "challan"
-    challan_number: str = Field(primary_key=True)
-    code: str = Field(sa_column=Column(pg.VARCHAR(5), ForeignKey("master.code"), nullable=False))
+    challan_number: str = Field(primary_key=True, index=True)
+    code: str = Field(sa_column=Column(pg.VARCHAR(5), ForeignKey("master.code"), nullable=False, index=True))
     challan_date: date = Field(sa_column=Column(pg.DATE, nullable=False))
     desc1: str = Field(sa_column=Column(pg.VARCHAR(30), nullable=False))
     qty1: int = Field(sa_column=Column(pg.INTEGER, nullable=False))

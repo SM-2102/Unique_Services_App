@@ -17,7 +17,7 @@ class MenuService:
     async def get_dashboard_data(self, session: AsyncSession):
         # Implement the logic to fetch and return dashboard data
         number_of_customers = await master_service.number_of_masters(session)
-        dashboard_number_of_customers = (number_of_customers  // 10) * 10
+        top_customers = await master_service.top_customers(session)
         division_wise_data = await retail_service.number_of_records_per_division(session)
         received_settled_unsettled = await retail_service.pie_chart_counts(session)
         number_of_challan = await challan_service.number_of_challan(session)
@@ -29,11 +29,12 @@ class MenuService:
         srf_repair_delivery = await out_of_warranty_service.srf_vs_repair_vs_delivery(session)
         dashboard_data = {
             "customer": {
-                "number_of_customers": dashboard_number_of_customers,
+                "number_of_customers": (number_of_customers // 10) * 10,
+                "top_customers": top_customers,
             },
             "challan": {
-                "number_of_challans": number_of_challan,
-                "number_of_items": number_of_items,
+                "number_of_challans": (number_of_challan // 10) * 10,
+                "number_of_items": (number_of_items // 10) * 10,
             },
             "retail": {
                 "division_wise_donut": division_wise_data,

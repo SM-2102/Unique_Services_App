@@ -5,7 +5,7 @@ from sqlmodel import Column, Field, SQLModel
 
 class Master(SQLModel, table=True):
     __tablename__ = "master"
-    code: str = Field(primary_key=True)
+    code: str = Field(primary_key=True, index=True)
     name: str = Field(sa_column=Column(pg.VARCHAR(40), nullable=False, unique=True))
     address: str = Field(sa_column=Column(pg.VARCHAR(40), nullable=False))
     city: str = Field(sa_column=Column(pg.VARCHAR(20), nullable=False))

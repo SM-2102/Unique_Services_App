@@ -6,8 +6,8 @@ from sqlmodel import Column, Field, SQLModel
 
 class Warranty(SQLModel, table=True):
     __tablename__ = "warranty"
-    srf_number: str = Field(primary_key=True)
-    code: str = Field(sa_column=Column(pg.VARCHAR(5), ForeignKey("master.code"), nullable=False))
+    srf_number: str = Field(primary_key=True, index=True)
+    code: str = Field(sa_column=Column(pg.VARCHAR(5), ForeignKey("master.code"), nullable=False, index=True))
     srf_date: date = Field(sa_column=Column(pg.DATE, nullable=False))
     head: str = Field(sa_column=Column(pg.VARCHAR(15), nullable=False))
     # REPLACE or REPAIR

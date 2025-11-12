@@ -5,11 +5,11 @@ from sqlmodel import Column, Field, SQLModel
 
 class Retail(SQLModel, table=True):
     __tablename__ = "retail"
-    rcode: str = Field(primary_key=True)
+    rcode: str = Field(primary_key=True, index=True)
     rdate: date = Field(sa_column=Column(pg.DATE, nullable=False))
     division: str = Field(sa_column=Column(pg.VARCHAR(20), nullable=False))
     # 'FANS','PUMP','LIGHT','SDA','IWH','SWH','COOLER','OTHERS'
-    code: str = Field(sa_column=Column(pg.VARCHAR(5), ForeignKey("master.code"), nullable=False))
+    code: str = Field(sa_column=Column(pg.VARCHAR(5), ForeignKey("master.code"), nullable=False, index=True))
     details: str = Field(sa_column=Column(pg.VARCHAR(40), nullable=False))
     amount: int = Field(sa_column=Column(pg.INTEGER, nullable=False))
     received: str = Field(sa_column=Column(pg.CHAR(1), nullable=False, default='N'))

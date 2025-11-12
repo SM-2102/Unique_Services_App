@@ -7,9 +7,9 @@ from sqlmodel import Column, Field, SQLModel
 class OutOfWarranty(SQLModel, table=True):
     __tablename__ = "out_of_warranty"
  
-    srf_number: str = Field(primary_key=True)
+    srf_number: str = Field(primary_key=True, index=True)
     srf_date: date = Field(sa_column=Column(pg.DATE, nullable=False))
-    code: str = Field(sa_column=Column(pg.VARCHAR(5), ForeignKey("master.code"), nullable=False))
+    code: str = Field(sa_column=Column(pg.VARCHAR(5), ForeignKey("master.code"), nullable=False, index=True))
     division: str = Field(sa_column=Column(pg.VARCHAR(15), nullable=False))
     # FANS, PUMP, LIGHT, SDA, IWH, SWH, COOLER, OTHERS
     head: str = Field(sa_column=Column(pg.VARCHAR(20), nullable=True))
