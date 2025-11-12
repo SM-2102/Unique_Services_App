@@ -1,0 +1,51 @@
+// Custom hook for fetching dashboard data
+import { useState, useEffect } from 'react';
+import API_ENDPOINTS from '../config/api';
+
+export const useDashboardData = () => {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchDashboardData = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(API_ENDPOINTS.MENU_DASHBOARD, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          // Add any authentication headers if needed
+          // 'Authorization': `Bearer ${token}`,
+        },
+      });
+      console.log('Fetching dashboard data from:', API_ENDPOINTS.MENU_DASHBOARD);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const dashboardData = await response.json();
+      setData(dashboardData);
+      setError(null);
+    } catch (err) {
+      console.error('Error fetching dashboard data:', err);
+      setError(err.message);
+      // Set fallback data in case of error
+      setData({
+        customer: { number_of_customers: 0 , top_customers: [] },
+        challan: { number_of_challans: 0, number_of_items: 0 },
+        retail: { division_wise_donut: [], settled_vs_unsettled_pie_chart: [] },
+        market: { status_per_division_stacked_bar_chart: [] },
+        warranty: { division_wise_pending_completed_bar_graph: [], srf_vs_delivery_month_wise_bar_graph: [] },
+        out_of_warranty: { srf_receive_vs_delivery_bar_graph: [], final_status_bar_graph: [] }
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
+
+  return { data, loading, error, refetch: fetchDashboardData };
+};

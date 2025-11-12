@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IoArrowForward } from 'react-icons/io5';
 import { RiCustomerService2Line } from 'react-icons/ri';
-import { BiLoaderAlt } from 'react-icons/bi';
 
 /**
  * Reusable MenuCard component with action-overlay support.
@@ -55,7 +54,7 @@ const MenuCard = ({ title, children, onClick, icon, actions = [] }) => {
         if ((onClick || (actions && actions.length > 0)) && (e.key === 'Enter' || e.key === ' ')) handleCardClick(e);
       }}
       className={
-        'relative bg-white rounded-lg shadow-md border border-gray-100 hover:shadow-lg transition-shadow duration-200 ease-in-out p-6 flex flex-col justify-between focus:outline-none focus:ring-2 focus:ring-blue-300 h-52 overflow-hidden'
+        'relative bg-white rounded-lg shadow-md border border-gray-100 hover:shadow-lg transition-shadow duration-200 ease-in-out p-6 flex flex-col justify-between focus:outline-none focus:ring-2 focus:ring-blue-300 h-[300px]'
       }
     >
       {/* animated bluish left-to-right bar */}
@@ -131,19 +130,8 @@ const MenuCard = ({ title, children, onClick, icon, actions = [] }) => {
         </div>
       </div>
 
-      <div className="mt-5 text-gray-600 min-h-[48px]">
-        {children ? (
-          children
-        ) : (
-          <div className="flex flex-col items-center justify-center space-y-2">
-            <BiLoaderAlt className="w-8 h-8 text-blue-600 animate-spin" />
-            <div className="relative">
-              <span className="text-sm font-medium text-blue-600 inline-block animate-[pulse_2s_ease-in-out_infinite] opacity-0">
-                Loading Data ...
-              </span>
-            </div>
-          </div>
-        )}
+      <div className="text-gray-600">
+        {children}
       </div>
 
       {/* Enquiry Bar - Hidden for customer and challan */}

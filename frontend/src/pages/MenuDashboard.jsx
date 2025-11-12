@@ -3,6 +3,11 @@ import MenuCard from '../components/MenuCard';
 import { useNavigate } from 'react-router-dom';
 import { FaUser, FaTools, FaShoppingBag, FaStore, FaReceipt } from 'react-icons/fa';
 import { MdOutlineBuild } from 'react-icons/md';
+import CustomerChart from '../charts/CustomerChart';
+import ChallanChart from '../charts/ChallanChart';
+import DivisionDonutChart from '../charts/DivisionDonutChart';
+import SettledPieChart from '../charts/SettledPieChart';
+import { useDashboardData } from '../hooks/useDashboardData';
 
 const cards = [
 	{
@@ -74,11 +79,11 @@ const cards = [
 
 const MenuDashboard = () => {
 	const navigate = useNavigate();
-	// const { metrics, loading, error } = useMetrics();
+	const { data, loading, error, refetch } = useDashboardData();
 
 	return (
 		// Using flex and max-height to prevent scrolling
-		<div className="flex flex-col min-h-[calc(100vh-7rem)] pt-8 px-6 md:px-10 lg:px-20 bg-[#f0f4f8]">
+		<div className="flex flex-col min-h-[calc(100vh-7rem)] pt-8 px-6 md:px-10 lg:px-20 bg-[#f0f4f8] mb-5">
 			<div className="relative mb-6">
 				<h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-900 via-blue-700 to-blue-800 bg-clip-text text-transparent drop-shadow-sm" 
 					style={{fontFamily: 'Montserrat, sans-serif'}}>
@@ -95,7 +100,20 @@ const MenuDashboard = () => {
 						title={title}
 						icon={icon}
 						actions={actions}
-					/>
+					>
+						{key === 'customer' && <CustomerChart data={data} loading={loading} error={error} />}
+						{key === 'challan' && <ChallanChart data={data} loading={loading} error={error} />}
+						{key === 'retail' && (
+							<div className="flex flex-col md:flex-row gap-0 items-start justify-start w-full">
+								<div className="w-full md:px-0">
+									<DivisionDonutChart data={data} loading={loading} error={error} />
+								</div>
+								<div className="w-full md:px-0">
+									<SettledPieChart data={data} loading={loading} error={error} />
+								</div>
+							</div>
+						)}
+					</MenuCard>
 				))}
 			</div>
 		</div>
