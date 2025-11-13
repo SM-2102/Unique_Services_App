@@ -132,7 +132,7 @@ const MarketStatusChart = ({ data, loading, error }) => {
           })}
         </div>
         {/* Legend on the right */}
-        <div className="flex flex-col justify-start items-start ml-2 mt-1 gap-1 min-w-[60px]">
+        <div className="flex flex-col justify-start items-start mt-1 gap-1 min-w-[60px] mr-5">
           <div className="flex items-center space-x-1.5">
             <span className="inline-block w-3 h-3 bg-green-500 rounded"></span>
             <span className="text-xs text-gray-700">Completed</span>
