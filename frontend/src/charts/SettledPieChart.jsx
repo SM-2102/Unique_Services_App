@@ -12,7 +12,7 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
-const SettledPieChart = ({ data, loading, error }) => {
+const SettledPieChart = ({ data }) => {
   const [chartData, setChartData] = useState({});
 
   useEffect(() => {
@@ -21,15 +21,8 @@ const SettledPieChart = ({ data, loading, error }) => {
     }
   }, [data]);
 
-    if (loading) {
-        return (
-        <div>
-            <SpinnerLoading text="Loading Retail Pie Chart ..." />
-        </div>
-        );
-    } 
-    if (error) return <div className="text-center py-4 text-red-500">Error loading settlement data</div>;
 
+    
   const total = Object.values(chartData).reduce((sum, value) => sum + value, 0);
   const statusData = [
     {
@@ -56,7 +49,7 @@ const SettledPieChart = ({ data, loading, error }) => {
         data: statusData.map((s) => s.value),
         backgroundColor: statusData.map((s) => s.color),
         borderColor: '#fff',
-        borderWidth: 2,
+        borderWidth: 0,
         hoverOffset: 16,
       },
     ],
@@ -117,7 +110,7 @@ const SettledPieChart = ({ data, loading, error }) => {
   };
 
   return (
-    <div className="bg-white p-3 rounded-lg flex flex-col items-center">
+    <div style={{ background: '#e7d7f8ff' }} className="p-3 rounded-lg flex flex-col items-center">
       {/* <h3 className="text-lg font-bold mb-4 text-gray-800 tracking-wide" style={{fontFamily: 'Montserrat, Poppins, sans-serif'}}>Settlement Status</h3> */}
       <div className="w-25 h-25 md:w-28 md:h-28">
         <Pie data={pieData} options={options} />

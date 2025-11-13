@@ -12,7 +12,7 @@ import SpinnerLoading from '../components/SpinnerLoading';
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 
-const DivisionDonutChart = ({ data, loading, error }) => {
+const DivisionDonutChart = ({ data }) => {
   const [chartData, setChartData] = useState([]);
   const [isHovering, setIsHovering] = useState(false);
   const chartRef = useRef(null);
@@ -36,14 +36,6 @@ const DivisionDonutChart = ({ data, loading, error }) => {
     };
   }, [chartRef.current]);
 
-    if (loading) {
-        return (
-        <div>
-            <SpinnerLoading text="Loading Retail Data ..." />
-        </div>
-        );
-    }  
-    if (error) return <div className="text-center py-4 text-red-500">Error loading division data</div>;
 
   const total = chartData.reduce((sum, item) => sum + item.count, 0);
   const labels = chartData.map((item) => item.division);
@@ -69,7 +61,7 @@ const DivisionDonutChart = ({ data, loading, error }) => {
         data: dataValues,
         backgroundColor: backgroundColors.slice(0, labels.length),
         borderColor: '#fff',
-        borderWidth: 2,
+        borderWidth: 0,
         hoverOffset: 16,
       },
     ],
@@ -125,17 +117,13 @@ const DivisionDonutChart = ({ data, loading, error }) => {
     },
   };
 
-
-
-
-
   return (
-    <div className="bg-white p-3 rounded-lg flex flex-col items-center">
+    <div style={{ background: '#e7d7f8ff' }} className="p-3 rounded-lg flex flex-col items-center">
       <div ref={chartRef} className="relative w-25 h-25 md:w-28 md:h-28 flex items-center justify-center mb-4">
         <Doughnut data={chartDataObj} options={options} />
         {!isHovering && (
           <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none">
-            <span className="text-[10px] font-semibold text-gray-500">Total</span>
+            <span className="text-[10px] font-semibold text-gray-800">Total</span>
             <span className="font-bold text-base md:text-lg text-blue-800">{total}</span>
           </div>
         )}

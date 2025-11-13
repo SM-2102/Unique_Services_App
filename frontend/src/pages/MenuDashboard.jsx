@@ -7,13 +7,19 @@ import CustomerChart from '../charts/CustomerChart';
 import ChallanChart from '../charts/ChallanChart';
 import DivisionDonutChart from '../charts/DivisionDonutChart';
 import SettledPieChart from '../charts/SettledPieChart';
+import MarketStatusChart from '../charts/MarketStatusChart';
+import WarrantyStatusChart from '../charts/WarrantyStatusChart';
+import OutOfWarrantyStatusChart from '../charts/OutOfWarrantyStatusChart';
+import SRFDeliveryTimelineChart from '../charts/SRFDeliveryTimelineChart';
 import { useDashboardData } from '../hooks/useDashboardData';
+import SpinnerLoading from '../components/SpinnerLoading';
 
 const cards = [
 	{
 		key: 'customer',
 		title: 'Customer Entry',
 		icon: <FaUser />,
+		bgColor: '#ffe4ec', // light pink
 		actions: [
 			{ label: 'Add Record', path: '/customer/create' },
 			{ label: 'Update Record', path: '/customer/update' },
@@ -23,6 +29,7 @@ const cards = [
 		key: 'warranty',
 		title: 'Warranty Replacement / Repair',
 		icon: <FaTools />,
+		bgColor: '#fff7e6', // light orange
 		actions: [
 			{ label: 'Create SRF', path: '/warranty/create_srf' },
 			{ label: 'Create CNF Challan', path: '/warranty/create_cnf' },
@@ -35,6 +42,7 @@ const cards = [
 		key: 'out_of_warranty',
 		title: 'Out of Warranty Repair',
 		icon: <MdOutlineBuild />,
+		bgColor: '#e6fff7', // light teal
 		actions: [
 			{ label: 'Create SRF', path: '/oow/create_srf' },
 			{ label: 'Print SRF', path: '/oow/print_srf' },
@@ -50,15 +58,27 @@ const cards = [
 		key: 'market',
 		title: 'Direct Market Replacement',
 		icon: <FaShoppingBag />,
+		bgColor: '#f0f4f8', // light lime
 		actions: [
 			{ label: 'Add Record', path: '/market/create' },
 			{ label: 'Update Record', path: '/market/update' },
 		],
 	},
 	{
+		key: 'challan',
+		title: 'Road Challan',
+		icon: <FaReceipt />,
+		bgColor: '#faf6c0ff', // light yellow
+		actions: [
+			{ label: 'Create Challan', path: '/challan/create' },
+			{ label: 'Print Challan', path: '/challan/print' },
+		],
+	},
+	{
 		key: 'retail',
 		title: 'Retail Sales / Services',
 		icon: <FaStore />,
+		bgColor: '#e7d7f8ff', // light purple
 		actions: [
 			{ label: 'Add Record', path: '/retail/create' },
 			{ label: 'Update Record', path: '/retail/update' },
@@ -66,15 +86,7 @@ const cards = [
 			{ label: 'Print Receipt', path: '/retail/print_receipt' },
 		],
 	},
-	{
-		key: 'challan',
-		title: 'Road Challan',
-		icon: <FaReceipt />,
-		actions: [
-			{ label: 'Create Challan', path: '/challan/create' },
-			{ label: 'Print Challan', path: '/challan/print' },
-		],
-	},
+	
 ];
 
 const MenuDashboard = () => {
@@ -83,7 +95,7 @@ const MenuDashboard = () => {
 
 	return (
 		// Using flex and max-height to prevent scrolling
-		<div className="flex flex-col min-h-[calc(100vh-7rem)] pt-8 px-6 md:px-10 lg:px-20 bg-[#f0f4f8] mb-5">
+		<div className="flex flex-col min-h-[calc(100vh-7rem)] pt-8 px-6 md:px-10 lg:px-20 bg-[#fff] mb-5">
 			<div className="relative mb-6">
 				<h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-900 via-blue-700 to-blue-800 bg-clip-text text-transparent drop-shadow-sm" 
 					style={{fontFamily: 'Montserrat, sans-serif'}}>
@@ -94,25 +106,38 @@ const MenuDashboard = () => {
 			</div>
 
 			<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 flex-grow">
-				{cards.map(({ key, title, icon, actions }) => (
+				{cards.map(({ key, title, icon, actions, bgColor }) => (
 					<MenuCard
 						key={key}
 						title={title}
 						icon={icon}
 						actions={actions}
+						bgColor={bgColor}
 					>
 						{key === 'customer' && <CustomerChart data={data} loading={loading} error={error} />}
-						{key === 'challan' && <ChallanChart data={data} loading={loading} error={error} />}
+						{/* {key === 'challan' && <ChallanChart data={data} loading={loading} error={error} />} */}
 						{key === 'retail' && (
 							<div className="flex flex-col md:flex-row gap-0 items-start justify-start w-full">
-								<div className="w-full md:px-0">
-									<DivisionDonutChart data={data} loading={loading} error={error} />
-								</div>
-								<div className="w-full md:px-0">
-									<SettledPieChart data={data} loading={loading} error={error} />
-								</div>
+								{loading ? (
+									<div className="w-full flex justify-center items-center"><SpinnerLoading text="Loading Retail Data ..." /></div>
+								) : error ? (
+									<div className="w-full flex justify-center items-center"><SpinnerLoading text={`Error Loading: ${error}`} /></div>
+								) : (
+									<>
+										<div className="w-full md:px-0">
+											<DivisionDonutChart data={data} />
+										</div>
+										<div className="w-full md:px-0">
+											<SettledPieChart data={data} />
+										</div>
+									</>
+								)}
 							</div>
 						)}
+						{key === 'market' && <div className="mt-2"><MarketStatusChart data={data} loading={loading} error={error} /></div>}
+						{/* {key === 'warranty' && <WarrantyStatusChart data={data} loading={loading} error={error} />} */}
+						{/* {key === 'out_of_warranty' && <OutOfWarrantyStatusChart data={data} loading={loading} error={error} />} */}
+						{/* {key === 'warranty' && <SRFDeliveryTimelineChart data={data} loading={loading} error={error} />} */}
 					</MenuCard>
 				))}
 			</div>

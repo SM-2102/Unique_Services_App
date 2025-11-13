@@ -14,8 +14,8 @@ const Header = () => {
       <div className="flex items-center">
         <img src={logo} alt="Logo" className="h-16 mr-4 ml-14" />
         <div className="flex flex-col justify-center">
-          <span className="text-white text-4xl font-semibold tracking-wide leading-tight mt-1" style={{fontFamily: 'Times New Roman, Times, serif'}}>UNIQUE SERVICES</span>
-          <span className="text-blue-50 text-lg font-medium mb-1" style={{fontFamily: 'Montserrat, sans-serif'}}>12 Sankharitola Street, Kolkata - 700014</span>
+          <span className="text-white text-4xl font-semibold tracking-wide leading-tight mt-1" style={{fontFamily: 'Times New Roman, Times, serif'}}>ABC Company</span>
+          <span className="text-blue-50 text-lg font-medium mb-1" style={{fontFamily: 'Montserrat, sans-serif'}}>Address : Exists Somewhere</span>
         </div>
       </div>
       {!isLoginPage && (

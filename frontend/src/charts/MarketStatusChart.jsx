@@ -1,9 +1,8 @@
 // Market Status Stacked Bar Chart
 import React, { useEffect, useState } from 'react';
-import { useDashboardData } from '../hooks/useDashboardData';
+import SpinnerLoading from '../components/SpinnerLoading';
 
-const MarketStatusChart = () => {
-  const { data, loading, error } = useDashboardData();
+const MarketStatusChart = ({ data, loading, error }) => {
   const [chartData, setChartData] = useState([]);
 
   useEffect(() => {
@@ -22,53 +21,127 @@ const MarketStatusChart = () => {
     }
   }, [data]);
 
-  if (loading) return <div className="text-center py-4">Loading market status data...</div>;
-  if (error) return <div className="text-center py-4 text-red-500">Error loading market status data</div>;
+
+  // Tooltip state (must be before any return)
+  const [tooltip, setTooltip] = useState({ show: false, x: 0, y: 0, value: '', label: '' });
+
+  // Helper to show tooltip
+  const handleMouseOver = (e, value, label) => {
+    setTooltip({
+      show: true,
+      x: e.clientX,
+      y: e.clientY,
+      value,
+      label,
+    });
+  };
+  const handleMouseOut = () => setTooltip({ ...tooltip, show: false });
+
+  // Animation state for each bar: animate green first, then red
+  const [barStates, setBarStates] = useState([]);
+  const animationRanRef = React.useRef('');
+  useEffect(() => {
+    const chartKey = JSON.stringify(chartData);
+    if (animationRanRef.current === chartKey) return;
+    animationRanRef.current = chartKey;
+    setBarStates(chartData.map(() => ({ green: false, red: false })));
+    chartData.forEach((_, idx) => {
+      setTimeout(() => {
+        setBarStates(prev => {
+          const next = [...prev];
+          if (next[idx]) next[idx] = { ...next[idx], green: true };
+          return next;
+        });
+        setTimeout(() => {
+          setBarStates(prev => {
+            const next = [...prev];
+            if (next[idx]) next[idx] = { ...next[idx], red: true };
+            return next;
+          });
+        }, 700);
+      }, idx * 200);
+    });
+  }, [chartData]);
+
+  if (loading) {
+    return (
+      <div>
+        <SpinnerLoading text="Loading Market Status Data ..." />
+      </div>
+    );
+  }
+  if (error) {
+    return (
+      <div>
+        <SpinnerLoading text="Error Loading ..." />
+      </div>
+    );
+  }
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-lg">
-      <h3 className="text-lg font-semibold mb-4 text-gray-800">Market Status per Division</h3>
-      <div className="space-y-4">
-        {chartData.map((item) => {
-          const total = item.Y + item.N;
-          const yPercentage = total > 0 ? (item.Y / total) * 100 : 0;
-          const nPercentage = total > 0 ? (item.N / total) * 100 : 0;
-          
-          return (
-            <div key={item.division} className="space-y-2">
-              <div className="flex justify-between items-center">
-                <span className="font-medium text-gray-700">{item.division}</span>
-                <span className="text-sm text-gray-500">Total: {total}</span>
-              </div>
-              
-              <div className="w-full bg-gray-200 rounded-full h-6 flex overflow-hidden">
-                <div 
-                  className="bg-green-500 h-full flex items-center justify-center text-white text-xs font-semibold"
-                  style={{ width: `${yPercentage}%` }}
-                >
-                  {item.Y > 0 && `${item.Y}`}
-                </div>
-                <div 
-                  className="bg-red-500 h-full flex items-center justify-center text-white text-xs font-semibold"
-                  style={{ width: `${nPercentage}%` }}
-                >
-                  {item.N > 0 && `${item.N}`}
-                </div>
-              </div>
-              
-              <div className="flex justify-between text-xs text-gray-600">
-                <span className="flex items-center">
-                  <div className="w-3 h-3 bg-green-500 rounded mr-1"></div>
-                  Completed: {item.Y} ({yPercentage.toFixed(1)}%)
+    <div className="bg-[#f0f4f8] p-3 rounded-lg relative ml-[-14px]">
+      {/* Tooltip */}
+      {tooltip.show && (
+        <div
+          className="pointer-events-none fixed z-50 px-3 py-1.5 rounded-lg shadow-xl text-xs font-semibold bg-white text-gray-900 border border-gray-200"
+          style={{ left: tooltip.x + 10, top: tooltip.y + 10, minWidth: 70, textAlign: 'center', letterSpacing: '0.01em' }}
+        >
+          <span className="block">{tooltip.label}</span>
+          <span className="block font-bold">{tooltip.value}</span>
+        </div>
+      )}
+      <div className="flex flex-row items-start justify-start gap-8">
+        {/* Horizontal bars and labels */}
+        <div className="flex flex-col gap-1.5 w-full max-w-xl">
+          {chartData.map((item, idx) => {
+            const total = item.Y + item.N;
+            const yPercentage = total > 0 ? (item.Y / total) * 100 : 0;
+            const nPercentage = total > 0 ? (item.N / total) * 100 : 0;
+            const barState = barStates[idx] || { green: false, red: false };
+            return (
+              <div key={item.division} className="flex items-center">
+                {/* Fixed width label */}
+                <span className="text-xs font-medium text-gray-700 text-right mr-2" style={{width: '45px', flexShrink: 0, display: 'inline-block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>
+                  {item.division}
                 </span>
-                <span className="flex items-center">
-                  <div className="w-3 h-3 bg-red-500 rounded mr-1"></div>
-                  Pending: {item.N} ({nPercentage.toFixed(1)}%)
-                </span>
+                {/* Stacked horizontal bar: green left, red right */}
+                <div className="relative flex flex-row h-5 w-[160px] rounded overflow-hidden border border-gray-200 bg-gray-100">
+                  {/* Completed (Y) - green left */}
+                  <div
+                    className="bg-green-500 h-full transition-all duration-700 cursor-pointer relative"
+                    style={{
+                      width: barState.green ? `${yPercentage}%` : 0,
+                      transitionDelay: '0ms',
+                    }}
+                    onMouseOver={e => handleMouseOver(e, `${yPercentage.toFixed(1)}%`, 'Completed')}
+                    onMouseOut={handleMouseOut}
+                  ></div>
+                  {/* Pending (N) - red right */}
+                  <div
+                    className="bg-red-500 h-full transition-all duration-700 cursor-pointer relative"
+                    style={{
+                      width: barState.red ? `${nPercentage}%` : 0,
+                      transitionDelay: '0ms',
+                    }}
+                    onMouseOver={e => handleMouseOver(e, `${nPercentage.toFixed(1)}%`, 'Pending')}
+                    onMouseOut={handleMouseOut}
+                  ></div>
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
+        {/* Legend on the right */}
+        <div className="flex flex-col justify-start items-start ml-2 mt-1 gap-1 min-w-[60px]">
+          <div className="flex items-center space-x-1.5">
+            <span className="inline-block w-3 h-3 bg-green-500 rounded"></span>
+            <span className="text-xs text-gray-700">Completed</span>
+          </div>
+          <div className="flex items-center space-x-1.5">
+            <span className="inline-block w-3 h-3 bg-red-500 rounded"></span>
+            <span className="text-xs text-gray-700">Pending</span>
+          </div>
+        </div>
       </div>
     </div>
   );

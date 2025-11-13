@@ -18,7 +18,6 @@ export const useDashboardData = () => {
           // 'Authorization': `Bearer ${token}`,
         },
       });
-      console.log('Fetching dashboard data from:', API_ENDPOINTS.MENU_DASHBOARD);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }

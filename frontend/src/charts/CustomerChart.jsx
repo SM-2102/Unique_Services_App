@@ -40,6 +40,12 @@ const listEntryAnim = {
 
 
 
+function toTitleCase(str) {
+  return str
+    .toLowerCase()
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
 const CustomerChart = ({ data, loading, error }) => {
   const [count, setCount] = useState(0);
   const intervalRef = useRef(null);
@@ -48,7 +54,7 @@ const CustomerChart = ({ data, loading, error }) => {
   // Convert top_customers object to array of { name, value }
   const topCustomersObj = data?.customer?.top_customers || {};
   const topCustomersArr = Object.entries(topCustomersObj)
-    .map(([name, value]) => ({ name, value }))
+    .map(([name, value]) => ({ name: toTitleCase(name), value }))
     .sort((a, b) => b.value - a.value)
     .slice(0, 5);
   // Only log once for debugging, not on every render
@@ -94,14 +100,12 @@ const CustomerChart = ({ data, loading, error }) => {
   }
 
   if (error) {
-    return (
-      <div className="flex flex-row items-center justify-left px-8 gap-2 py-5">
-        <span className="text-xl md:text-3xl font-medium text-red-500" style={stylishFont}>
-          Error loading data
-        </span>
-      </div>
-    );
-  }
+        return (
+        <div>
+            <SpinnerLoading text="Error Loading ..." />
+        </div>
+        );
+    } 
 
 
   return (
@@ -125,9 +129,9 @@ const CustomerChart = ({ data, loading, error }) => {
 
       {/* Vertical Bar Chart for Top Customers beside label */}
       {topCustomersArr.length > 0 && (
-        <div className="w-full flex flex-row items-center justify-center ml-6">
+        <div className="w-full flex flex-row items-center justify-center">
           {/* Rotated label on the left */}
-          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: 180, minWidth: 40, marginRight: 0 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: 180, minWidth: 10, marginLeft: 15 }}>
             <span
               className="text-base md:text-lg font-semibold"
               style={{
@@ -149,7 +153,7 @@ const CustomerChart = ({ data, loading, error }) => {
             </span>
           </div>
           {/* Vertical Bar Chart */}
-          <div style={{ width: 750, height: 150, background: 'rgba(255,255,255,0.95)', borderRadius: 16}}>
+          <div style={{ width: 800, height: 150, background: '#ffe4ec', borderRadius: 5}}>
             <Bar
               data={{
                 labels: topCustomersArr.map((c) => c.name),
@@ -164,7 +168,7 @@ const CustomerChart = ({ data, loading, error }) => {
                       'rgba(0,210,255,0.85)',
                       'rgba(255,75,43,0.85)'
                     ],
-                    borderRadius: 10,
+                    borderRadius: 9,
                     borderSkipped: false,
                     maxBarThickness: 70,
                   },
@@ -194,7 +198,7 @@ const CustomerChart = ({ data, loading, error }) => {
                     bodyColor: '#203cdbff',
                     borderColor: '#0e095fff',
                     borderWidth: 1,
-                    padding: 12,
+                    padding: 8,
                     caretSize: 8,
                   },
                 },
@@ -210,6 +214,9 @@ const CustomerChart = ({ data, loading, error }) => {
                       color: '#3a7bd5',
                       font: { size: 10, weight: 'bold', family: 'Poppins, Montserrat, Segoe UI, Arial, sans-serif' },
                       padding: 8,
+                    },
+                    afterFit: (axis) => {
+                      axis.width += 30; // Shift y-axis labels 20px to the right
                     },
                   },
                 },

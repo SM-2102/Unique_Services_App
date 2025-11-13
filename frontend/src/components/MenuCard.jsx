@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IoArrowForward } from 'react-icons/io5';
-import { RiCustomerService2Line } from 'react-icons/ri';
+import { FiBookOpen } from 'react-icons/fi';
 
 /**
  * Reusable MenuCard component with action-overlay support.
@@ -12,7 +12,7 @@ import { RiCustomerService2Line } from 'react-icons/ri';
  * - icon: React node (optional)
  * - actions: Array<{ label: string, path: string }> (optional) - action buttons shown on overlay
  */
-const MenuCard = ({ title, children, onClick, icon, actions = [] }) => {
+const MenuCard = ({ title, children, onClick, icon, actions = [], bgColor }) => {
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef(null);
   const navigate = useNavigate();
@@ -54,8 +54,9 @@ const MenuCard = ({ title, children, onClick, icon, actions = [] }) => {
         if ((onClick || (actions && actions.length > 0)) && (e.key === 'Enter' || e.key === ' ')) handleCardClick(e);
       }}
       className={
-        'relative bg-white rounded-lg shadow-md border border-gray-100 hover:shadow-lg transition-shadow duration-200 ease-in-out p-6 flex flex-col justify-between focus:outline-none focus:ring-2 focus:ring-blue-300 h-[300px]'
+        `relative rounded-lg shadow-md border border-gray-100 hover:shadow-lg transition-shadow duration-200 ease-in-out p-6 flex flex-col justify-between focus:outline-none h-[300px]`
       }
+      style={{ background: bgColor || '#fff' }}
     >
       {/* animated bluish left-to-right bar */}
       <div className={`absolute left-0 top-0 h-full bg-gradient-to-r from-blue-600 to-blue-400 opacity-20 ${gradientBarClass}`} aria-hidden="true" />
@@ -115,7 +116,8 @@ const MenuCard = ({ title, children, onClick, icon, actions = [] }) => {
           <h3 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-gray-800 to-gray-800 bg-clip-text text-transparent hover:from-blue-700 hover:to-blue-500 transition-all duration-300" style={{fontFamily: 'Times New Roman, serif'}}>{title}</h3>
           <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-blue-400 group-hover:w-full transition-all duration-300"></div>
         </div>
-        <div className="ml-3 inline-flex items-center justify-center h-12 w-12 rounded-full bg-gradient-to-br from-blue-50 to-blue-100 text-blue-700 shadow-inner">
+        <div className="ml-3 inline-flex items-center justify-center h-12 w-12 rounded-full shadow-inner"
+          style={{ background: bgColor || '#fff', color: '#444' }}>
           {icon ? (
             React.isValidElement(icon) ? (
               React.cloneElement(icon, { className: 'h-6 w-6' })
@@ -144,14 +146,14 @@ const MenuCard = ({ title, children, onClick, icon, actions = [] }) => {
           className="absolute bottom-4 right-4 bg-white rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 group"
         >
           <div className="relative overflow-hidden rounded-full">
-            <div className="flex items-center gap-2 px-4 py-2">
+            <div className="flex items-center gap-2 px-4 py-1.5">
               <div className="flex items-center gap-2">
                 <span className="text-sm font-medium bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
                   Enquiry
                 </span>
               </div>
               <div className="bg-gradient-to-r from-white-500 to-white-700 rounded-full p-1 transform  transition-transform duration-300">
-                <RiCustomerService2Line className="w-4 h-4 text-blue-600" />
+                <FiBookOpen className="w-4 h-4 text-blue-600" />
               </div>
             </div>
             <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-blue-100 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />

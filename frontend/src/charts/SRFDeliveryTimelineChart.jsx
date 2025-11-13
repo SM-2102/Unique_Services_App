@@ -1,9 +1,7 @@
 // SRF vs Delivery Timeline Chart
 import React, { useEffect, useState } from 'react';
-import { useDashboardData } from '../hooks/useDashboardData';
 
-const SRFDeliveryTimelineChart = () => {
-  const { data, loading, error } = useDashboardData();
+const SRFDeliveryTimelineChart = ({ data, loading, error }) => {
   const [chartData, setChartData] = useState([]);
   const [monthlyStats, setMonthlyStats] = useState({});
 

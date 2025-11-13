@@ -1,9 +1,7 @@
 // Warranty Division Bar Chart
 import React, { useEffect, useState } from 'react';
-import { useDashboardData } from '../hooks/useDashboardData';
 
-const WarrantyStatusChart = () => {
-  const { data, loading, error } = useDashboardData();
+const WarrantyStatusChart = ({ data, loading, error }) => {
   const [chartData, setChartData] = useState([]);
 
   useEffect(() => {

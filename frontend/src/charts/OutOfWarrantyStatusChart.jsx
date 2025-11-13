@@ -1,9 +1,7 @@
 // Out of Warranty Final Status Chart
 import React, { useEffect, useState } from 'react';
-import { useDashboardData } from '../hooks/useDashboardData';
 
-const OutOfWarrantyStatusChart = () => {
-  const { data, loading, error } = useDashboardData();
+const OutOfWarrantyStatusChart = ({ data, loading, error }) => {
   const [chartData, setChartData] = useState([]);
 
   useEffect(() => {
