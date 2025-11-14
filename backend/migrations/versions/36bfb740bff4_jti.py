@@ -1,21 +1,20 @@
 """JTI
 
-Revision ID: 60b39bd9f36f
-Revises: 
-Create Date: 2025-11-14 14:51:18.215881
+Revision ID: 36bfb740bff4
+Revises: 4d40f911f536
+Create Date: 2025-11-14 22:31:31.844631
 
 """
 from typing import Sequence, Union
 
 from alembic import op
 import sqlalchemy as sa
-
 import sqlmodel
 
 
 # revision identifiers, used by Alembic.
-revision: str = '60b39bd9f36f'
-down_revision: Union[str, Sequence[str], None] = None
+revision: str = '36bfb740bff4'
+down_revision: Union[str, Sequence[str], None] = '4d40f911f536'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 

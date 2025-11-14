@@ -52,9 +52,7 @@ const CustomerChart = ({ data, loading, error }) => {
     .map(([name, value]) => ({ name: toTitleCase(name), value }))
     .sort((a, b) => b.value - a.value)
     .slice(0, 5);
-  // Only log once for debugging, not on every render
-  // useEffect(() => { console.log("Customer List:", topCustomers); }, []);
-
+    
   useEffect(() => {
     if (target > 0) {
       let start = 0;

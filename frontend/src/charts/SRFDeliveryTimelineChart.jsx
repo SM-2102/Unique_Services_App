@@ -29,15 +29,8 @@ const SRFDeliveryTimelineChart = ({ data, loading, error }) => {
           };
         });
       setChartData(timelineData);
-      // Debug log
-      console.log("SRFDeliveryTimelineChart: timelineData", timelineData);
     } else {
       setChartData([]);
-      // Debug log
-      console.log(
-        "SRFDeliveryTimelineChart: No data found in data.warranty.srf_vs_delivery_month_wise_bar_graph",
-        data,
-      );
     }
   }, [data]);
 

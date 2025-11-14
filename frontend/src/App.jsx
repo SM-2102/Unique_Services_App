@@ -32,7 +32,11 @@ function App() {
                 </PrivateRoute>
               }
             />
-            <Route path="/*" element={<PageNotFound />} />
+            <Route path="/*" element={
+              <PrivateRoute>
+                <PageNotFound />
+              </PrivateRoute>
+            } />
           </Routes>
         </div>
         <Footer />

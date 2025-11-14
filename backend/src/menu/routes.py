@@ -19,17 +19,8 @@ Returns dashboard data:
 - number_of_customers,
 
 """
-# @menu_router.get("/dashboard", status_code=status.HTTP_200_OK)
-# async def get_dashboard_data(session: AsyncSession = Depends(get_session), _=Depends(access_token_bearer)):
-#     dashboard_data = await menu_service.get_dashboard_data(session)
-#     return JSONResponse(content=dashboard_data)
-
-
 @menu_router.get("/dashboard", status_code=status.HTTP_200_OK)
-async def get_menu_dashboard():
-    # Simulate production delay
-    await asyncio.sleep(2)  # 2 seconds delay
-    file_path = os.path.join(os.path.dirname(__file__), "menu_dashboard.json")
-    with open(file_path, "r", encoding="utf-8") as f:
-        data = json.load(f)
-        return JSONResponse(content=data)
+async def get_dashboard_data(session: AsyncSession = Depends(get_session), _=Depends(access_token_bearer)):
+    dashboard_data = await menu_service.get_dashboard_data(session)
+    return JSONResponse(content=dashboard_data)
+

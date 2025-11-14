@@ -41,22 +41,22 @@ role_checker = Depends(RoleChecker(allowed_roles=["ADMIN"]))
 # """
 
 
-# @auth_router.post(
-#     "/create_user", status_code=status.HTTP_201_CREATED,
-#     # dependencies=[role_checker]
-# )
-# async def create_user(
-#     user: UserCreate,
-#     session: AsyncSession = Depends(get_session),
-#     # _=Depends(access_token_bearer),
-# ):
-#     user_exists = await user_service.user_exists(user.username, session)
-#     if user_exists:
-#         raise UserAlreadyExists()
-#     created_user = await user_service.create_user(session, user)
-#     return JSONResponse(
-#         content={"message": f"User {created_user.username} created successfully."}
-#     )
+@auth_router.post(
+    "/create_user", status_code=status.HTTP_201_CREATED,
+    # dependencies=[role_checker]
+)
+async def create_user(
+    user: UserCreate,
+    session: AsyncSession = Depends(get_session),
+    # _=Depends(access_token_bearer),
+):
+    user_exists = await user_service.user_exists(user.username, session)
+    if user_exists:
+        raise UserAlreadyExists()
+    created_user = await user_service.create_user(session, user)
+    return JSONResponse(
+        content={"message": f"User {created_user.username} created successfully."}
+    )
 
 
 # """
@@ -162,11 +162,11 @@ async def logout(token_details=Depends(access_token_bearer)):
 # """
 
 
-# @auth_router.get("/me", status_code=status.HTTP_200_OK, response_model=UserResponse)
-# async def get_current_user(token_data=Depends(access_token_bearer), session: AsyncSession = Depends(get_session)):
-#     username = token_data['user']['username']
-#     user = await user_service.get_user_by_username(username, session)
-#     return user
+@auth_router.get("/me", status_code=status.HTTP_200_OK, response_model=UserResponse)
+async def get_current_user(token_data=Depends(access_token_bearer), session: AsyncSession = Depends(get_session)):
+    username = token_data['user']['username']
+    user = await user_service.get_user_by_username(username, session)
+    return user
 
 
 # """
