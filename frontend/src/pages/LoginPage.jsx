@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { login } from "../services/auth";
+import loginImage from "../assets/login_image.png";
 
 function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -41,8 +42,20 @@ function LoginPage() {
           onClose={() => setShowToast(false)}
         />
       )}
-      <div className="h-[calc(100vh-7rem)] flex items-center justify-center bg-[#fff]">
-        <div className="w-full max-w-sm bg-white border border-gray-200 rounded-xl shadow-lg p-6 flex flex-col items-center">
+      <div className="h-[calc(100vh-7rem)] relative flex items-center justify-center">
+
+        {/* Background Image as IMG (prevents cropping) */}
+        <img
+          src={loginImage}
+          alt="Background"
+          className="absolute inset-0 w-full h-full object-contain object-left"
+        />
+
+        {/* Subtle dark overlay (optional, improves readability) */}
+        <div className="absolute inset-0"></div>
+
+        <div className="relative z-10 w-full max-w-sm bg-[#f9fcff] border border-blue-800 rounded-xl shadow-lg p-6 flex flex-col"
+              style={{ marginLeft: "60%" }}>          
           <h2 className="text-2xl font-bold mb-6 text-gray-800 tracking-wide text-center">
             Unique Services Management App
           </h2>

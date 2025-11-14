@@ -108,7 +108,7 @@ const SRFDeliveryTimelineChart = ({ data, loading, error }) => {
   if (!chartData || chartData.length === 0) {
     return (
       <div className="flex items-center justify-center h-40 bg-white rounded-lg shadow-lg">
-        <span className="text-gray-400 text-sm">No chart data available.</span>
+        <span className="text-gray-500 text-sm">Loading chart...</span>
       </div>
     );
   }

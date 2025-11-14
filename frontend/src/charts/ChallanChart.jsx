@@ -143,7 +143,10 @@ const ChallanChart = ({ data, loading, error }) => {
   const itemIntervalRef = useRef(null);
   const target = data?.challan?.number_of_challans || 0;
   const itemsTarget = data?.challan?.number_of_items || 0;
-  const months = data?.challan?.challan_rolling_month || [];
+  const months = data?.challan?.challan_rolling_months || [];
+  
+  console.log("Challan Data:", data?.challan);
+  console.log("Months Data:", months);
 
   // Animation for challan count
   useEffect(() => {
@@ -256,6 +259,7 @@ const ChallanChart = ({ data, loading, error }) => {
               tick={{ fontSize: 14 }}
               tickFormatter={formatShortMonth}
             />
+            
             <Tooltip content={<CustomTooltip />} />
             <Legend
               verticalAlign="middle"

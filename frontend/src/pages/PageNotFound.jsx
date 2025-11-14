@@ -5,7 +5,7 @@ import { FiAlertTriangle } from "react-icons/fi";
 const PageNotFound = () => {
   const navigate = useNavigate();
   return (
-    <div className="h-[calc(100vh-7rem)] flex items-center justify-center bg-[#f0f4f8]">
+    <div className="h-[calc(100vh-7rem)] flex items-center justify-center bg-[#fff]">
       <div className="bg-white rounded-xl shadow-lg p-10 max-w-lg text-center border border-gray-200">
         <div className="flex items-center justify-center mb-4">
           <div className="bg-yellow-50 text-yellow-700 p-3 rounded-full inline-flex">

@@ -90,7 +90,7 @@ const MarketStatusChart = ({ data, loading, error }) => {
   }
 
   return (
-    <div className="bg-[#f0f4f8] p-3 rounded-lg relative ml-[-14px] w-full max-w-full overflow-x-auto">
+    <div className="bg-[#f0f4f8] p-3 rounded-lg relative w-full max-w-full overflow-x-auto">
       {/* Tooltip */}
       {tooltip.show && (
         <div
@@ -112,7 +112,7 @@ const MarketStatusChart = ({ data, loading, error }) => {
           </span>
         </div>
       )}
-      <div className="flex flex-row items-start justify-center gap-8 w-full">
+      <div className="flex flex-row items-center justify-center gap-8 w-full">
         {/* Horizontal bars and labels */}
         <div
           className="flex flex-row gap-2 w-full items-center mt-5"
@@ -126,10 +126,10 @@ const MarketStatusChart = ({ data, loading, error }) => {
             return (
               <div
                 key={item.division}
-                className="flex flex-col items-center w-12"
+                className="flex flex-col items-center w-12 mx-auto"
               >
                 {/* Stacked vertical bar: green bottom, red top */}
-                <div className="relative flex flex-col-reverse h-35 w-7 rounded overflow-hidden border border-gray-200 bg-gray-100">
+                <div className="relative flex flex-col-reverse h-35 w-9 rounded overflow-hidden border border-gray-200 bg-gray-100">
                   {/* Completed (Y) - green bottom */}
                   <div
                     className="bg-green-500 w-full transition-all duration-700 cursor-pointer relative"

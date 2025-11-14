@@ -25,11 +25,6 @@ app = FastAPI(
 )
 
 
-@app.get("/")
-async def root():
-    return {"message": "API is running"}
-
-
 # Register middleware
 register_middleware(app)
 

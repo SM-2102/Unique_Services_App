@@ -99,13 +99,13 @@ const UserMenu = () => {
               <p className="text-m text-red-500">{userError}</p>
             ) : user ? (
               <>
-                <p className="text-m font-medium text-gray-900">
+                <p className="text-xl font-medium text-gray-900">
                   {user.username}
                 </p>
                 <p className="text-s text-gray-500">
                   {roleLabels[user.role] || user.role}
                 </p>
-                <p className="text-s text-gray-700">
+                <p className="text-s text-gray-600">
                   Contact : {user.phone_number}
                 </p>
               </>
