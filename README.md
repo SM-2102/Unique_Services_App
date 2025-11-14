@@ -13,7 +13,7 @@
 ## Frontend Pages Progress
 
 ### Auth Module
-- [ ] **LoginPage** – User authentication
+- [x] **LoginPage** – User authentication
 - [ ] **CreateUser** – Create User [ADMIN]
 - [ ] **DeleteUser** – Delete User [ADMIN]
 - [ ] **ViewAllUsers** – View All Users [ADMIN]
@@ -30,32 +30,16 @@
 ## Backend Routes Progress
 
 ### Auth Module
-- [ ] **/auth/login**
-	- [ ] FastAPI
-	- [ ] React
-- [ ] **/auth/logout**
-	- [ ] FastAPI
-	- [ ] React
+- [x] **/auth/login**
+- [x] **/auth/logout**
 - [ ] **/auth/users** - [ADMIN]
-	- [ ] FastAPI
-	- [ ] React
 - [ ] **/auth/create_user** - [ADMIN]
-	- [ ] FastAPI
-	- [ ] React
 - [ ] **/auth/delete_user** - [ADMIN]
-	- [ ] FastAPI
-	- [ ] React
 - [ ] **/auth/reset_password**
-	- [ ] FastAPI
-	- [ ] React
-- [ ] **/auth/me**
-	- [ ] FastAPI
-	- [ ] React
+- [x] **/auth/me**
 
 ### Menu Module
 - [ ] **/menu/dashboard**
-	- [ ] FastAPI
-	- [ ] React
 
 ---
 

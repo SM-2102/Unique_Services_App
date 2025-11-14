@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
+from src.config import Config
 
 from src.middleware.capitalize import CapitalizeJSONMiddleware
 
@@ -11,7 +12,7 @@ def register_middleware(app: FastAPI):
 
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["http://localhost:5173"],
+        allow_origins=[Config.FRONTEND_URL],
         allow_methods=["*"],
         allow_headers=["*"],
         allow_credentials=True,
