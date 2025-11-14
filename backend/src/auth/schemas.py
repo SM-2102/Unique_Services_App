@@ -5,8 +5,7 @@ class UserCreate(BaseModel):
     username: str = Field(min_length=3, max_length=20)
     password: str = Field(min_length=6)
     role: str = Field(default="USER")
-    phone_number: str = Field(min_length=10, max_length=10
-                         , pattern="^[0-9]{10}$")
+    phone_number: str = Field(min_length=10, max_length=10, pattern="^[0-9]{10}$")
 
 
 class UserResponse(BaseModel):

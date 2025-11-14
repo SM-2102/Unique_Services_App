@@ -1,0 +1,731 @@
+{
+  "customer": {
+    "number_of_customers": 610,
+    "top_customers": {
+        "AKASH FOOD PRODUCT": 42,
+        "CGCEL GODOWN THRU 3S SOLUTION": 42,
+        "MAHALAXMI DISTRIBUTORS": 31,
+        "PRAKASH ELECTRICALS": 24,
+        "KD ELECTRIC & ELECTRONICS": 24
+    }
+  },
+  "challan": {
+    "number_of_challans": 70,
+    "number_of_items": 970,
+    "challan_rolling_month": [
+      {
+        "month": "2025-06",
+        "total_challans": 17,
+        "total_quantity": 248
+      },
+      {
+        "month": "2025-07",
+        "total_challans": 12,
+        "total_quantity": 150
+      },
+      {
+        "month": "2025-08",
+        "total_challans": 20,
+        "total_quantity": 290
+      },
+      {
+        "month": "2025-09",
+        "total_challans": 18,
+        "total_quantity": 282
+      },
+      {
+        "month": "2025-10",
+        "total_challans": 15,
+        "total_quantity": 250
+      }
+    ]
+  },
+  "retail": {
+    "division_wise_donut": [
+      {
+        "division": "IWH",
+        "count": 4
+      },
+      {
+        "division": "OTHERS",
+        "count": 1
+      },
+      {
+        "division": "SWH",
+        "count": 2
+      },
+      {
+        "division": "SDA",
+        "count": 18
+      },
+      {
+        "division": "LIGHT",
+        "count": 1
+      },
+      {
+        "division": "COOLER",
+        "count": 2
+      },
+      {
+        "division": "FANS",
+        "count": 143
+      },
+      {
+        "division": "PUMP",
+        "count": 32
+      }
+    ],
+    "settled_vs_unsettled_pie_chart": {
+      "not_received": 2,
+      "received_not_settled": 1,
+      "settled": 202
+    }
+  },
+  "market": {
+    "status_per_division_stacked_bar_chart": [
+      {
+        "division": "FANS",
+        "final_status": "N",
+        "count": 20
+      },
+      {
+        "division": "PUMP",
+        "final_status": "N",
+        "count": 3
+      },
+      {
+        "division": "SDA",
+        "final_status": "Y",
+        "count": 15
+      },
+      {
+        "division": "IWH",
+        "final_status": "Y",
+        "count": 3
+      },
+      {
+        "division": "FANS",
+        "final_status": "Y",
+        "count": 142
+      },
+      {
+        "division": "SWH",
+        "final_status": "Y",
+        "count": 2
+      },
+      {
+        "division": "PUMP",
+        "final_status": "Y",
+        "count": 75
+      },
+      {
+        "division": "COOLER",
+        "final_status": "Y",
+        "count": 3
+      },
+      {
+        "division": "SDA",
+        "final_status": "N",
+        "count": 5
+      }
+    ]
+  },
+  "warranty": {
+    "division_wise_pending_completed_bar_graph": [
+      {
+        "division": "FANS",
+        "settlement": "N",
+        "count": 20
+      },
+      {
+        "division": "SDA",
+        "settlement": "Y",
+        "count": 16
+      },
+      {
+        "division": "PUMP",
+        "settlement": "N",
+        "count": 38
+      },
+      {
+        "division": "IWH",
+        "settlement": "Y",
+        "count": 1
+      },
+      {
+        "division": "FANS",
+        "settlement": "Y",
+        "count": 48
+      },
+      {
+        "division": "SWH",
+        "settlement": "N",
+        "count": 5
+      },
+      {
+        "division": "SWH",
+        "settlement": "Y",
+        "count": 6
+      },
+      {
+        "division": "PUMP",
+        "settlement": "Y",
+        "count": 67
+      },
+      {
+        "division": "SDA",
+        "settlement": "N",
+        "count": 8
+      },
+      {
+        "division": "LIGHT",
+        "settlement": "Y",
+        "count": 30
+      },
+      {
+        "division": "LIGHT",
+        "settlement": "N",
+        "count": 20
+      },
+      {
+        "division": "COOLER",
+        "settlement": "N",
+        "count": 2
+      }
+    ],
+    "srf_vs_delivery_month_wise_bar_graph": [
+      {
+        "srf_number": "R00153/1",
+        "srf_date": "2025-09-12",
+        "delivery_date": "2025-10-03"
+      },
+      {
+        "srf_number": "R00154/1",
+        "srf_date": "2025-09-12",
+        "delivery_date": "2025-10-14"
+      },
+      {
+        "srf_number": "R00155/1",
+        "srf_date": "2025-09-15",
+        "delivery_date": "2025-10-09"
+      },
+      {
+        "srf_number": "R00156/1",
+        "srf_date": "2025-09-15",
+        "delivery_date": "2025-10-14"
+      },
+      {
+        "srf_number": "R00157/1",
+        "srf_date": "2025-09-18",
+        "delivery_date": "2025-10-30"
+      },
+      {
+        "srf_number": "R00158/1",
+        "srf_date": "2025-09-18",
+        "delivery_date": "2025-09-26"
+      },
+      {
+        "srf_number": "R00160/1",
+        "srf_date": "2025-09-20",
+        "delivery_date": "2025-10-16"
+      },
+      {
+        "srf_number": "R00163/1",
+        "srf_date": "2025-09-26",
+        "delivery_date": "2025-10-08"
+      },
+      {
+        "srf_number": "R00164/1",
+        "srf_date": "2025-09-27",
+        "delivery_date": "2025-10-21"
+      },
+      {
+        "srf_number": "R00166/2",
+        "srf_date": "2025-10-06",
+        "delivery_date": "2025-10-31"
+      },
+      {
+        "srf_number": "R00167/1",
+        "srf_date": "2025-10-06",
+        "delivery_date": "2025-10-14"
+      },
+      {
+        "srf_number": "R00165/1",
+        "srf_date": "2025-10-06",
+        "delivery_date": "2025-10-10"
+      },
+      {
+        "srf_number": "R00166/1",
+        "srf_date": "2025-10-06",
+        "delivery_date": "2025-10-31"
+      },
+      {
+        "srf_number": "R00167/2",
+        "srf_date": "2025-10-06",
+        "delivery_date": "2025-10-14"
+      },
+      {
+        "srf_number": "R00171/1",
+        "srf_date": "2025-10-07",
+        "delivery_date": "2025-10-14"
+      },
+      {
+        "srf_number": "R00169/1",
+        "srf_date": "2025-10-07",
+        "delivery_date": "2025-10-21"
+      },
+      {
+        "srf_number": "R00170/1",
+        "srf_date": "2025-10-07",
+        "delivery_date": "2025-10-30"
+      },
+      {
+        "srf_number": "R00172/1",
+        "srf_date": "2025-10-08",
+        "delivery_date": "2025-10-14"
+      },
+      {
+        "srf_number": "R00172/2",
+        "srf_date": "2025-10-08",
+        "delivery_date": "2025-10-14"
+      },
+      {
+        "srf_number": "R00173/1",
+        "srf_date": "2025-10-08",
+        "delivery_date": "2025-10-10"
+      },
+      {
+        "srf_number": "R00175/1",
+        "srf_date": "2025-10-09",
+        "delivery_date": "2025-10-16"
+      },
+      {
+        "srf_number": "R00175/2",
+        "srf_date": "2025-10-09",
+        "delivery_date": "2025-10-16"
+      },
+      {
+        "srf_number": "R00176/1",
+        "srf_date": "2025-10-09",
+        "delivery_date": "2025-10-27"
+      },
+      {
+        "srf_number": "R00178/1",
+        "srf_date": "2025-10-10",
+        "delivery_date": "2025-10-17"
+      },
+      {
+        "srf_number": "R00179/1",
+        "srf_date": "2025-10-10",
+        "delivery_date": "2025-11-06"
+      },
+      {
+        "srf_number": "R00180/1",
+        "srf_date": "2025-10-13",
+        "delivery_date": "2025-10-24"
+      },
+      {
+        "srf_number": "R00188/1",
+        "srf_date": "2025-10-17",
+        "delivery_date": "2025-10-22"
+      },
+      {
+        "srf_number": "R00191/1",
+        "srf_date": "2025-10-22",
+        "delivery_date": "2025-10-27"
+      },
+      {
+        "srf_number": "R00196/1",
+        "srf_date": "2025-10-28",
+        "delivery_date": "2025-11-05"
+      },
+      {
+        "srf_number": "R00197/1",
+        "srf_date": "2025-10-28",
+        "delivery_date": "2025-11-03"
+      },
+      {
+        "srf_number": "R00205/1",
+        "srf_date": "2025-10-31",
+        "delivery_date": "2025-11-05"
+      },
+      {
+        "srf_number": "R00208/1",
+        "srf_date": "2025-11-04",
+        "delivery_date": "2025-11-04"
+      }
+    ]
+  },
+  "out_of_warranty": {
+    "srf_receive_vs_delivery_bar_graph": [
+      {
+        "srf_number": "S00240/1",
+        "srf_date": "2025-09-12",
+        "repair_date": "2025-10-03",
+        "delivery_date": "2025-10-31"
+      },
+      {
+        "srf_number": "S00241/1",
+        "srf_date": "2025-09-12",
+        "repair_date": "2025-09-27",
+        "delivery_date": "2025-10-07"
+      },
+      {
+        "srf_number": "S00242/1",
+        "srf_date": "2025-09-15",
+        "repair_date": "2025-10-20",
+        "delivery_date": "2025-11-05"
+      },
+      {
+        "srf_number": "S00243/1",
+        "srf_date": "2025-09-15",
+        "repair_date": "2025-09-15",
+        "delivery_date": "2025-09-15"
+      },
+      {
+        "srf_number": "S00244/1",
+        "srf_date": "2025-09-18",
+        "repair_date": "2025-10-07",
+        "delivery_date": "2025-10-14"
+      },
+      {
+        "srf_number": "S00245/1",
+        "srf_date": "2025-09-18",
+        "repair_date": "2025-10-04",
+        "delivery_date": "2025-10-08"
+      },
+      {
+        "srf_number": "S00246/1",
+        "srf_date": "2025-09-19",
+        "repair_date": "2025-10-16",
+        "delivery_date": "2025-10-16"
+      },
+      {
+        "srf_number": "S00247/1",
+        "srf_date": "2025-09-19",
+        "repair_date": "2025-10-17",
+        "delivery_date": "2025-10-22"
+      },
+      {
+        "srf_number": "S00248/1",
+        "srf_date": "2025-09-20",
+        "repair_date": "2025-09-22",
+        "delivery_date": "2025-09-22"
+      },
+      {
+        "srf_number": "S00249/1",
+        "srf_date": "2025-09-20",
+        "repair_date": "2025-09-25",
+        "delivery_date": "2025-09-26"
+      },
+      {
+        "srf_number": "S00251/1",
+        "srf_date": "2025-09-24",
+        "repair_date": "2025-10-04",
+        "delivery_date": "2025-10-07"
+      },
+      {
+        "srf_number": "S00252/1",
+        "srf_date": "2025-09-25",
+        "repair_date": "2025-10-16",
+        "delivery_date": "2025-10-16"
+      },
+      {
+        "srf_number": "S00253/1",
+        "srf_date": "2025-10-04",
+        "repair_date": "2025-10-13",
+        "delivery_date": "2025-10-15"
+      },
+      {
+        "srf_number": "S00254/1",
+        "srf_date": "2025-10-04",
+        "repair_date": "2025-10-22",
+        "delivery_date": "2025-10-24"
+      },
+      {
+        "srf_number": "S00255/1",
+        "srf_date": "2025-10-04",
+        "repair_date": "2025-10-07",
+        "delivery_date": "2025-10-08"
+      },
+      {
+        "srf_number": "S00256/1",
+        "srf_date": "2025-10-06",
+        "repair_date": "2025-10-18",
+        "delivery_date": "2025-10-21"
+      },
+      {
+        "srf_number": "S00257/1",
+        "srf_date": "2025-10-06",
+        "repair_date": "2025-10-15",
+        "delivery_date": "2025-10-17"
+      },
+      {
+        "srf_number": "S00258/1",
+        "srf_date": "2025-10-06",
+        "repair_date": "2025-10-10",
+        "delivery_date": "2025-10-16"
+      },
+      {
+        "srf_number": "S00259/1",
+        "srf_date": "2025-10-06",
+        "repair_date": "2025-10-09",
+        "delivery_date": "2025-10-10"
+      },
+      {
+        "srf_number": "S00261/1",
+        "srf_date": "2025-10-07",
+        "repair_date": "2025-10-08",
+        "delivery_date": "2025-10-08"
+      },
+      {
+        "srf_number": "S00261/2",
+        "srf_date": "2025-10-07",
+        "repair_date": "2025-10-08",
+        "delivery_date": "2025-10-08"
+      },
+      {
+        "srf_number": "S00261/3",
+        "srf_date": "2025-10-07",
+        "repair_date": "2025-10-08",
+        "delivery_date": "2025-10-08"
+      },
+      {
+        "srf_number": "S00261/4",
+        "srf_date": "2025-10-07",
+        "repair_date": "2025-10-17",
+        "delivery_date": "2025-10-17"
+      },
+      {
+        "srf_number": "S00261/5",
+        "srf_date": "2025-10-07",
+        "repair_date": "2025-10-17",
+        "delivery_date": "2025-10-17"
+      },
+      {
+        "srf_number": "S00261/6",
+        "srf_date": "2025-10-07",
+        "repair_date": "2025-10-17",
+        "delivery_date": "2025-10-17"
+      },
+      {
+        "srf_number": "S00263/1",
+        "srf_date": "2025-10-08",
+        "repair_date": "2025-10-30",
+        "delivery_date": "2025-10-30"
+      },
+      {
+        "srf_number": "S00264/1",
+        "srf_date": "2025-10-09",
+        "repair_date": "2025-10-13",
+        "delivery_date": "2025-10-14"
+      },
+      {
+        "srf_number": "S00265/1",
+        "srf_date": "2025-10-09",
+        "repair_date": "2025-10-13",
+        "delivery_date": "2025-10-14"
+      },
+      {
+        "srf_number": "S00267/1",
+        "srf_date": "2025-10-10",
+        "repair_date": "2025-10-30",
+        "delivery_date": "2025-11-04"
+      },
+      {
+        "srf_number": "S00267/2",
+        "srf_date": "2025-10-10",
+        "repair_date": "2025-10-30",
+        "delivery_date": "2025-11-04"
+      },
+      {
+        "srf_number": "S00269/1",
+        "srf_date": "2025-10-13",
+        "repair_date": "2025-10-21",
+        "delivery_date": "2025-10-24"
+      },
+      {
+        "srf_number": "S00270/1",
+        "srf_date": "2025-10-13",
+        "repair_date": "2025-11-04",
+        "delivery_date": "2025-11-05"
+      },
+      {
+        "srf_number": "S00272/1",
+        "srf_date": "2025-10-15",
+        "repair_date": "2025-11-03",
+        "delivery_date": "2025-11-04"
+      },
+      {
+        "srf_number": "S00273/1",
+        "srf_date": "2025-10-15",
+        "repair_date": "2025-10-21",
+        "delivery_date": "2025-10-25"
+      },
+      {
+        "srf_number": "S00273/2",
+        "srf_date": "2025-10-15",
+        "repair_date": "2025-10-21",
+        "delivery_date": "2025-10-25"
+      },
+      {
+        "srf_number": "S00275/1",
+        "srf_date": "2025-10-16",
+        "repair_date": "2025-11-01",
+        "delivery_date": "2025-11-04"
+      },
+      {
+        "srf_number": "S00276/1",
+        "srf_date": "2025-10-16",
+        "repair_date": "2025-10-24",
+        "delivery_date": "2025-10-24"
+      },
+      {
+        "srf_number": "S00276/2",
+        "srf_date": "2025-10-16",
+        "repair_date": "2025-10-24",
+        "delivery_date": "2025-10-24"
+      },
+      {
+        "srf_number": "S00276/3",
+        "srf_date": "2025-10-16",
+        "repair_date": "2025-10-24",
+        "delivery_date": "2025-10-24"
+      },
+      {
+        "srf_number": "S00277/1",
+        "srf_date": "2025-10-16",
+        "repair_date": "2025-10-30",
+        "delivery_date": "2025-11-03"
+      },
+      {
+        "srf_number": "S00278/1",
+        "srf_date": "2025-10-17",
+        "repair_date": "2025-10-22",
+        "delivery_date": "2025-10-22"
+      },
+      {
+        "srf_number": "S00279/1",
+        "srf_date": "2025-10-18",
+        "repair_date": "2025-10-21",
+        "delivery_date": "2025-10-22"
+      },
+      {
+        "srf_number": "S00280/1",
+        "srf_date": "2025-10-20",
+        "repair_date": "2025-10-28",
+        "delivery_date": "2025-10-30"
+      },
+      {
+        "srf_number": "S00281/1",
+        "srf_date": "2025-10-22",
+        "repair_date": "2025-11-03",
+        "delivery_date": "2025-11-06"
+      },
+      {
+        "srf_number": "S00282/1",
+        "srf_date": "2025-10-22",
+        "repair_date": "2025-11-03",
+        "delivery_date": "2025-11-05"
+      },
+      {
+        "srf_number": "S00284/1",
+        "srf_date": "2025-10-24",
+        "repair_date": "2025-10-27",
+        "delivery_date": "2025-10-29"
+      },
+      {
+        "srf_number": "S00286/1",
+        "srf_date": "2025-10-25",
+        "repair_date": "2025-10-28",
+        "delivery_date": "2025-11-04"
+      },
+      {
+        "srf_number": "S00286/2",
+        "srf_date": "2025-10-25",
+        "repair_date": "2025-11-03",
+        "delivery_date": "2025-11-05"
+      },
+      {
+        "srf_number": "S00288/1",
+        "srf_date": "2025-10-28",
+        "repair_date": "2025-11-05",
+        "delivery_date": "2025-11-06"
+      },
+      {
+        "srf_number": "S00290/1",
+        "srf_date": "2025-10-29",
+        "repair_date": "2025-11-04",
+        "delivery_date": "2025-11-06"
+      },
+      {
+        "srf_number": "S00297/1",
+        "srf_date": "2025-11-03",
+        "repair_date": "2025-11-05",
+        "delivery_date": "2025-11-06"
+      }
+    ],
+    "final_status_bar_graph": [
+      {
+        "division": "COOLER",
+        "status": "COMPLETED",
+        "count": 1
+      },
+      {
+        "division": "FANS",
+        "status": "PENDING",
+        "count": 30
+      },
+      {
+        "division": "FANS",
+        "status": "COMPLETED",
+        "count": 140
+      },
+      {
+        "division": "IWH",
+        "status": "COMPLETED",
+        "count": 1
+      },
+      {
+        "division": "LIGHT",
+        "status": "PENDING",
+        "count": 4
+      },
+      {
+        "division": "LIGHT",
+        "status": "COMPLETED",
+        "count": 7
+      },
+      {
+        "division": "OTHERS",
+        "status": "COMPLETED",
+        "count": 1
+      },
+      {
+        "division": "PUMP",
+        "status": "COMPLETED",
+        "count": 125
+      },
+      {
+        "division": "PUMP",
+        "status": "PENDING",
+        "count": 28
+      },
+      {
+        "division": "SDA",
+        "status": "PENDING",
+        "count": 4
+      },
+      {
+        "division": "SDA",
+        "status": "COMPLETED",
+        "count": 12
+      },
+      {
+        "division": "SWH",
+        "status": "COMPLETED",
+        "count": 2
+      }
+    ]
+  }
+}

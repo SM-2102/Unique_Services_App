@@ -38,5 +38,5 @@ register_exceptions(app)
 
 # Routes
 app.include_router(auth_router, prefix="/auth", tags=["Authentication"])
-app.include_router(master_router, prefix="/master", tags=["Master"])
+# app.include_router(master_router, prefix="/master", tags=["Master"])
 app.include_router(menu_router, prefix="/menu", tags=["Menu"])

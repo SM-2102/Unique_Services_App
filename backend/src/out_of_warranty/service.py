@@ -1,7 +1,9 @@
-from src.out_of_warranty.models import OutOfWarranty
-from sqlalchemy import select , func, case
-from sqlalchemy.ext.asyncio.session import AsyncSession
 from datetime import date, timedelta
+
+from sqlalchemy import case, func, select
+from sqlalchemy.ext.asyncio.session import AsyncSession
+
+from src.out_of_warranty.models import OutOfWarranty
 
 
 class OutOfWarrantyService:
@@ -10,16 +12,11 @@ class OutOfWarrantyService:
 
         # Create a dynamic CASE column for status
         status_case = case(
-            (OutOfWarranty.settlement_date.isnot(None), "COMPLETED"),
-            else_="PENDING"
+            (OutOfWarranty.settlement_date.isnot(None), "COMPLETED"), else_="PENDING"
         ).label("status")
 
         statement = (
-            select(
-                OutOfWarranty.division,
-                status_case,
-                func.count().label("count")
-            )
+            select(OutOfWarranty.division, status_case, func.count().label("count"))
             .group_by(OutOfWarranty.division, status_case)
             .order_by(OutOfWarranty.division)
         )
@@ -28,14 +25,9 @@ class OutOfWarrantyService:
         rows = result.all()
 
         return [
-            {
-                "division": division,
-                "status": status,
-                "count": count
-            }
+            {"division": division, "status": status, "count": count}
             for division, status, count in rows
         ]
-
 
     async def srf_vs_repair_vs_delivery(self, session: AsyncSession):
         today = date.today()
@@ -52,7 +44,7 @@ class OutOfWarrantyService:
                 OutOfWarranty.srf_date.isnot(None),
                 OutOfWarranty.repair_date.isnot(None),
                 OutOfWarranty.delivery_date.isnot(None),
-                OutOfWarranty.srf_date >= sixty_days_ago
+                OutOfWarranty.srf_date >= sixty_days_ago,
             )
             .order_by(OutOfWarranty.srf_date)
         )
@@ -70,4 +62,3 @@ class OutOfWarrantyService:
             for r in rows
         ]
         return data
-

@@ -1,15 +1,21 @@
 from datetime import date
 from email.policy import default
+
 import sqlalchemy.dialects.postgresql as pg
-from sqlalchemy import ForeignKey   
+from sqlalchemy import ForeignKey
 from sqlmodel import Column, Field, SQLModel
+
 
 class OutOfWarranty(SQLModel, table=True):
     __tablename__ = "out_of_warranty"
- 
+
     srf_number: str = Field(primary_key=True, index=True)
     srf_date: date = Field(sa_column=Column(pg.DATE, nullable=False))
-    code: str = Field(sa_column=Column(pg.VARCHAR(5), ForeignKey("master.code"), nullable=False, index=True))
+    code: str = Field(
+        sa_column=Column(
+            pg.VARCHAR(5), ForeignKey("master.code"), nullable=False, index=True
+        )
+    )
     division: str = Field(sa_column=Column(pg.VARCHAR(15), nullable=False))
     # FANS, PUMP, LIGHT, SDA, IWH, SWH, COOLER, OTHERS
     head: str = Field(sa_column=Column(pg.VARCHAR(20), nullable=True))
@@ -21,7 +27,7 @@ class OutOfWarranty(SQLModel, table=True):
     challan_number: str = Field(sa_column=Column(pg.VARCHAR(6), nullable=True))
     # V00001, V0002
     challan_date: date = Field(sa_column=Column(pg.DATE, nullable=True))
-    challan: str = Field(sa_column=Column(pg.CHAR(1), nullable=False, default='N'))
+    challan: str = Field(sa_column=Column(pg.CHAR(1), nullable=False, default="N"))
     received_by: str = Field(sa_column=Column(pg.VARCHAR(20), nullable=True))
     estimate_date: date = Field(sa_column=Column(pg.DATE, nullable=True))
     vendor_date1: date = Field(sa_column=Column(pg.DATE, nullable=True))
@@ -48,7 +54,7 @@ class OutOfWarranty(SQLModel, table=True):
     godown_cost: float = Field(sa_column=Column(pg.FLOAT, nullable=True))
     discount: float = Field(sa_column=Column(pg.FLOAT, nullable=True))
     total: float = Field(sa_column=Column(pg.FLOAT, nullable=True))
-    gst: str = Field(sa_column=Column(pg.CHAR(1), nullable=False, default='N'))
+    gst: str = Field(sa_column=Column(pg.CHAR(1), nullable=False, default="N"))
     gst_amount: float = Field(sa_column=Column(pg.FLOAT, nullable=True))
     final_amount: float = Field(sa_column=Column(pg.FLOAT, nullable=True))
     round_off: float = Field(sa_column=Column(pg.FLOAT, nullable=True))
@@ -56,18 +62,21 @@ class OutOfWarranty(SQLModel, table=True):
     delivery_date: date = Field(sa_column=Column(pg.DATE, nullable=True))
     pcno: int = Field(sa_column=Column(pg.INTEGER, nullable=True))
     invoice_number: int = Field(sa_column=Column(pg.INTEGER, nullable=True))
-    status: str = Field(sa_column=Column(pg.VARCHAR(1), nullable=False, default='N'))
+    status: str = Field(sa_column=Column(pg.VARCHAR(1), nullable=False, default="N"))
     vendor_bill_number: str = Field(sa_column=Column(pg.VARCHAR(8), nullable=True))
     settlement_date: date = Field(sa_column=Column(pg.DATE, nullable=True))
     vendor_settlement_date: date = Field(sa_column=Column(pg.DATE, nullable=True))
-    service_charge_waive: str = Field(sa_column=Column(pg.CHAR(1), nullable=False, default='N'))
+    service_charge_waive: str = Field(
+        sa_column=Column(pg.CHAR(1), nullable=False, default="N")
+    )
     collection_date: date = Field(sa_column=Column(pg.DATE, nullable=True))
     waive_details: str = Field(sa_column=Column(pg.VARCHAR(40), nullable=True))
-    created_by: str = Field(sa_column=Column(pg.VARCHAR(15), ForeignKey("users.username"), nullable=False))
-    updated_by: str = Field(sa_column=Column(pg.VARCHAR(15), ForeignKey("users.username"), nullable=True)) 
+    created_by: str = Field(
+        sa_column=Column(pg.VARCHAR(15), ForeignKey("users.username"), nullable=False)
+    )
+    updated_by: str = Field(
+        sa_column=Column(pg.VARCHAR(15), ForeignKey("users.username"), nullable=True)
+    )
 
-  
-
-  
     def __repr__(self):
         return f"<Out of Warranty {self.srf_number} - {self.srf_date}>"
