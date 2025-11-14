@@ -1,6 +1,14 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { FaUser, FaKey, FaUserPlus, FaUserMinus, FaUsers} from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useRef, useEffect } from "react";
+import {
+  FaUser,
+  FaKey,
+  FaUserPlus,
+  FaUserMinus,
+  FaUsers,
+} from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import API_ENDPOINTS from "../config/api";
+import SpinnerLoading from "./SpinnerLoading";
 
 const UserMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -15,29 +23,46 @@ const UserMenu = () => {
     };
 
     if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isOpen]);
 
-  // Mock user data - replace with actual user context/state
-  const user = {
-    username: 'Admin User',
-    role: 'ADMIN',  // Changed to ADMIN to test the admin features
-    phone_number: '1234567890'
-  };
+  // Real user data from API
+  const [user, setUser] = useState(null);
+  const [userLoading, setUserLoading] = useState(true);
+  const [userError, setUserError] = useState(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      setUserLoading(true);
+      setUserError(null);
+      try {
+        const res = await fetch(API_ENDPOINTS.AUTH_ME, {
+          credentials: "include",
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setUser(data.user || data);
+        } else {
+          setUser(null);
+          setUserError("Unable to fetch user info");
+        }
+      } catch (err) {
+        setUser(null);
+        setUserError("Unable to fetch user info");
+      }
+      setUserLoading(false);
+    };
+    if (isOpen) fetchUser();
+  }, [isOpen]);
 
   const roleLabels = {
     ADMIN: "Administrator",
     USER: "Standard User",
-  };
-
-  const handleLogout = () => {
-    // Add logout logic here
-    navigate('/');
   };
 
   const handleChangePassword = () => {
@@ -45,15 +70,15 @@ const UserMenu = () => {
   };
 
   const handleCreateUser = () => {
-    navigate('/not-available'); // Update this when the create user page is ready
+    navigate("/not-available"); // Update this when the create user page is ready
   };
 
   const handleDeleteUser = () => {
-    navigate('/not-available'); // Update this when the delete user page is ready
+    navigate("/not-available"); // Update this when the delete user page is ready
   };
 
   const handleShowUsers = () => {
-    navigate('/not-available'); // Update this when the user list page is ready
+    navigate("/not-available"); // Update this when the user list page is ready
   };
 
   return (
@@ -68,14 +93,26 @@ const UserMenu = () => {
       {isOpen && (
         <div className="absolute right-0 mt-2 w-64 rounded-lg shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5">
           <div className="px-4 py-3 border-b border-gray-100">
-            <p className="text-m font-medium text-gray-900">{user.username}</p>
-            <p className="text-s text-gray-500">
-            {roleLabels[user.role] || user.role}
-            </p>
-            <p className="text-s text-gray-700">Contact : {user.phone_number}</p>
+            {userLoading ? (
+              <SpinnerLoading text="Loading User Data" />
+            ) : userError ? (
+              <p className="text-m text-red-500">{userError}</p>
+            ) : user ? (
+              <>
+                <p className="text-m font-medium text-gray-900">
+                  {user.username}
+                </p>
+                <p className="text-s text-gray-500">
+                  {roleLabels[user.role] || user.role}
+                </p>
+                <p className="text-s text-gray-700">
+                  Contact : {user.phone_number}
+                </p>
+              </>
+            ) : null}
           </div>
 
-          {user.role === 'ADMIN' && (
+          {user && user.role === "ADMIN" && (
             <>
               <button
                 onClick={handleCreateUser}

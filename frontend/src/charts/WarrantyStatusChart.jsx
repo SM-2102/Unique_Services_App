@@ -1,94 +1,176 @@
 // Warranty Division Bar Chart
-import React, { useEffect, useState } from 'react';
-
+import React, { useEffect, useState, useRef } from "react";
 const WarrantyStatusChart = ({ data, loading, error }) => {
   const [chartData, setChartData] = useState([]);
 
   useEffect(() => {
     if (data?.warranty?.division_wise_pending_completed_bar_graph) {
       // Group data by division
-      const groupedData = data.warranty.division_wise_pending_completed_bar_graph.reduce((acc, item) => {
-        const division = item.division;
-        if (!acc[division]) {
-          acc[division] = { division, Y: 0, N: 0 };
-        }
-        acc[division][item.settlement] = item.count;
-        return acc;
-      }, {});
-      
+      const groupedData =
+        data.warranty.division_wise_pending_completed_bar_graph.reduce(
+          (acc, item) => {
+            const division = item.division;
+            if (!acc[division]) {
+              acc[division] = { division, Y: 0, N: 0 };
+            }
+            acc[division][item.settlement] = item.count;
+            return acc;
+          },
+          {},
+        );
       setChartData(Object.values(groupedData));
     }
   }, [data]);
 
-  if (loading) return <div className="text-center py-4">Loading warranty data...</div>;
-  if (error) return <div className="text-center py-4 text-red-500">Error loading warranty data</div>;
+  // Tooltip state (must be before any return)
+  const [tooltip, setTooltip] = useState({
+    show: false,
+    x: 0,
+    y: 0,
+    value: "",
+    label: "",
+    count: null,
+  });
 
-  const maxTotal = Math.max(...chartData.map(item => item.Y + item.N));
+  // Helper to show tooltip
+  const handleMouseOver = (e, value, label, count) => {
+    setTooltip({
+      show: true,
+      x: e.clientX,
+      y: e.clientY,
+      value,
+      label,
+      count,
+    });
+  };
+  const handleMouseOut = () => setTooltip({ ...tooltip, show: false });
+
+  // Animation state for each bar: animate green first, then red
+  const [barStates, setBarStates] = useState([]);
+  const animationRanRef = React.useRef("");
+  useEffect(() => {
+    const chartKey = JSON.stringify(chartData);
+    if (animationRanRef.current === chartKey) return;
+    animationRanRef.current = chartKey;
+    setBarStates(chartData.map(() => ({ green: false, red: false })));
+    chartData.forEach((_, idx) => {
+      setTimeout(() => {
+        setBarStates((prev) => {
+          const next = [...prev];
+          if (next[idx]) next[idx] = { ...next[idx], green: true };
+          return next;
+        });
+        setTimeout(() => {
+          setBarStates((prev) => {
+            const next = [...prev];
+            if (next[idx]) next[idx] = { ...next[idx], red: true };
+            return next;
+          });
+        }, 700);
+      }, idx * 200);
+    });
+  }, [chartData]);
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-lg">
-      <h3 className="text-lg font-semibold mb-4 text-gray-800">Warranty Settlement Status</h3>
-      <div className="space-y-4">
-        {chartData.map((item) => {
-          const total = item.Y + item.N;
-          const completedWidth = maxTotal > 0 ? (item.Y / maxTotal) * 100 : 0;
-          const pendingWidth = maxTotal > 0 ? (item.N / maxTotal) * 100 : 0;
-          
-          return (
-            <div key={item.division} className="space-y-2">
-              <div className="flex justify-between items-center">
-                <span className="font-medium text-gray-700 min-w-[80px]">{item.division}</span>
-                <span className="text-sm text-gray-500">Total: {total}</span>
-              </div>
-              
-              <div className="space-y-1">
-                {/* Completed Bar */}
-                <div className="flex items-center space-x-2">
-                  <span className="text-xs text-green-600 w-16">Settled:</span>
-                  <div className="flex-1 bg-gray-200 rounded-full h-4">
-                    <div 
-                      className="bg-green-500 h-full rounded-full flex items-center justify-end pr-2"
-                      style={{ width: `${completedWidth}%` }}
-                    >
-                      {item.Y > 0 && (
-                        <span className="text-xs text-white font-semibold">{item.Y}</span>
-                      )}
-                    </div>
-                  </div>
+    <div
+      className="bg-[#fff7e6] rounded-lg relative w-full max-h-80 overflow-y-auto"
+      style={{ marginTop: "15px", padding: "0 8px 12px 0", maxWidth: "100%" }}
+    >
+      {/* Tooltip */}
+      {tooltip.show && (
+        <div
+          className="pointer-events-none fixed z-50 px-3 py-1.5 rounded-lg shadow-xl text-xs font-semibold bg-white text-gray-900 border border-gray-200"
+          style={{
+            left: tooltip.x + 10,
+            top: tooltip.y + 10,
+            minWidth: 70,
+            textAlign: "center",
+            letterSpacing: "0.01em",
+          }}
+        >
+          <span className="block">{tooltip.label}</span>
+          <span className="block font-bold">
+            {tooltip.value}
+            {tooltip.count !== null && (
+              <span className="ml-1 text-gray-500">({tooltip.count})</span>
+            )}
+          </span>
+        </div>
+      )}
+      <div className="flex flex-row items-start justify-start gap-0 w-full">
+        {/* Horizontal bars and labels */}
+        <div className="flex flex-col gap-1.5 w-full min-w-0 overflow-y-auto">
+          {chartData.map((item, idx) => {
+            const total = item.Y + item.N;
+            const yPercentage = total > 0 ? (item.Y / total) * 100 : 0;
+            const nPercentage = total > 0 ? (item.N / total) * 100 : 0;
+            const barState = barStates[idx] || { green: false, red: false };
+            return (
+              <div key={item.division} className="flex items-center">
+                {/* Fixed width label */}
+                <span
+                  className="text-xs font-medium text-gray-700 text-right mr-1"
+                  style={{
+                    width: "45px",
+                    flexShrink: 0,
+                    display: "inline-block",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {item.division}
+                </span>
+                {/* Stacked horizontal bar: green left, red right */}
+                <div className="relative flex flex-row h-5 w-full min-w-[80px] max-w-[100px] rounded overflow-hidden border border-gray-200 bg-gray-100">
+                  {/* Completed (Y) - green left */}
+                  <div
+                    className="bg-green-500 h-full transition-all duration-700 cursor-pointer relative"
+                    style={{
+                      width: barState.green ? `${yPercentage}%` : 0,
+                      transitionDelay: "0ms",
+                    }}
+                    onMouseOver={(e) =>
+                      handleMouseOver(
+                        e,
+                        `${yPercentage.toFixed(1)}%`,
+                        "Settled",
+                        item.Y,
+                      )
+                    }
+                    onMouseOut={handleMouseOut}
+                  ></div>
+                  {/* Pending (N) - red right */}
+                  <div
+                    className="bg-red-500 h-full transition-all duration-700 cursor-pointer relative"
+                    style={{
+                      width: barState.red ? `${nPercentage}%` : 0,
+                      transitionDelay: "0ms",
+                    }}
+                    onMouseOver={(e) =>
+                      handleMouseOver(
+                        e,
+                        `${nPercentage.toFixed(1)}%`,
+                        "Pending",
+                        item.N,
+                      )
+                    }
+                    onMouseOut={handleMouseOut}
+                  ></div>
                 </div>
-                
-                {/* Pending Bar */}
-                <div className="flex items-center space-x-2">
-                  <span className="text-xs text-red-600 w-16">Pending:</span>
-                  <div className="flex-1 bg-gray-200 rounded-full h-4">
-                    <div 
-                      className="bg-red-500 h-full rounded-full flex items-center justify-end pr-2"
-                      style={{ width: `${pendingWidth}%` }}
-                    >
-                      {item.N > 0 && (
-                        <span className="text-xs text-white font-semibold">{item.N}</span>
-                      )}
-                    </div>
-                  </div>
-                </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
-      
-      <div className="mt-6 pt-4 border-t">
-        <div className="flex justify-center space-x-6 text-sm">
-          <div className="flex items-center">
-            <div className="w-3 h-3 bg-green-500 rounded mr-2"></div>
-            <span>Settled</span>
-          </div>
-          <div className="flex items-center">
-            <div className="w-3 h-3 bg-red-500 rounded mr-2"></div>
-            <span>Pending</span>
-          </div>
+            );
+          })}
         </div>
       </div>
+      <style>{`
+        @media (max-width: 600px) {
+          .warranty-status-bar-label {
+            font-size: 0.7rem;
+            width: 32px !important;
+          }
+        }
+      `}</style>
     </div>
   );
 };

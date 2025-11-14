@@ -1,7 +1,7 @@
 // Chart for Customer Card
 
-import React, { useEffect, useRef, useState } from 'react';
-import { Bar } from 'react-chartjs-2';
+import React, { useEffect, useRef, useState } from "react";
+import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -10,40 +10,35 @@ import {
   Title,
   Tooltip,
   Legend,
-} from 'chart.js';
-import ChartDataLabels from 'chartjs-plugin-datalabels';
+} from "chart.js";
+import ChartDataLabels from "chartjs-plugin-datalabels";
 
-import SpinnerLoading from '../components/SpinnerLoading';
-import { FaUsers } from 'react-icons/fa';
-
+import SpinnerLoading from "../components/SpinnerLoading";
+import { FaUsers } from "react-icons/fa";
 
 const stylishFont = {
   fontFamily: 'Poppins, Montserrat, "Segoe UI", Arial, sans-serif',
-  letterSpacing: '0.03em',
+  letterSpacing: "0.03em",
 };
 
 const gradientTextStyle = {
-  background: 'linear-gradient(90deg, #ff416c 0%, #ff4b2b 50%, #ffb347 100%)',
-  WebkitBackgroundClip: 'text',
-  WebkitTextFillColor: 'transparent',
+  background: "linear-gradient(90deg, #ff416c 0%, #ff4b2b 50%, #ffb347 100%)",
+  WebkitBackgroundClip: "text",
+  WebkitTextFillColor: "transparent",
   fontWeight: 800,
-  fontSize: '3rem',
+  fontSize: "3rem",
   lineHeight: 1.1,
-  letterSpacing: '0.04em',
-  transition: 'transform 0.2s',
+  letterSpacing: "0.04em",
+  transition: "transform 0.2s",
 };
 
 const listEntryAnim = {
-  animation: 'fadeInName 0.5s ease forwards',
+  animation: "fadeInName 0.5s ease forwards",
   opacity: 0,
 };
 
-
-
 function toTitleCase(str) {
-  return str
-    .toLowerCase()
-    .replace(/\b\w/g, (char) => char.toUpperCase());
+  return str.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
 const CustomerChart = ({ data, loading, error }) => {
@@ -85,10 +80,17 @@ const CustomerChart = ({ data, loading, error }) => {
     };
   }, [target]);
 
-
   // Chart.js registration
   useEffect(() => {
-    ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ChartDataLabels);
+    ChartJS.register(
+      CategoryScale,
+      LinearScale,
+      BarElement,
+      Title,
+      Tooltip,
+      Legend,
+      ChartDataLabels,
+    );
   }, []);
 
   if (loading) {
@@ -100,128 +102,179 @@ const CustomerChart = ({ data, loading, error }) => {
   }
 
   if (error) {
-        return (
-        <div>
-            <SpinnerLoading text="Error Loading ..." />
-        </div>
-        );
-    } 
-
+    return (
+      <div>
+        <SpinnerLoading text="Error Loading ..." />
+      </div>
+    );
+  }
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center">
       {/* Icon and Main Metric */}
-      <div className="flex flex-row items-center group transition-transform duration-200 hover:scale-105 ml-0" tabIndex={0}>
+      <div
+        className="flex flex-row flex-wrap items-end group transition-transform duration-200 hover:scale-105 ml-0 w-full max-w-[700px] px-2"
+        style={{ minWidth: 0 }}
+        tabIndex={0}
+      >
         <span
-          style={gradientTextStyle}
-          className="main-metric group-hover:scale-100 transition-transform duration-200 mt-2"
+          style={{
+            ...gradientTextStyle,
+            fontSize: "2.5rem",
+            minWidth: 0,
+            wordBreak: "break-word",
+            flexShrink: 1,
+          }}
+          className="main-metric group-hover:scale-100 transition-transform duration-200"
         >
           {count}+
         </span>
         <span
-          className="text-xl md:text-3xl font-medium ml-3"
-          style={{ ...stylishFont, color: '#3a7bd5', fontWeight: 600 }}
+          className="text-xl md:text-3xl font-medium ml-3 truncate"
+          style={{
+            ...stylishFont,
+            color: "#3a7bd5",
+            fontWeight: 600,
+            minWidth: 0,
+            flexShrink: 1,
+          }}
         >
           Customers
         </span>
       </div>
 
-
       {/* Vertical Bar Chart for Top Customers beside label */}
       {topCustomersArr.length > 0 && (
-        <div className="w-full flex flex-row items-center justify-center">
-          {/* Rotated label on the left */}
-          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: 180, minWidth: 10, marginLeft: 15 }}>
-            <span
-              className="text-base md:text-lg font-semibold"
+        <div className="w-full flex flex-col items-center justify-center">
+          <div
+            style={{
+              width: "100%",
+              minWidth: 0,
+              maxWidth: "100%",
+              height: 170,
+              background: "#ffe4ec",
+              borderRadius: 16,
+              overflow: "hidden",
+              display: "block",
+              position: "relative",
+              margin: 0,
+              padding: 0,
+              boxSizing: "border-box",
+            }}
+          >
+            {/* Watermark background */}
+            <div
               style={{
-                ...stylishFont,
-                background: 'linear-gradient(90deg, #ff416c 0%, #3a7bd5 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                letterSpacing: '0.07rem',
-                transform: 'rotate(-90deg)',
-                display: 'inline-block',
-                fontSize: '1rem',
-                fontWeight: 700,
-                textShadow: '0 2px 12px rgba(255, 65, 108, 0.10)',
-                whiteSpace: 'nowrap',
-                borderBottom: '2.5px solid #ff416c',
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                width: "140%",
+                height: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                pointerEvents: "none",
+                zIndex: 1,
+                opacity: 0.4,
+                fontSize: "2.8rem",
+                fontWeight: 900,
+                fontFamily: "Poppins, Montserrat, Segoe UI, Arial, sans-serif",
+                color: "#3a7bd5",
+                textAlign: "center",
+                userSelect: "none",
+                whiteSpace: "pre-line",
+                textShadow: "0 2px 12px #ff416c, 0 0 2px #fff",
+                background: "none",
+                transform: "translate(-50%, -50%) rotate(-24deg)",
               }}
             >
               Top Customers
-            </span>
-          </div>
-          {/* Vertical Bar Chart */}
-          <div style={{ width: 800, height: 150, background: '#ffe4ec', borderRadius: 5}}>
-            <Bar
-              data={{
-                labels: topCustomersArr.map((c) => c.name),
-                datasets: [
-                  {
-                    label: 'Count',
-                    data: topCustomersArr.map((c) => c.value),
-                    backgroundColor: [
-                      'rgba(255,65,108,0.85)',
-                      'rgba(58,123,213,0.85)',
-                      'rgba(255,196,0,0.85)',
-                      'rgba(0,210,255,0.85)',
-                      'rgba(255,75,43,0.85)'
-                    ],
-                    borderRadius: 9,
-                    borderSkipped: false,
-                    maxBarThickness: 70,
-                  },
-                ],
+            </div>
+            <div
+              style={{
+                width: "100%",
+                height: "100%",
+                minWidth: 0,
+                position: "relative",
+                zIndex: 2,
+                margin: 0,
+                padding: 0,
+                overflow: "hidden",
               }}
-              options={{
-                indexAxis: 'y', // vertical bars
-                responsive: true,
-                maintainAspectRatio: false,
-                animation: {
-                  duration: 1200,
-                  easing: 'easeOutQuart',
-                  delay: (context) => context.dataIndex * 180,
-                },
-                plugins: {
-                  legend: { display: false },
-                  datalabels: {
-                    display: false,
-                  },
-                  tooltip: {
-                    enabled: true,
-                    callbacks: {
-                      label: (ctx) => `${ctx.parsed.x} Records`,
+            >
+              <Bar
+                data={{
+                  labels: topCustomersArr.map((c) => c.name),
+                  datasets: [
+                    {
+                      label: "Count",
+                      data: topCustomersArr.map((c) => c.value),
+                      backgroundColor: [
+                        "rgba(255,65,108,0.85)",
+                        "rgba(58,123,213,0.85)",
+                        "rgba(255,196,0,0.85)",
+                        "rgba(0,210,255,0.85)",
+                        "rgba(255,75,43,0.85)",
+                      ],
+                      borderRadius: 9,
+                      borderSkipped: false,
+                      maxBarThickness: 40,
                     },
-                    backgroundColor: 'rgba(246, 250, 255, 0.95)',
-                    titleColor: '#021bacff',
-                    bodyColor: '#203cdbff',
-                    borderColor: '#0e095fff',
-                    borderWidth: 1,
-                    padding: 8,
-                    caretSize: 8,
+                  ],
+                }}
+                options={{
+                  indexAxis: "y", // vertical bars
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  animation: {
+                    duration: 1200,
+                    easing: "easeOutQuart",
+                    delay: (context) => context.dataIndex * 180,
                   },
-                },
-                scales: {
-                  x: {
-                    display: false, // Hide x axis labels
-                    grid: { display: false, drawBorder: false },
-                  },
-                  y: {
-                    display: true,
-                    grid: { display: false, drawBorder: true },
-                    ticks: {
-                      color: '#3a7bd5',
-                      font: { size: 10, weight: 'bold', family: 'Poppins, Montserrat, Segoe UI, Arial, sans-serif' },
+                  plugins: {
+                    legend: { display: false },
+                    datalabels: {
+                      display: false,
+                    },
+                    tooltip: {
+                      enabled: true,
+                      callbacks: {
+                        label: (ctx) => `${ctx.parsed.x} Records`,
+                      },
+                      backgroundColor: "rgba(246, 250, 255, 0.95)",
+                      titleColor: "#021bacff",
+                      bodyColor: "#203cdbff",
+                      borderColor: "#0e095fff",
+                      borderWidth: 1,
                       padding: 8,
-                    },
-                    afterFit: (axis) => {
-                      axis.width += 30; // Shift y-axis labels 20px to the right
+                      caretSize: 8,
                     },
                   },
-                },
-              }}
-            />
+                  scales: {
+                    x: {
+                      display: false, // Hide x axis labels
+                      grid: { display: false, drawBorder: false },
+                    },
+                    y: {
+                      display: true,
+                      grid: { display: false, drawBorder: false },
+                      ticks: {
+                        color: "#01010aff",
+                        font: {
+                          size: 11,
+                          weight: "bold",
+                          family:
+                            "Poppins, Montserrat, Segoe UI, Arial, sans-serif",
+                        },
+                      },
+                      afterFit: (axis) => {
+                        axis.width += 20; // Shift y-axis labels 20px to the right
+                      },
+                    },
+                  },
+                }}
+              />
+            </div>
           </div>
         </div>
       )}
@@ -231,6 +284,9 @@ const CustomerChart = ({ data, loading, error }) => {
         .main-metric { text-shadow: 0 2px 12px rgba(255, 65, 108, 0.10); }
         .group:hover .main-metric { transform: scale(1.08); }
         canvas { border-radius: 16px; }
+        @media (max-width: 600px) {
+          .main-metric { font-size: 1.3rem !important; }
+        }
       `}</style>
     </div>
   );
