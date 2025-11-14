@@ -1,13 +1,13 @@
 # Set the target directory (defaults to current directory if not provided)
 param (
-    [string]$TargetDir = "C:\Training\Unique_Services_App\src"
+    [string]$TargetDir = "C:\Users\10838442\OneDrive - LTIMindtree\Desktop\Personal\Unique_Services_App\backend\src"
 )
 
 Write-Host "Cleaning Python codebase in: $TargetDir"
 
-# Step 1: Remove unused imports and variables
-Write-Host "Running autoflake..."
-autoflake --in-place --remove-unused-variables --remove-all-unused-imports -r $TargetDir
+# # Step 1: Remove unused imports and variables
+# Write-Host "Running autoflake..."
+# autoflake --in-place --remove-unused-variables --remove-all-unused-imports -r $TargetDir
 
 # Step 2: Sort and organize imports
 Write-Host "Running isort..."

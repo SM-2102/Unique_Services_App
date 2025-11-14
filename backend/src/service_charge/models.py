@@ -1,6 +1,8 @@
 from datetime import date
+
 import sqlalchemy.dialects.postgresql as pg
 from sqlmodel import Column, Field, SQLModel
+
 
 class OW_Service_Charge(SQLModel, table=True):
     __tablename__ = "ow_service_charge"

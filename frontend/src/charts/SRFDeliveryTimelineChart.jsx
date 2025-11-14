@@ -1,119 +1,192 @@
 // SRF vs Delivery Timeline Chart
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
+import {
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+  CartesianGrid,
+} from "recharts";
 
 const SRFDeliveryTimelineChart = ({ data, loading, error }) => {
   const [chartData, setChartData] = useState([]);
-  const [monthlyStats, setMonthlyStats] = useState({});
 
   useEffect(() => {
     if (data?.warranty?.srf_vs_delivery_month_wise_bar_graph) {
-      const timelineData = data.warranty.srf_vs_delivery_month_wise_bar_graph.map(item => {
-        const srfDate = new Date(item.srf_date);
-        const deliveryDate = new Date(item.delivery_date);
-        const daysDiff = Math.ceil((deliveryDate - srfDate) / (1000 * 60 * 60 * 24));
-        
-        return {
-          ...item,
-          daysDifference: daysDiff,
-          srfMonth: srfDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
-          deliveryMonth: deliveryDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
-        };
-      });
-      
-      // Calculate monthly statistics
-      const monthStats = timelineData.reduce((acc, item) => {
-        const month = item.srfMonth;
-        if (!acc[month]) {
-          acc[month] = { count: 0, totalDays: 0, avgDays: 0 };
-        }
-        acc[month].count++;
-        acc[month].totalDays += item.daysDifference;
-        acc[month].avgDays = Math.round(acc[month].totalDays / acc[month].count);
-        return acc;
-      }, {});
-      
+      const timelineData =
+        data.warranty.srf_vs_delivery_month_wise_bar_graph.map((item) => {
+          const srfDate = new Date(item.srf_date);
+          const deliveryDate = new Date(item.delivery_date);
+          const daysDiff = Math.ceil(
+            (deliveryDate - srfDate) / (1000 * 60 * 60 * 24),
+          );
+          return {
+            ...item,
+            daysDifference: daysDiff,
+          };
+        });
       setChartData(timelineData);
-      setMonthlyStats(monthStats);
+      // Debug log
+      console.log("SRFDeliveryTimelineChart: timelineData", timelineData);
+    } else {
+      setChartData([]);
+      // Debug log
+      console.log(
+        "SRFDeliveryTimelineChart: No data found in data.warranty.srf_vs_delivery_month_wise_bar_graph",
+        data,
+      );
     }
   }, [data]);
 
-  if (loading) return <div className="text-center py-4">Loading delivery timeline...</div>;
-  if (error) return <div className="text-center py-4 text-red-500">Error loading timeline data</div>;
-
-  const getStatusColor = (days) => {
-    if (days <= 7) return 'bg-green-500';
-    if (days <= 14) return 'bg-yellow-500';
-    if (days <= 21) return 'bg-orange-500';
-    return 'bg-red-500';
+  // Custom tooltip for recharts
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      const item = payload[0].payload;
+      // Format dates for display as dd-mm-yy
+      const formatDMY = (dateStr) => {
+        if (!dateStr) return "-";
+        const d = new Date(dateStr);
+        if (isNaN(d)) return "-";
+        const day = String(d.getDate()).padStart(2, "0");
+        const month = String(d.getMonth() + 1).padStart(2, "0");
+        const year = String(d.getFullYear()).slice(-2);
+        return `${day}-${month}-${year}`;
+      };
+      const srfDate = formatDMY(item.srf_date);
+      const deliveryDate = formatDMY(item.delivery_date);
+      return (
+        <div
+          className="px-3 py-2 rounded-lg shadow-xl text-xs font-semibold bg-white text-gray-900 border border-gray-200"
+          style={{
+            minWidth: 120,
+            textAlign: "center",
+            letterSpacing: "0.01em",
+          }}
+        >
+          <span className="block text-blue-700 font-bold mb-1">
+            {item.srf_number}
+          </span>
+          <span className="block">
+            Delivered in{" "}
+            <span className="font-bold text-gray-800">
+              {item.daysDifference} days
+            </span>
+          </span>
+          <span className="block mt-1 text-gray-600">
+            SRF Date:{" "}
+            <span className="font-normal text-gray-800">{srfDate}</span>
+          </span>
+          <span className="block text-gray-600">
+            Delivery Date:{" "}
+            <span className="font-normal text-gray-800">{deliveryDate}</span>
+          </span>
+        </div>
+      );
+    }
+    return null;
   };
 
-  const getStatusText = (days) => {
-    if (days <= 7) return 'Fast';
-    if (days <= 14) return 'Normal';
-    if (days <= 21) return 'Slow';
-    return 'Delayed';
+  // Color function for each point
+  const getPointColor = (days) => {
+    if (days <= 7) return "#22c55e"; // green-500
+    if (days <= 14) return "#eab308"; // yellow-500
+    if (days <= 21) return "#f97316"; // orange-500
+    return "#ef4444"; // red-500
   };
+
+  // Fallback UI for loading, error, or empty data
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-40 bg-white rounded-lg shadow-lg">
+        <span className="text-gray-500 text-sm">Loading chart...</span>
+      </div>
+    );
+  }
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-40 bg-white rounded-lg shadow-lg">
+        <span className="text-red-500 text-sm">Error loading chart data.</span>
+      </div>
+    );
+  }
+  if (!chartData || chartData.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-40 bg-white rounded-lg shadow-lg">
+        <span className="text-gray-400 text-sm">No chart data available.</span>
+      </div>
+    );
+  }
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-lg">
-      <h3 className="text-lg font-semibold mb-4 text-gray-800">SRF vs Delivery Timeline</h3>
-      
-      {/* Monthly Summary */}
-      <div className="mb-6">
-        <h4 className="text-md font-medium mb-3 text-gray-700">Monthly Average Processing Days</h4>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-          {Object.entries(monthlyStats).map(([month, stats]) => (
-            <div key={month} className="bg-gray-50 p-3 rounded-lg">
-              <div className="text-sm font-medium text-gray-600">{month}</div>
-              <div className="text-lg font-bold text-blue-600">{stats.avgDays} days</div>
-              <div className="text-xs text-gray-500">{stats.count} records</div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Individual Records */}
-      <div className="space-y-2 max-h-96 overflow-y-auto">
-        <h4 className="text-md font-medium mb-2 text-gray-700">Recent Records</h4>
-        {chartData.slice(-10).map((item, index) => (
-          <div key={`${item.srf_number}-${index}`} className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50">
-            <div className="flex-1">
-              <div className="font-medium text-sm">{item.srf_number}</div>
-              <div className="text-xs text-gray-500">
-                SRF: {new Date(item.srf_date).toLocaleDateString()} → 
-                Delivery: {new Date(item.delivery_date).toLocaleDateString()}
-              </div>
-            </div>
-            
-            <div className="flex items-center space-x-2">
-              <span className="text-sm font-medium">{item.daysDifference} days</span>
-              <div className={`w-3 h-3 rounded-full ${getStatusColor(item.daysDifference)}`}></div>
-              <span className="text-xs text-gray-600">{getStatusText(item.daysDifference)}</span>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Legend */}
-      <div className="mt-4 pt-4 border-t">
-        <div className="flex justify-center space-x-4 text-xs">
-          <div className="flex items-center">
-            <div className="w-3 h-3 bg-green-500 rounded-full mr-1"></div>
-            <span>≤7 days (Fast)</span>
-          </div>
-          <div className="flex items-center">
-            <div className="w-3 h-3 bg-yellow-500 rounded-full mr-1"></div>
-            <span>8-14 days (Normal)</span>
-          </div>
-          <div className="flex items-center">
-            <div className="w-3 h-3 bg-orange-500 rounded-full mr-1"></div>
-            <span>15-21 days (Slow)</span>
-          </div>
-          <div className="flex items-center">
-            <div className="w-3 h-3 bg-red-500 rounded-full mr-1"></div>
-            <span>&gt;21 days (Delayed)</span>
-          </div>
-        </div>
+    <div
+      className="bg-[#fff7e6] p-6"
+      style={{
+        paddingLeft: 0,
+        marginLeft: 0,
+        paddingTop: 0,
+        paddingBottom: 0,
+        minWidth: 210, // decreased width
+        minHeight: 180, // increased height
+        width: "50%", // decreased width
+        height: "70px", // increased height
+        boxSizing: "border-box",
+      }}
+    >
+      <div
+        className="min-w-0 w-full"
+        style={{
+          width: "100%",
+          maxWidth: "100%",
+          marginTop: 10,
+          marginLeft: 0,
+          paddingLeft: 0,
+        }}
+      >
+        <ResponsiveContainer
+          width="90%"
+          height={210}
+          minWidth={200}
+          minHeight={100}
+        >
+          <LineChart
+            data={chartData}
+            margin={{ top: 10, right: 3, left: 0, bottom: 40 }}
+          >
+            <YAxis
+              tick={{ fontSize: 12 }}
+              allowDataOverflow={true}
+              width={22}
+              domain={[0, (dataMax) => Math.ceil((dataMax || 10) / 5) * 5]}
+            />
+            <Tooltip content={<CustomTooltip />} />
+            <Line
+              type="monotone"
+              dataKey="daysDifference"
+              stroke="#6366f1"
+              strokeWidth={2.5}
+              dot={({ cx, cy, payload }) => (
+                <circle
+                  cx={cx}
+                  cy={cy}
+                  r={4}
+                  fill={getPointColor(payload.daysDifference)}
+                  stroke="#fff"
+                  strokeWidth={1}
+                />
+              )}
+              activeDot={{
+                r: 8,
+                stroke: "#6366f1",
+                strokeWidth: 2,
+                fill: "#fff",
+              }}
+              isAnimationActive={true}
+            />
+          </LineChart>
+        </ResponsiveContainer>
       </div>
     </div>
   );

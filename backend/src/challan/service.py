@@ -1,7 +1,10 @@
 from datetime import date, timedelta
-from src.challan.models import Challan
-from sqlalchemy import select , func, case
+
+from sqlalchemy import case, func, select
 from sqlalchemy.ext.asyncio.session import AsyncSession
+
+from src.challan.models import Challan
+
 
 class ChallanService:
 
@@ -11,10 +14,19 @@ class ChallanService:
         return result.scalar()
 
     async def number_of_items(self, session: AsyncSession):
-        statement = select(func.sum(Challan.qty1) + func.sum(Challan.qty2) + func.sum(Challan.qty3) + func.sum(Challan.qty4) + func.sum(Challan.qty5) + func.sum(Challan.qty6) + func.sum(Challan.qty7) + func.sum(Challan.qty8)).select_from(Challan)
+        statement = select(
+            func.coalesce(func.sum(Challan.qty1), 0)
+            + func.coalesce(func.sum(Challan.qty2), 0)
+            + func.coalesce(func.sum(Challan.qty3), 0)
+            + func.coalesce(func.sum(Challan.qty4), 0)
+            + func.coalesce(func.sum(Challan.qty5), 0)
+            + func.coalesce(func.sum(Challan.qty6), 0)
+            + func.coalesce(func.sum(Challan.qty7), 0)
+            + func.coalesce(func.sum(Challan.qty8), 0)
+        )
         result = await session.execute(statement)
         return result.scalar()
-    
+
     async def challan_counts_rolling_months(self, session: AsyncSession):
         cutoff_date = date.today().replace(day=1) - timedelta(days=150)
 
@@ -29,13 +41,15 @@ class ChallanService:
             + func.coalesce(Challan.qty8, 0)
         )
 
-        month_expr = func.to_char(func.date_trunc('month', Challan.challan_date), 'YYYY-MM')
+        month_expr = func.to_char(
+            func.date_trunc("month", Challan.challan_date), "YYYY-MM"
+        )
 
         statement = (
             select(
-                month_expr.label('month'),
-                func.count().label('total_challans'),
-                func.coalesce(func.sum(total_qty), 0).label('total_quantity')
+                month_expr.label("month"),
+                func.count().label("total_challans"),
+                func.coalesce(func.sum(total_qty), 0).label("total_quantity"),
             )
             .where(Challan.challan_date >= cutoff_date)
             .group_by(month_expr)

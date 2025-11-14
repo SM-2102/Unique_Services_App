@@ -1,6 +1,6 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { FiAlertTriangle } from 'react-icons/fi';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { FiAlertTriangle } from "react-icons/fi";
 
 const PageNotAvailable = () => {
   const navigate = useNavigate();
@@ -12,11 +12,25 @@ const PageNotAvailable = () => {
             <FiAlertTriangle className="w-7 h-7" />
           </div>
         </div>
-        <h1 className="text-2xl font-semibold text-gray-800 mb-2">Page not available</h1>
-        <p className="text-gray-500 mb-6">This feature is not yet implemented. We're working on it.</p>
+        <h1 className="text-2xl font-semibold text-gray-800 mb-2">
+          Page not available
+        </h1>
+        <p className="text-gray-500 mb-6">
+          This feature is not yet implemented. We're working on it.
+        </p>
         <div className="flex justify-center gap-3">
-          <button onClick={() => navigate(-1)} className="px-4 py-2 rounded bg-gray-100 text-gray-700 hover:bg-gray-200">Go back</button>
-          <button onClick={() => navigate('/')} className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700">Go Home</button>
+          <button
+            onClick={() => navigate(-1)}
+            className="px-4 py-2 rounded bg-gray-100 text-gray-700 hover:bg-gray-200"
+          >
+            Go back
+          </button>
+          <button
+            onClick={() => navigate("/")}
+            className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+          >
+            Go Home
+          </button>
         </div>
       </div>
     </div>

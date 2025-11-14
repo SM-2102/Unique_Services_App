@@ -6,8 +6,7 @@ from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from src.auth.models import User
 from src.db.db import get_session
-
-from src.db.redis import jti_in_blocklist
+from src.db.jti import jti_in_blocklist
 from src.exceptions import (
     AccessDenied,
     AccessTokenRequired,
@@ -22,21 +21,25 @@ user_service = UserService()
 
 
 class TokenBearer(HTTPBearer):
-
     def __init__(self, auto_error: bool = True):
         super().__init__(auto_error=auto_error)
 
     async def __call__(self, request: Request) -> dict:
-        creds = await super().__call__(request)
-        token = creds.credentials
+        # Try to get token from Authorization header first
+        auth_header = request.headers.get("authorization")
+        token = None
+        if auth_header and auth_header.lower().startswith("bearer "):
+            token = auth_header.split(" ", 1)[1]
+        # If not present, try to get from cookie
+        if not token:
+            token = request.cookies.get("access_token")
+        if not token:
+            raise InvalidToken()
         token_data = decode_user_token(token)
-
         if not self.token_valid(token):
             raise InvalidToken()
-
         if await jti_in_blocklist(token_data["jti"]):
             raise InvalidToken()
-
         self.verify_token_data(token_data)
         return token_data
 
