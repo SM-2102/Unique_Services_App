@@ -41,22 +41,22 @@ role_checker = Depends(RoleChecker(allowed_roles=["ADMIN"]))
 # """
 
 
-# @auth_router.post(
-#     "/create_user", status_code=status.HTTP_201_CREATED,
-#     # dependencies=[role_checker]
-# )
-# async def create_user(
-#     user: UserCreate,
-#     session: AsyncSession = Depends(get_session),
-#     # _=Depends(access_token_bearer),
-# ):
-#     user_exists = await user_service.user_exists(user.username, session)
-#     if user_exists:
-#         raise UserAlreadyExists()
-#     created_user = await user_service.create_user(session, user)
-#     return JSONResponse(
-#         content={"message": f"User {created_user.username} created successfully."}
-#     )
+@auth_router.post(
+    "/create_user", status_code=status.HTTP_201_CREATED,
+    # dependencies=[role_checker]
+)
+async def create_user(
+    user: UserCreate,
+    session: AsyncSession = Depends(get_session),
+    # _=Depends(access_token_bearer),
+):
+    user_exists = await user_service.user_exists(user.username, session)
+    if user_exists:
+        raise UserAlreadyExists()
+    created_user = await user_service.create_user(session, user)
+    return JSONResponse(
+        content={"message": f"User {created_user.username} created successfully."}
+    )
 
 
 # """
@@ -77,7 +77,6 @@ async def login(user: UserLogin, session: AsyncSession = Depends(get_session)):
     response = JSONResponse(
         content={
             "message": f"User {valid_user.username} logged in successfully.",
-            "user": {"username": valid_user.username, "role": valid_user.role},
         }
     )
     # Set the access token as an HTTP-only cookie
