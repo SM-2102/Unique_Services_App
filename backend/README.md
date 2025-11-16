@@ -4,7 +4,10 @@
 - Do NOT copy the `middleware/` directory
 - Do NOT copy the `migrations/` folder
 - __init__.py must be copied to main.py
-- src imports has to handled.
+- Remove `.src` from all files
+- Change ` .exceptions` to `exceptions`
+- In `main.py` change the `middleware` import
+- `samesite` of `set.cookie` has to be set `none`
 
 ### Alembic Database Migrations
 1. Initialize Alembic (run once):

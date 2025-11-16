@@ -5,8 +5,15 @@
 
 ## To Do List
 
-- Out of Warranty Card
-- Role based Frontend Side
+- CreateUser - Same Name registered (case sensitive)
+- CreateUser - Toast Message
+- CreateUser - Change Form Validation UserName
+- DeleteUser - Show List
+- DeleteUser - middleware capitalization
+- Add Active char(1) in users
+- Make ShowUsers Component
+- Show All Users Admin - Only Active (Backend)
+- Show All Users User - Only Standard User
 
 ---
 
@@ -19,10 +26,11 @@
 - [ ] **CreateUser** – Create User [ADMIN]
 - [ ] **DeleteUser** – Delete User [ADMIN]
 - [ ] **ViewAllUsers** – View All Users [ADMIN]
+- [ ] **ViewStandardUsers** - View Standard Users
 - [ ] **PasswordChange** – Change password
 
 ### Dashboard Module
-- [ ] **MenuDashboard** – Main dashboard for menu navigation
+- [x] **MenuDashboard** – Main dashboard for menu navigation
 - [x] **PageNotFound** – 404 error page
 - [x] **PageNotAvailable** – Maintenance/feature unavailable page
 
@@ -32,18 +40,19 @@
 ## Backend Routes Progress
 
 ### Auth Module
-- [x] **/auth/login**
+- [ ] **/auth/login** - Check if active
 - [x] **/auth/logout**
 - [x] **/auth/me**
 
 ### User Module
-- [ ] **/auth/users** - [ADMIN]
-- [ ] **/auth/create_user** - [ADMIN]
-- [ ] **/auth/delete_user** - [ADMIN]
-- [ ] **/auth/reset_password**
+- [ ] **/user/all_users** - [ADMIN]
+- [ ] **/user/standard_users** 
+- [ ] **/user/create_user** - [ADMIN]
+- [ ] **/user/delete_user** - [ADMIN]
+- [x] **/user/reset_password**
 
 ### Menu Module
-- [ ] **/menu/dashboard**
+- [x] **/menu/dashboard**
 
 ---
 

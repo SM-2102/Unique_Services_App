@@ -1,8 +1,8 @@
 """Service Charge
 
-Revision ID: 2d5acc735de5
-Revises: fcdc339d04e2
-Create Date: 2025-11-16 03:42:20.390907
+Revision ID: 885917deb754
+Revises: 
+Create Date: 2025-11-16 22:58:42.110272
 
 """
 from typing import Sequence, Union
@@ -13,8 +13,8 @@ import sqlmodel
 
 
 # revision identifiers, used by Alembic.
-revision: str = '2d5acc735de5'
-down_revision: Union[str, Sequence[str], None] = 'fcdc339d04e2'
+revision: str = '885917deb754'
+down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
