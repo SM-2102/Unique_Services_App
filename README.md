@@ -14,6 +14,8 @@
 
 ### Auth Module
 - [x] **LoginPage** – User authentication
+
+### User Module
 - [ ] **CreateUser** – Create User [ADMIN]
 - [ ] **DeleteUser** – Delete User [ADMIN]
 - [ ] **ViewAllUsers** – View All Users [ADMIN]
@@ -32,14 +34,34 @@
 ### Auth Module
 - [x] **/auth/login**
 - [x] **/auth/logout**
+- [x] **/auth/me**
+
+### User Module
 - [ ] **/auth/users** - [ADMIN]
 - [ ] **/auth/create_user** - [ADMIN]
 - [ ] **/auth/delete_user** - [ADMIN]
 - [ ] **/auth/reset_password**
-- [x] **/auth/me**
 
 ### Menu Module
 - [ ] **/menu/dashboard**
+
+---
+
+## Application Development Progress
+
+### Auth Module
+- [x] **Authorization**
+- [ ] **Database Schema** - needs refinement - Settlement
+- [x] **Initial Deployment**
+- [ ] **Login & Menu**
+- [ ] **User**
+- [ ] **Master**
+- [ ] **Retail**
+- [ ] **Market**
+- [ ] **Challan**
+- [ ] **Warranty**
+- [ ] **Out of Warranty**
+- [ ] **Final Deployment**
 
 ---
 
@@ -64,5 +86,6 @@ Create JWT Token - `import secrets` and `secrets.token_hex(16)`
 ```powershell
 npx prettier --write .
 ```
+
 
 
