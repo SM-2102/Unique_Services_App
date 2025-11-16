@@ -17,7 +17,7 @@ def capitalize_values(obj):
 
 class CapitalizeJSONMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
-        excluded_paths = ["/auth/login", "/auth/create_user", "/auth/reset_password"]
+        excluded_paths = ["/auth/login", "/user/create_user", "/user/reset_password"]
 
         if request.url.path in excluded_paths:
             return await call_next(request)

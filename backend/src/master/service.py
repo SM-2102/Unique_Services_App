@@ -83,28 +83,3 @@ class MasterService:
         await session.refresh(existing_master)
         return existing_master
 
-    async def number_of_masters(self, session: AsyncSession):
-        statement = select(func.count(Master.code))
-        result = await session.execute(statement)
-        return result.scalar()
-
-    async def top_customers(self, session: AsyncSession):
-        select_statement = (
-            select(Master.code),
-            select(Retail.code),
-            select(Challan.code),
-            select(Market.code),
-            select(Warranty.code),
-            select(OutOfWarranty.code),
-        )
-        combined_cte = union_all(*select_statement).cte("combined_cte")
-        statement = (
-            select(Master.name, func.count().label("total_count"))
-            .join(combined_cte, Master.code == combined_cte.c.code)
-            .group_by(Master.name)
-            .order_by(func.count().desc())
-            .limit(5)
-        )
-        result = await session.execute(statement)
-        top_customers = result.all()
-        return {row.name: row.total_count for row in top_customers}

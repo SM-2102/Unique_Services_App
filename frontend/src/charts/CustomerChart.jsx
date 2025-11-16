@@ -109,7 +109,6 @@ const CustomerChart = ({ data, loading, error }) => {
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center">
-      {/* Icon and Main Metric */}
       <div
         className="flex flex-row flex-wrap items-end group transition-transform duration-200 hover:scale-105 ml-0 w-full max-w-[700px] px-2"
         style={{ minWidth: 0 }}

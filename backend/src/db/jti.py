@@ -5,7 +5,7 @@ from sqlalchemy.future import select
 from src.db.db import get_session
 from src.db.models import BlockedJTI
 
-JTI_EXPIRY = 3600  # seconds
+JTI_EXPIRY = 3600 # seconds
 
 
 async def add_jti_to_blocklist(jti: str) -> None:

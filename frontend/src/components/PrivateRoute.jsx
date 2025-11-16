@@ -2,8 +2,14 @@ import React from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
-export default function PrivateRoute({ children }) {
-  const { isAuthenticated, loading } = useAuth();
+/**
+ * PrivateRoute with optional role-based access
+ * @param {object} props
+ * @param {React.ReactNode} props.children
+ * @param {string|string[]} [props.requiredRole] - Role or roles required to access
+ */
+export default function PrivateRoute({ children, requiredRole }) {
+  const { isAuthenticated, loading, user } = useAuth();
 
   if (loading || isAuthenticated === null) {
     // Optionally, show a loading spinner
@@ -14,6 +20,14 @@ export default function PrivateRoute({ children }) {
 
   if (!isAuthenticated) {
     return <Navigate to="/" replace />;
+  }
+
+  if (requiredRole) {
+    const roles = Array.isArray(requiredRole) ? requiredRole : [requiredRole];
+    if (!user || !roles.includes(user.role)) {
+      // Optionally, redirect to dashboard or show unauthorized
+      return <Navigate to="/dashboard" replace />;
+    }
   }
 
   return children;

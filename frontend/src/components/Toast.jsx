@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 
+
 /**
  * Toast component
- * @param {string} message - The message to display
+ * @param {string|object} message - The message to display, or an object with { message, resolution }
  * @param {string} type - 'error' | 'success' | 'info' | 'warning'
  * @param {number} duration - Duration in ms (default: 1500)
  * @param {function} onClose - Callback when toast closes
@@ -100,12 +101,39 @@ const Toast = ({ message, type = "info", duration = 1500, onClose }) => {
   };
   const style = typeStyles[type] || typeStyles.info;
 
+  // Support message as string or { message, resolution }
+  let mainMsg = "";
+  let resolution = "";
+  if (typeof message === "object" && message !== null) {
+    mainMsg = message.message || "";
+    resolution = message.resolution || "";
+  } else {
+    mainMsg = message;
+  }
+
   return (
     <div
-      className={`fixed top-6 left-1/2 transform -translate-x-1/2 z-50 min-w-[260px] max-w-xs px-4 py-3 rounded-lg shadow-lg flex items-center border-2 ${style.bg} ${style.border} animate-fade-in`}
+      className={`fixed top-6 left-1/2 transform -translate-x-1/2 z-50 min-w-[260px] max-w-xs px-4 py-3 rounded-lg shadow-lg flex items-start border-2 ${style.bg} ${style.border} animate-fade-in`}
       style={{ pointerEvents: "none" }}
     >
-      <span className="text-white font-semibold flex-1">{message}</span>
+      <div className="flex-1">
+        {Array.isArray(mainMsg) ? (
+          <>
+            {mainMsg.map((msg, idx) => (
+              <span key={idx} className="text-white font-semibold block text-base mb-0.5">
+                {msg}
+              </span>
+            ))}
+          </>
+        ) : (
+          <span className="text-white font-semibold block text-base mb-0.5">{mainMsg}</span>
+        )}
+        {resolution && (
+          <span className="text-white text-xs opacity-90 block mt-0.5">
+            {resolution}
+          </span>
+        )}
+      </div>
       {/* Progress bar animation */}
       <div className="absolute left-0 bottom-0 h-1 w-full">
         <div

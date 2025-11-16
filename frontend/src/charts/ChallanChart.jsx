@@ -145,9 +145,6 @@ const ChallanChart = ({ data, loading, error }) => {
   const itemsTarget = data?.challan?.number_of_items || 0;
   const months = data?.challan?.challan_rolling_months || [];
   
-  console.log("Challan Data:", data?.challan);
-  console.log("Months Data:", months);
-
   // Animation for challan count
   useEffect(() => {
     if (target > 0) {
@@ -207,7 +204,7 @@ const ChallanChart = ({ data, loading, error }) => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[120px]">
-        <SpinnerLoading text="Loading Customer Data ..." />
+        <SpinnerLoading text="Loading Challan Data ..." />
       </div>
     );
   }
@@ -248,11 +245,11 @@ const ChallanChart = ({ data, loading, error }) => {
       <div
         style={{
           background: "#faf6c0ff",
-          boxShadow: "0 2px 16px rgba(102,126,234,0.08)",
           margin: "0 0.5rem",
+          minWidth: 0, // allow shrinking
         }}
       >
-        <ResponsiveContainer width="100%" height={150}>
+        <ResponsiveContainer width="100%" height={140}>
           <ComposedChart data={months} margin={{ right: 20, top: 10 }}>
             <XAxis
               dataKey="month"
@@ -277,8 +274,6 @@ const ChallanChart = ({ data, loading, error }) => {
               yAxisId="right"
               dataKey="total_challans"
               name="Challans"
-              barSize={28}
-              maxBarSize={60}
               fill="#667eea"
               radius={[8, 8, 0, 0]}
             />
@@ -289,8 +284,8 @@ const ChallanChart = ({ data, loading, error }) => {
               name="Quantity"
               stroke="#764ba2"
               strokeWidth={3}
-              dot={{ r: 6, fill: "#fff", stroke: "#764ba2", strokeWidth: 2 }}
-              activeDot={{ r: 8, fill: "#764ba2" }}
+              dot={{ r: 4, fill: "#fff", stroke: "#764ba2", strokeWidth: 2 }}
+              activeDot={{ r: 6, fill: "#764ba2" }}
             />
           </ComposedChart>
         </ResponsiveContainer>

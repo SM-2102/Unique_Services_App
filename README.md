@@ -65,27 +65,6 @@
 
 ---
 
-### Alembic Database Migrations
-1. Initialize Alembic (run once):
-	```powershell
-	alembic init migrations
-	```
-2. Create a new migration revision:
-	```powershell
-	alembic revision --autogenerate -m "Initial migration"
-	```
-3. Apply migrations:
-	```powershell
-	alembic upgrade head
-	```
-
-### JWT Token Usage
-Create JWT Token - `import secrets` and `secrets.token_hex(16)`
-
-### Format Frontend Code
-```powershell
-npx prettier --write .
-```
 
 
 

@@ -6,7 +6,7 @@ import {
   FaUserMinus,
   FaUsers,
 } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import API_ENDPOINTS from "../config/api";
 import SpinnerLoading from "./SpinnerLoading";
 
@@ -14,6 +14,7 @@ const UserMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -30,6 +31,11 @@ const UserMenu = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isOpen]);
+
+  // Close menu on route change
+  useEffect(() => {
+    setIsOpen(false);
+  }, [location.pathname]);
 
   // Real user data from API
   const [user, setUser] = useState(null);
@@ -66,32 +72,32 @@ const UserMenu = () => {
   };
 
   const handleChangePassword = () => {
-    // Add change password logic here
+    navigate("/change-password");
   };
 
   const handleCreateUser = () => {
-    navigate("/not-available"); // Update this when the create user page is ready
+    navigate("/create-user"); // Update this when the create user page is ready
   };
 
   const handleDeleteUser = () => {
-    navigate("/not-available"); // Update this when the delete user page is ready
+    navigate("/delete-user"); // Update this when the delete user page is ready
   };
 
   const handleShowUsers = () => {
-    navigate("/not-available"); // Update this when the user list page is ready
+    navigate("/show-users");
   };
 
   return (
     <div className="relative" ref={menuRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-800 hover:bg-blue-700 text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-blue-700 text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
       >
         <FaUser className="w-5 h-5" />
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-64 rounded-lg shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5">
+        <div className="absolute left-1/2 -translate-x-1/2 mt-2 w-56 rounded-lg shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5">
           <div className="px-4 py-3 border-b border-gray-100">
             {userLoading ? (
               <SpinnerLoading text="Loading User Data" />

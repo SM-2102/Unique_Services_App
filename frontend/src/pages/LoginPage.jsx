@@ -28,7 +28,10 @@ function LoginPage() {
       await checkAuth();
       navigate("/dashboard");
     } else {
-      setError(result.message || "Login failed");
+      setError({
+        message: result.message || "Login failed",
+        resolution: result.resolution || ""
+      });
       setShowToast(true);
     }
   };
@@ -37,7 +40,7 @@ function LoginPage() {
     <>
       {showToast && (
         <Toast
-          message="Invalid Credentials"
+          message={error}
           type="error"
           onClose={() => setShowToast(false)}
         />

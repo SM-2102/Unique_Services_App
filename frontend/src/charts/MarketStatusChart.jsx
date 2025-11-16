@@ -130,9 +130,9 @@ const MarketStatusChart = ({ data, loading, error }) => {
               >
                 {/* Stacked vertical bar: green bottom, red top */}
                 <div className="relative flex flex-col-reverse h-35 w-9 rounded overflow-hidden border border-gray-200 bg-gray-100">
-                  {/* Completed (Y) - green bottom */}
+                  {/* Completed (Y) - purple bottom */}
                   <div
-                    className="bg-green-500 w-full transition-all duration-700 cursor-pointer relative"
+                    className="bg-purple-500 w-full transition-all duration-700 cursor-pointer relative"
                     style={{
                       height: barState.green ? `${yPercentage}%` : 0,
                       transitionDelay: "0ms",
@@ -147,9 +147,9 @@ const MarketStatusChart = ({ data, loading, error }) => {
                     }
                     onMouseOut={handleMouseOut}
                   ></div>
-                  {/* Pending (N) - red top */}
+                  {/* Pending (N) - yellow top */}
                   <div
-                    className="bg-red-500 w-full transition-all duration-700 cursor-pointer relative"
+                    className="bg-yellow-400 w-full transition-all duration-700 cursor-pointer relative"
                     style={{
                       height: barState.red ? `${nPercentage}%` : 0,
                       transitionDelay: "0ms",

@@ -110,7 +110,7 @@ def register_exceptions(app: FastAPI):
             status_code=status.HTTP_401_UNAUTHORIZED,
             initial_detail={
                 "message": "Invalid Credentials",
-                "resolution": "Please check your username and password",
+                "resolution": "Please check your password",
                 "error_code": "invalid_credentials",
             },
         ),

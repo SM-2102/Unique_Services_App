@@ -14,10 +14,10 @@ from src.exceptions import (
     RefreshTokenRequired,
 )
 
-from .service import UserService
+from .service import AuthService
 from .utils import decode_user_token
 
-user_service = UserService()
+auth_service = AuthService()
 
 
 class TokenBearer(HTTPBearer):
@@ -70,7 +70,7 @@ async def get_current_user(
     session: AsyncSession = Depends(get_session),
 ):
     username = token_data["user"]["username"]
-    return await user_service.get_user_by_username(username, session)
+    return await auth_service.get_user_by_username(username, session)
 
 
 class RoleChecker:

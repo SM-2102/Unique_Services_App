@@ -11,12 +11,13 @@ import {
 import { MdOutlineBuild } from "react-icons/md";
 import CustomerChart from "../charts/CustomerChart";
 import ChallanChart from "../charts/ChallanChart";
-import DivisionDonutChart from "../charts/DivisionDonutChart";
-import SettledPieChart from "../charts/SettledPieChart";
 import MarketStatusChart from "../charts/MarketStatusChart";
 import WarrantyStatusChart from "../charts/WarrantyStatusChart";
 import OutOfWarrantyStatusChart from "../charts/OutOfWarrantyStatusChart";
-import SRFDeliveryTimelineChart from "../charts/SRFDeliveryTimelineChart";
+import OutOfWarrantyTimeline from "../charts/OutOfWarrantyTimeline";
+import WarrantySRFDeliveryTimelineChart from "../charts/WarrantySRFDeliveryTimelineChart";
+import RetailDivisionDonutChart from "../charts/RetailDivisionDonutChart";
+import RetailSettledPieChart from "../charts/RetailSettledPieChart";
 import { useDashboardData } from "../hooks/useDashboardData";
 import SpinnerLoading from "../components/SpinnerLoading";
 
@@ -141,10 +142,10 @@ const MenuDashboard = () => {
                 ) : (
                   <>
                     <div className="w-full md:px-0">
-                      <DivisionDonutChart data={data} />
+                      <RetailDivisionDonutChart data={data} />
                     </div>
                     <div className="w-full md:px-0">
-                      <SettledPieChart data={data} />
+                      <RetailSettledPieChart data={data} />
                     </div>
                   </>
                 )}
@@ -171,11 +172,33 @@ const MenuDashboard = () => {
                   </div>
                 ) : (
                   <>
-                    <div className="w-full md:px-0">
+                    <div className="w-full md:w-2/5 md:pr-0 md:px-0">
                       <WarrantyStatusChart data={data} />
                     </div>
-                    <div className="w-full md:px-0">
-                      <SRFDeliveryTimelineChart data={data} />
+                    <div className="w-full md:w-3/5 md:pl-0 md:px-0">
+                      <WarrantySRFDeliveryTimelineChart data={data} />
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+            {key === "out_of_warranty" && (
+              <div className="flex flex-col md:flex-row gap-0 items-start justify-start w-full">
+                {loading ? (
+                  <div className="w-full flex justify-center items-center">
+                    <SpinnerLoading text="Loading Out of Warranty Data ..." />
+                  </div>
+                ) : error ? (
+                  <div className="w-full flex justify-center items-center">
+                    <SpinnerLoading text={`Error Loading ...`} />
+                  </div>  
+                ) : (
+                  <>
+                    <div className="w-full md:w-2/3 md:pr-0 md:px-0">
+                      <OutOfWarrantyTimeline data={data} />
+                    </div>
+                    <div className="w-full md:w-1/3 md:pl-0 md:px-0">
+                      <OutOfWarrantyStatusChart data={data} />
                     </div>
                   </>
                 )}
