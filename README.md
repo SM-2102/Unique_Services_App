@@ -5,16 +5,8 @@
 
 ## To Do List
 
-- CreateUser - Same Name registered (case sensitive)
-- CreateUser - Toast Message
-- CreateUser - Change Form Validation UserName
-- DeleteUser - Show List
-- DeleteUser - middleware capitalization
-- Add Active char(1) in users
-- Make ShowUsers Component
-- Show All Users Admin - Only Active (Backend)
-- Show All Users User - Only Standard User
-
+- Master
+  
 ---
 
 ## Frontend Pages Progress
@@ -23,16 +15,20 @@
 - [x] **LoginPage** – User authentication
 
 ### User Module
-- [ ] **CreateUser** – Create User [ADMIN]
-- [ ] **DeleteUser** – Delete User [ADMIN]
-- [ ] **ViewAllUsers** – View All Users [ADMIN]
-- [ ] **ViewStandardUsers** - View Standard Users
-- [ ] **PasswordChange** – Change password
+- [x] **CreateUserPage** – Create User [ADMIN]
+- [x] **DeleteUserPage** – Delete User [ADMIN]
+- [x] **ShowAllUsersPage** – View All Users [ADMIN]
+- [x] **ShowStandardUsersPage** - View Standard Users
+- [x] **ChangePasswordPage** – Change password
 
 ### Dashboard Module
-- [x] **MenuDashboard** – Main dashboard for menu navigation
+- [x] **MenuDashboardPage** – Main dashboard for menu navigation
 - [x] **PageNotFound** – 404 error page
 - [x] **PageNotAvailable** – Maintenance/feature unavailable page
+
+### Master Module
+- [ ] **MasterCreate** - Create Master record
+- [ ] **MasterUpdate** - Update Master record
 
 ---
 
@@ -40,30 +36,38 @@
 ## Backend Routes Progress
 
 ### Auth Module
-- [ ] **/auth/login** - Check if active
+- [x] **/auth/login**
 - [x] **/auth/logout**
 - [x] **/auth/me**
 
 ### User Module
-- [ ] **/user/all_users** - [ADMIN]
-- [ ] **/user/standard_users** 
-- [ ] **/user/create_user** - [ADMIN]
-- [ ] **/user/delete_user** - [ADMIN]
+- [x] **/user/all_users** - [ADMIN]
+- [x] **/user/standard_users** 
+- [x] **/user/create_user** - [ADMIN]
+- [x] **/user/delete_user** - [ADMIN]
 - [x] **/user/reset_password**
 
 ### Menu Module
 - [x] **/menu/dashboard**
 
+### Master Module
+- [ ] **/master/create**
+- [ ] **/master/next_code**
+- [ ] **/master/check_available** - rewrite backend
+- [ ] **/master/list_names** - router name check
+- [ ] **/master/code** - rewrite backend
+- [ ] **/master/name** - rewrite backend
+- [ ] **patch/{code}**
+
 ---
 
 ## Application Development Progress
 
-### Auth Module
 - [x] **Authorization**
 - [ ] **Database Schema** - needs refinement - Settlement
 - [x] **Initial Deployment**
-- [ ] **Login & Menu**
-- [ ] **User**
+- [x] **Login & Menu**
+- [x] **User**
 - [ ] **Master**
 - [ ] **Retail**
 - [ ] **Market**
@@ -73,6 +77,7 @@
 - [ ] **Final Deployment**
 
 ---
+
 
 
 
