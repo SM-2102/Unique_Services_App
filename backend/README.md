@@ -3,10 +3,11 @@
 - Do NOT copy `config.py`
 - Do NOT copy the `middleware/` directory
 - Do NOT copy the `migrations/` folder
+- Do NOT copy the `db/` folder
 - __init__.py must be copied to main.py
-- Remove `.src` from all files
-- Change ` .exceptions` to `exceptions`
-- In `main.py` change the `middleware` import
+- Remove `src.` from all files
+- In `main.py` change the `.exceptions` import
+- In `main.py` change the `.middleware` import
 - `samesite` of `set.cookie` has to be set `none`
 
 ### Alembic Database Migrations
@@ -24,4 +25,5 @@
 	```
 
 ### JWT Token Usage
+
 Create JWT Token - `import secrets` and `secrets.token_hex(16)`
