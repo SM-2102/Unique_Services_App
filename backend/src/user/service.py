@@ -1,3 +1,4 @@
+from src.exceptions import UserAlreadyExists
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy.future import select
 
@@ -9,7 +10,12 @@ from src.auth.models import User
 class UserService:
 
     async def list_users(self, session: AsyncSession):
-        statement = select(User)
+        statement = select(User).where(User.is_active == 'Y')
+        result = await session.execute(statement)
+        return result.scalars().all()
+    
+    async def list_standard_users(self, session: AsyncSession):
+        statement = select(User).where((User.is_active == 'Y') & (User.role == 'USER'))
         result = await session.execute(statement)
         return result.scalars().all()
 
@@ -18,7 +24,11 @@ class UserService:
         new_user = User(**user_data_dict)
         new_user.password = generate_hash_password(user_data_dict["password"])
         session.add(new_user)
-        await session.commit()
+        try:
+            await session.commit()
+        except:
+            await session.rollback()
+            raise UserAlreadyExists()
         return new_user
 
     async def user_exists(self, username: str, session: AsyncSession) -> bool:
@@ -26,7 +36,7 @@ class UserService:
         return existing_user is not None
     
     async def get_user_by_username(self, username: str, session: AsyncSession):
-        statement = select(User).where(User.username == username)
+        statement = select(User).where((User.username == username) & (User.is_active == 'Y'))
         result = await session.execute(statement)
         return result.scalars().first()
     
@@ -36,7 +46,8 @@ class UserService:
             raise UserNotFound()
         if token["user"]["username"] == username:
             raise CannotDeleteCurrentUser()
-        await session.delete(user_to_delete)
+        user_to_delete.is_active = 'N'
+        session.add(user_to_delete)
         await session.commit()
 
     async def reset_password(

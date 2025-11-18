@@ -7,7 +7,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from src.auth.dependencies import AccessTokenBearer
 from src.db.db import get_session
 from src.exceptions import MasterNotFound
-from src.master.schemas import CreateMaster, MasterResponse, UpdateMaster
+from src.master.schemas import CreateMaster, MasterResponse, UpdateMaster, MasterName, MasterCode
 from src.master.service import MasterService
 
 master_router = APIRouter()
@@ -42,27 +42,13 @@ async def master_next_code(
     return JSONResponse(content={"next_code": next_code})
 
 
-"""
-Check if master name is available.
-"""
-
-
-@master_router.get("/check/{name}", status_code=status.HTTP_200_OK)
-async def check_master_name_available(
-    name: str,
-    session: AsyncSession = Depends(get_session),
-    _=Depends(access_token_bearer),
-):
-    master_available = await master_service.check_master_name_available(name, session)
-    return JSONResponse(content={"available": master_available})
-
 
 """
 List all master names.
 """
 
 
-@master_router.get("/names", response_model=List[str], status_code=status.HTTP_200_OK)
+@master_router.get("/list_names", response_model=List[str], status_code=status.HTTP_200_OK)
 async def list_master_names(
     session: AsyncSession = Depends(get_session), _=Depends(access_token_bearer)
 ):
@@ -75,15 +61,15 @@ Get master details by code.
 """
 
 
-@master_router.get(
-    "/code/{code}", response_model=MasterResponse, status_code=status.HTTP_200_OK
+@master_router.post(
+    "/code", response_model=MasterResponse, status_code=status.HTTP_200_OK
 )
 async def get_master_by_code(
-    code: str,
+    data: MasterCode,
     session: AsyncSession = Depends(get_session),
     _=Depends(access_token_bearer),
 ):
-    master = await master_service.get_master_by_code(code, session)
+    master = await master_service.get_master_by_code(data.code, session)
     return master
 
 
@@ -92,15 +78,15 @@ Get master details by name.
 """
 
 
-@master_router.get(
-    "/name/{name}", response_model=MasterResponse, status_code=status.HTTP_200_OK
+@master_router.post(
+    "/name", response_model=MasterResponse, status_code=status.HTTP_200_OK
 )
 async def get_master_by_name(
-    name: str,
+    data: MasterName,
     session: AsyncSession = Depends(get_session),
     _=Depends(access_token_bearer),
 ):
-    master = await master_service.get_master_by_name(name, session)
+    master = await master_service.get_master_by_name(data.name, session)
     return master
 
 
@@ -109,7 +95,7 @@ Update master details by code if master available.
 """
 
 
-@master_router.patch("/{code}", status_code=status.HTTP_202_ACCEPTED)
+@master_router.patch("/update/{code}", status_code=status.HTTP_202_ACCEPTED)
 async def update_master(
     code: str,
     master: UpdateMaster,

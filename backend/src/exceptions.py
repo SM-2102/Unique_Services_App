@@ -57,6 +57,9 @@ class UserNotFound(BaseException):
 class IncorrectCodeFormat(BaseException):
     """Incorrect Code Format"""
 
+class CannotChangeMasterName(BaseException):
+    """Cannot change the master name once set"""
+
 
 def create_exception_handler(
     status_code: int, initial_detail: Any
@@ -196,6 +199,18 @@ def register_exceptions(app: FastAPI):
                 "message": "Incorrect Code Format",
                 "resolution": "Please provide code in correct format",
                 "error_code": "incorrect_code_format",
+            },
+        ),
+    )
+
+    app.add_exception_handler(
+        CannotChangeMasterName,
+        create_exception_handler(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            initial_detail={
+                "message": "Cannot change the master name",
+                "resolution": "Keep the master name unchanged",
+                "error_code": "cannot_change_master_name",
             },
         ),
     )

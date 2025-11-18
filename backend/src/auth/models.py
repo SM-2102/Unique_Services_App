@@ -11,6 +11,7 @@ class User(SQLModel, table=True):
         sa_column=Column(pg.VARCHAR, nullable=False, server_default="USER")
     )
     phone_number: str = Field(sa_column=Column(pg.VARCHAR, nullable=False))
+    is_active: str = Field(sa_column=Column(pg.VARCHAR(1), nullable=False, default="Y")) 
 
     def __repr__(self):
         return f"<User {self.username}>"

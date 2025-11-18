@@ -26,13 +26,11 @@ class MasterResponse(BaseModel):
     remark: Optional[str]
 
 
-class UpdateMaster(BaseModel):
-    address: Optional[str] = Field(None, max_length=40)
-    city: Optional[str] = Field(None, max_length=20)
-    pin: Optional[str] = Field(None, pattern=r"^\d{6}$")
-    contact1: Optional[str] = Field(
-        None, min_length=10, max_length=10, pattern=r"^\d{10}$"
-    )
-    contact2: Optional[str] = Field(None, pattern=r"^\d{10}$")
-    gst: Optional[str] = Field(None, pattern=r"^[A-Z0-9]{15}$")
-    remark: Optional[str] = Field(None, max_length=50)
+class UpdateMaster(CreateMaster):
+    pass
+
+class MasterCode(BaseModel):
+    code: str
+
+class MasterName(BaseModel):
+    name: str

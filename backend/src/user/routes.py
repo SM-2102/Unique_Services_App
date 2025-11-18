@@ -1,5 +1,5 @@
 from src.exceptions import UserAlreadyExists
-from src.user.schema import UserChangePassword, UserCreate, UserResponse
+from src.user.schema import UserChangePassword, UserCreate, UserResponse, Username
 from src.auth.dependencies import AccessTokenBearer, RoleChecker
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
@@ -54,22 +54,38 @@ async def list_users(
 
 
 """
+List all standard users.
+"""
+
+
+@user_router.get(
+    "/standard_users", status_code=status.HTTP_200_OK, response_model=list[UserResponse],
+)
+async def list_standard_users(
+    session: AsyncSession = Depends(get_session), _=Depends(access_token_bearer),
+):
+    users = await user_service.list_standard_users(session)
+    return users
+
+
+
+"""
 Delete a user by username if the user isnt the current user.
 """
 
 
 @user_router.delete(
-    "/delete_user/{username}",
+    "/delete_user",
     status_code=status.HTTP_200_OK,
     dependencies=[role_checker],
 )
 async def delete_user(
-    username: str,
+    user : Username,
     session: AsyncSession = Depends(get_session),
     token=Depends(access_token_bearer),
 ):
-    await user_service.delete_user(username, session, token)
-    return JSONResponse(content={"message": f"User {username} deleted successfully."})
+    await user_service.delete_user(user.username, session, token)
+    return JSONResponse(content={"message": f"User {user.username} deleted successfully."})
 
 
 """

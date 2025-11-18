@@ -19,6 +19,6 @@ class AuthService:
         raise InvalidCredentials()
 
     async def get_user_by_username(self, username: str, session: AsyncSession):
-        statement = select(User).where(User.username == username)
+        statement = select(User).where((User.username == username) & (User.is_active == 'Y'))
         result = await session.execute(statement)
         return result.scalars().first()

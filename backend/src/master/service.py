@@ -1,12 +1,7 @@
 from sqlalchemy import func, select, union_all
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
-from src.challan.models import Challan
-from src.exceptions import IncorrectCodeFormat, MasterAlreadyExists, MasterNotFound
-from src.market.models import Market
-from src.out_of_warranty.models import OutOfWarranty
-from src.retail.models import Retail
-from src.warranty.models import Warranty
+from src.exceptions import IncorrectCodeFormat, MasterAlreadyExists, MasterNotFound, CannotChangeMasterName
 
 from .models import Master
 from .schemas import CreateMaster, UpdateMaster
@@ -24,7 +19,11 @@ class MasterService:
         master_data_dict["created_by"] = token["user"]["username"]
         new_master = Master(**master_data_dict)
         session.add(new_master)
-        await session.commit()
+        try:
+            await session.commit()
+        except:
+            await session.rollback()
+            raise MasterAlreadyExists()
         return new_master
 
     async def master_next_code(self, session: AsyncSession):
@@ -53,7 +52,10 @@ class MasterService:
         return names
 
     async def get_master_by_code(self, code: str, session: AsyncSession):
-        if not code.startswith("C") or len(code) != 5 or not code[1:].isdigit():
+        #format code to C____
+        if len(code) != 5:
+                code = 'C' + code.zfill(4)
+        if not code.startswith("C") or not code[1:].isdigit():
             raise IncorrectCodeFormat()
         statement = select(Master).where(Master.code == code)
         result = await session.execute(statement)
@@ -76,10 +78,16 @@ class MasterService:
         self, code: str, master: UpdateMaster, session: AsyncSession, token: dict
     ):
         existing_master = await self.get_master_by_code(code, session)
+        if existing_master.name != master.name:
+            raise CannotChangeMasterName()
         for key, value in master.model_dump().items():
             setattr(existing_master, key, value)
         existing_master.updated_by = token["user"]["username"]
-        await session.commit()
+        try:
+            await session.commit()
+        except:
+            await session.rollback()
+            raise MasterAlreadyExists()
         await session.refresh(existing_master)
         return existing_master
 
