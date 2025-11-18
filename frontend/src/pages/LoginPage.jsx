@@ -74,7 +74,16 @@ function LoginPage() {
                 id="username"
                 type="text"
                 value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={(e) => {
+                  let value = e.target.value;
+                  if (value.length > 25) return;
+                  // Capitalize first letter of each word
+                  value = value
+                    .split(' ')
+                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(' ');
+                  setUsername(value);
+                }}
                 className="flex-1 px-3 py-2 rounded-lg border border-gray-300 bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium pr-10"
                 placeholder="Username"
                 autoComplete="username"

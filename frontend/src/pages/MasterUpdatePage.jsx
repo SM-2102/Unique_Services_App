@@ -1,0 +1,460 @@
+import React, { useState, useEffect } from "react";
+import Toast from "../components/Toast";
+import { updateMaster } from "../services/masterUpdate";
+import { searchMasterByCode } from "../services/masterSearch";
+import { fetchMasterNames } from "../services/masterNames";
+import { Typography } from "@mui/material";
+import { FiSearch } from "react-icons/fi";
+
+const initialForm = {
+  code: "",
+  name: "",
+  address: "",
+  city: "",
+  pin: "",
+  contact1: "",
+  contact2: "",
+  gst: "",
+  remark: "",
+  
+};
+// Validation function (copied from MasterCreatePage)
+function validate(form, showContact2) {
+  const errors = {};
+  if (!form.name || form.name.length < 3 || form.name.length > 40) {
+    errors.name = "Customer name is required";
+  }
+  if (!form.address || form.address.length > 40) {
+    errors.address = "Address is required";
+  }
+  if (!form.city || form.city.length > 20) {
+    errors.city = "City is required";
+  }
+  if (form.pin && !/^\d{6}$/.test(form.pin)) {
+    errors.pin = "PIN must be 6 digits";
+  }
+  if (!form.contact1 || !/^\d{10}$/.test(form.contact1)) {
+    errors.contact1 = "Contact 1 must be 10 digits";
+  }
+  if (showContact2 && form.contact2 && !/^\d{10}$/.test(form.contact2)) {
+    errors.contact2 = "Contact 2 must be 10 digits";
+  }
+  if (form.gst && !/^[A-Z0-9]{15}$/.test(form.gst)) {
+    errors.gst = "GST must be 15 characters";
+  }
+  return errors;
+}
+
+const MasterUpdatePage = () => {
+  const [form, setForm] = useState(initialForm);
+  const [masterNames, setMasterNames] = useState([]);
+  const [nameSuggestions, setNameSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  useEffect(() => {
+    let mounted = true;
+    fetchMasterNames()
+      .then((data) => {
+        if (mounted && Array.isArray(data)) setMasterNames(data);
+      })
+      .catch(() => {
+        setMasterNames([]);
+      });
+    return () => { mounted = false; };
+  }, []);
+  const [errors, setErrors] = useState({});
+  const [submitting, setSubmitting] = useState(false);
+  const [toast, setToast] = useState({ show: false, message: "", type: "info" });
+  const [showContact2, setShowContact2] = useState(false);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    let newValue = value;
+    // Enforce max character limits per field
+    switch (name) {
+      case "name":
+        if (value.length > 40) return;
+        // Capitalize first letter of each word
+        newValue = value
+          .split(' ')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ');
+        // Autocomplete: filter suggestions as user types
+        if (newValue.length > 0) {
+          const filtered = masterNames.filter(n => n.toLowerCase().startsWith(newValue.toLowerCase()));
+          setNameSuggestions(filtered);
+          setShowSuggestions(filtered.length > 0);
+        } else {
+          setShowSuggestions(false);
+        }
+        break;
+      case "address":
+        if (value.length > 40) return;
+        break;
+      case "city":
+        if (value.length > 20) return;
+        break;
+      case "pin":
+        if (value.length > 6) return;
+        break;
+      case "contact1":
+      case "contact2":
+        if (value.length > 10) return;
+        break;
+      case "gst":
+        if (value.length > 15) return;
+        newValue = value.toUpperCase();
+        break;
+      case "remark":
+        if (value.length > 50) return;
+        break;
+      default:
+        break;
+    }
+    setForm((prev) => ({ ...prev, [name]: newValue }));
+    setErrors((prev) => ({ ...prev, [name]: undefined }));
+  };
+
+  const handleAddContact2 = (e) => {
+    e.preventDefault();
+    setShowContact2(true);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setToast({ show: false, message: "", type: "info" });
+    const v = validate(form, showContact2);
+    setErrors(v);
+    if (Object.keys(v).length) {
+      setToast({ show: true, message: { message: Object.values(v) }, type: "warning" });
+      return;
+    }
+    setSubmitting(true);
+    try {
+      const { code, ...rest } = form;
+      const payload = Object.fromEntries(
+        Object.entries(rest).map(([k, v]) => [k, v === "" ? null : v])
+      );
+      await updateMaster(form.code, payload);
+      setToast({
+        show: true,
+        message: "Master record updated successfully!",
+        type: "success"
+      });
+      setForm(initialForm);
+      setTimeout(() => {
+        window.location.reload();
+      }, 1200);
+    } catch (err) {
+      setToast({
+        show: true,
+        message: err.data || err,
+        type: "error"
+      });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="flex justify-center items-center min-h-[80vh] mt-8 mb-4">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-[#f8fafc] shadow-lg rounded-lg p-8 w-full max-w-150 border border-gray-200"
+        noValidate
+      >
+        <Typography variant="h4" fontWeight={600} mb={4} align="center" color="primary.dark">
+          Update Customer Record
+        </Typography>       
+        <div className="flex flex-col gap-4">
+          {/* Code (readonly, small, label beside input) */}
+          <div className="flex items-center gap-3 mb-2 justify-center">
+            <label htmlFor="code" className="text-lg font-medium text-gray-700">Master Code</label>
+            <input
+              id="code"
+              name="code"
+              type="text"
+              value={form.code}
+              onChange={handleChange}
+              disabled={submitting}
+              required
+              autoComplete="off"
+              className="w-25 text-center px-3 py-2 rounded-lg border border-gray-300 bg-gray-50 text-gray-900 font-medium"
+              maxLength={5}
+              style={{ minWidth: 0 }}
+            />
+            <button
+              type="button"
+              title="Search by code"
+              className="ml-2 p-0 rounded-full bg-gradient-to-tr from-blue-200 to-blue-500 text-white shadow-md hover:scale-105 hover:from-blue-600 hover:to-blue-900 focus:outline-none transition-all duration-200 flex items-center justify-center"
+              disabled={submitting || !form.code}
+              onClick={async () => {
+                setToast({ show: false, message: "", type: "info" });
+                try {
+                  const data = await searchMasterByCode(form.code);
+                  setForm(prev => ({
+                    code: data.code ?? "",
+                    name: data.name ?? "",
+                    address: data.address ?? "",
+                    city: data.city ?? "",
+                    pin: data.pin ?? "",
+                    contact1: data.contact1 ?? "",
+                    contact2: data.contact2 ?? "",
+                    gst: data.gst ?? "",
+                    remark: data.remark ?? ""
+                  }));
+                  setShowContact2(!!data.contact2);
+                } catch (err) {
+                  setToast({
+                    show: true,
+                    message: { message: err.message || "Not found", resolution: err.resolution },
+                    type: "error"
+                  });
+                }
+              }}
+              tabIndex={0}
+              style={{ width: 40, height: 40 }}
+            >
+              <FiSearch size={22} />
+            </button>
+          </div>
+          {/* Name (label beside input) */}
+          <div className="flex items-center gap-2 w-full" style={{ position: "relative" }}>
+            <label htmlFor="name" className="w-25 text-lg font-medium text-gray-700">Name<span className="text-red-500">*</span></label>
+            <div className="flex-1 relative flex items-center gap-2">
+              <input
+                id="name"
+                name="name"
+                type="text"
+                value={form.name}
+                onChange={handleChange}
+                className={`w-full px-3 py-2 rounded-lg border ${errors.name ? "border-red-400" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium`}
+                minLength={3}
+                maxLength={40}
+                required
+                disabled={submitting}
+                autoComplete="name"
+                onFocus={() => {
+                  if (form.name.length > 0 && nameSuggestions.length > 0) setShowSuggestions(true);
+                }}
+                onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
+              />
+              <button
+                type="button"
+                title="Search by name"
+                className="ml-2 p-2 rounded-full bg-gradient-to-tr from-blue-200 to-blue-500 text-white shadow-md hover:scale-105 hover:from-blue-600 hover:to-blue-900 focus:outline-none transition-all duration-200 flex items-center justify-center"
+                disabled={submitting || !form.name}
+                onClick={async () => {
+                  setToast({ show: false, message: "", type: "info" });
+                  try {
+                    const mod = await import("../services/masterSearchByName");
+                    const data = await mod.searchMasterByName(form.name);
+                    setForm(prev => ({
+                      code: data.code ?? "",
+                      name: data.name ?? "",
+                      address: data.address ?? "",
+                      city: data.city ?? "",
+                      pin: data.pin ?? "",
+                      contact1: data.contact1 ?? "",
+                      contact2: data.contact2 ?? "",
+                      gst: data.gst ?? "",
+                      remark: data.remark ?? ""
+                    }));
+                    setShowContact2(!!data.contact2);
+                  } catch (err) {
+                    setToast({
+                      show: true,
+                      message: { message: err.message || "Not found", resolution: err.resolution },
+                      type: "error"
+                    });
+                  }
+                }}
+                tabIndex={0}
+                style={{ width: 40, height: 40 }}
+              >
+                <FiSearch size={22} />
+              </button>
+            </div>
+            {showSuggestions && (
+              <ul style={{
+                position: "absolute",
+                top: "100%",
+                left: 0,
+                zIndex: 10,
+                background: "#fff",
+                border: "1px solid #d1d5db",
+                borderRadius: "0.5rem",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+                width: "100%",
+                maxHeight: 180,
+                overflowY: "auto",
+                margin: 0,
+                padding: 0,
+                listStyle: "none"
+              }}>
+                {nameSuggestions.map((n) => (
+                  <li
+                    key={n}
+                    style={{ padding: "0.5rem 1rem", cursor: "pointer" }}
+                    onMouseDown={() => {
+                      setForm((prev) => ({ ...prev, name: n }));
+                      setShowSuggestions(false);
+                    }}
+                  >
+                    {n}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+          {/* Address (label beside input) */}
+          <div className="flex items-center gap-2 w-full">
+            <label htmlFor="address" className="w-25 text-lg font-medium text-gray-700">Address<span className="text-red-500">*</span></label>
+            <input
+              id="address"
+              name="address"
+              value={form.address}
+              onChange={handleChange}
+              className={`flex-1 px-3 py-2 rounded-lg border ${errors.address ? "border-red-400" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium`}
+              maxLength={40}
+              required
+              rows={2}
+              autoComplete="street-address"
+              disabled={submitting}
+            />
+          </div>
+          {/* City and PIN on same line, equal label/input width */}
+          <div className="flex items-center w-full gap-5">
+            <div className="flex items-center gap-2">
+              <label htmlFor="city" className="w-26 text-lg font-medium text-gray-700">City<span className="text-red-500">*</span></label>
+              <input
+                id="city"
+                name="city"
+                type="text"
+                value={form.city}
+                onChange={handleChange}
+                className={`w-36 px-3 py-2 rounded-lg border ${errors.city ? "border-red-400" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium`}
+                maxLength={20}
+                required
+                autoComplete="address-level2"
+                disabled={submitting}
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <label htmlFor="pin" className="w-26 text-lg font-medium text-gray-700">Pincode</label>
+              <input
+                id="pin"
+                name="pin"
+                type="text"
+                value={form.pin}
+                onChange={handleChange}
+                className={`w-36 px-3 py-2 rounded-lg border ${errors.pin ? "border-red-400" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium`}
+                maxLength={6}
+                pattern="\d{6}"
+                autoComplete="postal-code"
+                disabled={submitting}
+              />
+            </div>
+          </div>
+          {/* Contact 1 and Contact 2/Button on same line, equal label/input width */}
+          <div className="flex items-center w-full gap-5">
+            <div className="flex items-center w-1/2 gap-2">
+              <label htmlFor="contact1" className="w-26 text-lg font-medium text-gray-700">Contact 1<span className="text-red-500">*</span></label>
+              <input
+                id="contact1"
+                name="contact1"
+                type="text"
+                value={form.contact1}
+                onChange={handleChange}
+                className={`w-36 px-3 py-2 rounded-lg border ${errors.contact1 ? "border-red-400" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium`}
+                maxLength={10}
+                pattern="\d{10}"
+                required
+                autoComplete="tel"
+                disabled={submitting}
+              />
+            </div>
+            <div className="flex items-center w-1/2 gap-2">
+              {showContact2 ? (
+                <>
+                  <label htmlFor="contact2" className="w-26 text-lg font-medium text-gray-700">Contact 2</label>
+                  <input
+                    id="contact2"
+                    name="contact2"
+                    type="text"
+                    value={form.contact2}
+                    onChange={handleChange}
+                    className={`w-36 px-3 py-2 rounded-lg border ${errors.contact2 ? "border-red-400" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium`}
+                    maxLength={10}
+                    pattern="\d{10}"
+                    autoComplete="tel"
+                    disabled={submitting}
+                  />
+                </>
+              ) : (
+                <button
+                  className="text-blue-600 font-semibold hover:underline focus:outline-none text-left"
+                  onClick={handleAddContact2}
+                  type="button"
+                  tabIndex={0}
+                  disabled={submitting}
+                >
+                  + Add Another Contact
+                </button>
+              )}
+            </div>
+          </div>
+          {/* GST (label beside input) */}
+          <div className="flex items-center gap-3 w-full">
+            <label htmlFor="gst" className="w-25 text-lg font-medium text-gray-700">GST</label>
+            <input
+              id="gst"
+              name="gst"
+              type="text"
+              value={form.gst}
+              onChange={handleChange}
+              className={`flex-1 px-3 py-2 rounded-lg border ${errors.gst ? "border-red-400" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium`}
+              maxLength={15}
+              pattern="[A-Z0-9]{15}"
+              autoComplete="off"
+              disabled={submitting}
+            />
+          </div>
+          {/* Remark (label beside input) */}
+          <div className="flex items-center gap-3 w-full">
+            <label htmlFor="remark" className="w-25 text-lg font-medium text-gray-700">Remark</label>
+            <textarea
+              id="remark"
+              name="remark"
+              value={form.remark}
+              onChange={handleChange}
+              className={`flex-1 px-3 py-2 rounded-lg border ${errors.remark ? "border-red-400" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium`}
+              maxLength={50}
+              rows={2}
+              autoComplete="off"
+              disabled={submitting}
+            />
+          </div>
+        </div>
+        <div className="flex justify-center mt-6">
+          <button
+            type="submit"
+            className="py-2 px-8 rounded-lg bg-blue-600 text-white font-bold text-base shadow hover:bg-blue-900 transition-colors duration-200 w-fit disabled:opacity-60"
+            disabled={submitting}
+          >
+            {submitting ? "Creating..." : "Update Record"}
+          </button>
+        </div>
+      </form>
+      {toast.show && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          duration={2500}
+          onClose={() => setToast({ ...toast, show: false })}
+        />
+      )}
+    </div>
+  );
+};
+
+export default MasterUpdatePage;

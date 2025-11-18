@@ -87,6 +87,10 @@ const UserMenu = () => {
     navigate("/show-users");
   };
 
+  const handleShowStandardUsers = () => {
+    navigate("/show-standard-users");
+  }
+
   return (
     <div className="relative" ref={menuRef}>
       <button
@@ -146,6 +150,18 @@ const UserMenu = () => {
 
               <div className="border-t border-gray-100 my-1"></div>
             </>
+          )}
+
+          {user && user.role === "USER" && (
+            <>
+              <button
+                onClick={handleShowStandardUsers}
+                className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              >
+                <FaUsers className="mr-3 h-4 w-4 text-green-500" />
+                Show Users
+              </button>
+              </>
           )}
 
           <button

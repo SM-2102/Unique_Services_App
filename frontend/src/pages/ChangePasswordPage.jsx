@@ -3,16 +3,23 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Container, Paper, Typography } from "@mui/material";
 import Toast from "../components/Toast";
 import { useAuth } from "../context/AuthContext";
-import API_ENDPOINTS from "../config/api";
+import { changePassword } from "../services/user";
 
 const ChangePasswordPage = () => {
   const { user } = useAuth();
   const [form, setForm] = useState({
     old_password: "",
     new_password: "",
+    confirm_password: "",
   });
+  // Handle input changes (must be inside component to access setForm)
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [apiError, setApiError] = useState("");
   const [showToast, setShowToast] = useState(false);
@@ -28,13 +35,14 @@ const ChangePasswordPage = () => {
     if (form.old_password === form.new_password) {
       errs.new_password = "Cannot reuse old password";
     }
+    if (!form.confirm_password || form.confirm_password.length < 6) {
+      errs.confirm_password = "Confirm password is too short";
+    }
+    if (form.new_password !== form.confirm_password) {
+      errs.confirm_password = "Passwords do not match";
+    }
     return errs;
   };
-
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setApiError("");
@@ -50,33 +58,13 @@ const ChangePasswordPage = () => {
     }
     setSubmitting(true);
     try {
-      const res = await fetch(API_ENDPOINTS.CHANGE_PASSWORD, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-          username: user.username,
-          old_password: form.old_password,
-          new_password: form.new_password,
-        }),
+      await changePassword(user.username, form.old_password, form.new_password);
+      setApiError({
+        message: "Password changed successfully!",
+        type: "success"
       });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        setApiError({
-          message: data.message || data.detail || "Failed to change password.",
-          resolution: data.resolution || "",
-          type: "error"
-        });
-        setShowToast(true);
-      } else {
-        setApiError({
-          message: "Password changed successfully!",
-          resolution: "",
-          type: "success"
-        });
-        setShowToast(true);
-        setForm({ old_password: "", new_password: "" });
-      }
+      setShowToast(true);
+      setForm({ old_password: "", new_password: "", confirm_password: "" });
     } catch (err) {
       setApiError({
         message: err?.message || "Failed to change password.",
@@ -90,14 +78,14 @@ const ChangePasswordPage = () => {
   };
 
   return (
-    <Container maxWidth="sm" sx={{ mt: 13 }}>
-      <Paper elevation={4} sx={{ p: 2.5, borderRadius: 3, background: "#f8fafc", maxWidth: 410, mx: "auto", minHeight: 0 }}>
+    <Container maxWidth="sm" sx={{ mt: 10 }}>
+      <Paper elevation={4} sx={{ p: 2.5, borderRadius: 3, background: "#f8fafc", maxWidth: 430, mx: "auto", minHeight: 0 }}>
         <Typography variant="h5" fontWeight={700} mb={2} align="center" color="primary.dark">
           Change Password
         </Typography>
         <form onSubmit={handleSubmit} noValidate className="w-full flex flex-col gap-3">
           <div className="flex items-center gap-2 relative">
-            <label htmlFor="old_password" className="text-gray-700 text-base font-medium w-32 text-left">Old Password</label>
+            <label htmlFor="old_password" className="text-gray-700 text-base font-medium w-35 text-left">Old Password</label>
             <input
               id="old_password"
               name="old_password"
@@ -126,7 +114,7 @@ const ChangePasswordPage = () => {
             </button>
           </div>
           <div className="flex items-center gap-2 relative">
-            <label htmlFor="new_password" className="text-gray-700 text-base font-medium w-32 text-left">New Password</label>
+            <label htmlFor="new_password" className="text-gray-700 text-base font-medium w-35 text-left">New Password</label>
             <input
               id="new_password"
               name="new_password"
@@ -148,6 +136,35 @@ const ChangePasswordPage = () => {
               disabled={submitting}
             >
               {showNewPassword ? (
+                <FaEyeSlash className="w-5 h-5" />
+              ) : (
+                <FaEye className="w-5 h-5" />
+              )}
+            </button>
+          </div>
+          <div className="flex items-center gap-2 relative">
+            <label htmlFor="confirm_password" className="text-gray-700 text-base font-medium w-35 text-left">Confirm Password</label>
+            <input
+              id="confirm_password"
+              name="confirm_password"
+              type={showConfirmPassword ? "text" : "password"}
+              value={form.confirm_password}
+              onChange={handleChange}
+              className="flex-1 px-3 py-2 rounded-lg border border-gray-300 bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium pr-10"
+              placeholder="Confirm Password"
+              minLength={6}
+              required
+              disabled={submitting}
+            />
+            <button
+              type="button"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-blue-600 focus:outline-none"
+              onClick={() => setShowConfirmPassword((v) => !v)}
+              tabIndex={-1}
+              aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
+              disabled={submitting}
+            >
+              {showConfirmPassword ? (
                 <FaEyeSlash className="w-5 h-5" />
               ) : (
                 <FaEye className="w-5 h-5" />

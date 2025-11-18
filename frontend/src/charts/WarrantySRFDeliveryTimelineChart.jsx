@@ -100,14 +100,14 @@ const WarrantySRFDeliveryTimelineChart = ({ data, loading, error }) => {
   }
   if (error) {
     return (
-      <div className="flex items-center justify-center h-40 bg-[#fff7e6] rounded-lg shadow-lg">
+      <div className="flex items-center justify-center h-40 bg-[#fff7e6] ">
         <span className="text-red-500 text-sm">Error loading chart data.</span>
       </div>
     );
   }
   if (!chartData || chartData.length === 0) {
     return (
-      <div className="flex items-center justify-center h-40 bg-white rounded-lg shadow-lg">
+      <div className="flex items-center justify-center h-40 bg-[#fff7e6]">
         <span className="text-gray-500 text-sm">Loading chart...</span>
       </div>
     );
