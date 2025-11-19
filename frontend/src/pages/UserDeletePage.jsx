@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { Container, Paper, Typography } from "@mui/material";
 import Toast from "../components/Toast";
 import { useAuth } from "../context/AuthContext";
-import { deleteUser, fetchAllUsers } from "../services/user";
+import { deleteUser } from "../services/deleteUserService";
+import { fetchAllUsers } from "../services/showAllUsersService";
 
 const DeleteUserPage = () => {
   const { user } = useAuth();
@@ -11,9 +11,8 @@ const DeleteUserPage = () => {
   const [users, setUsers] = useState([]);
   const [loadingUsers, setLoadingUsers] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [apiError, setApiError] = useState("");
+  const [error, seterror] = useState("");
   const [showToast, setShowToast] = useState(false);
-  const navigate = useNavigate();
 
   // Fetch users function for reuse
   const fetchUsers = async () => {
@@ -21,7 +20,7 @@ const DeleteUserPage = () => {
     try {
       const data = await fetchAllUsers();
       // Exclude current user
-      setUsers(data.filter(u => u.username !== user?.username));
+      setUsers(data.filter((u) => u.username !== user?.username));
     } catch (err) {
       setUsers([]);
     } finally {
@@ -35,13 +34,13 @@ const DeleteUserPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setApiError("");
+    seterror("");
     setShowToast(false);
-    if (!username || username.length < 3 || username.length > 20) {
-      setApiError({
-        message: "Username must be 3-20 letters",
+    if (!username) {
+      seterror({
+        message: "No user to delete.",
         resolution: "Please enter a valid username.",
-        type: "warning"
+        type: "warning",
       });
       setShowToast(true);
       return;
@@ -49,20 +48,19 @@ const DeleteUserPage = () => {
     setSubmitting(true);
     try {
       await deleteUser(username);
-      setApiError({
-        message: `User deleted successfully!`,
-        resolution: "",
-        type: "success"
+      seterror({
+        message: "User deleted successfully!",
+        type: "success",
       });
       setShowToast(true);
       setUsername("");
       // Refresh user list after successful deletion
       fetchUsers();
     } catch (err) {
-      setApiError({
+      seterror({
         message: err?.message || "Failed to delete user.",
         resolution: err?.resolution || "",
-        type: "error"
+        type: "error",
       });
       setShowToast(true);
     } finally {
@@ -72,26 +70,55 @@ const DeleteUserPage = () => {
 
   return (
     <Container maxWidth="xs" sx={{ mt: 15 }}>
-      <Paper elevation={4} sx={{ p: 2.5, borderRadius: 3, background: "#f8fafc", maxWidth: 340, mx: "auto", minHeight: 0 }}>
-        <Typography variant="h5" fontWeight={700} mb={2} align="center" color="primary.dark">
+      <Paper
+        elevation={4}
+        sx={{
+          p: 2.5,
+          borderRadius: 3,
+          background: "#f8fafc",
+          maxWidth: 340,
+          mx: "auto",
+          minHeight: 0,
+        }}
+      >
+        <Typography
+          variant="h5"
+          fontWeight={700}
+          mb={2}
+          align="center"
+          color="primary.dark"
+        >
           Delete User
         </Typography>
-        <form onSubmit={handleSubmit} noValidate className="w-full flex flex-col gap-3">
+        <form
+          onSubmit={handleSubmit}
+          noValidate
+          className="w-full flex flex-col gap-3"
+        >
           <div className="flex items-center gap-2">
-            <label htmlFor="username" className="text-gray-700 text-base font-medium w-28 text-left">Username</label>
+            <label
+              htmlFor="username"
+              className="text-gray-700 text-base font-medium w-28 text-left"
+            >
+              Username
+            </label>
             <select
               id="username"
               name="username"
               value={username}
-              onChange={e => setUsername(e.target.value)}
+              onChange={(e) => setUsername(e.target.value)}
               className="flex-1 px-3 py-2 rounded-lg border border-gray-300 bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium"
               required
               disabled={submitting || loadingUsers}
               autoComplete="username"
             >
-              <option value="" disabled>Select a user</option>
-              {users.map(u => (
-                <option key={u.username} value={u.username}>{u.username}</option>
+              <option value="" disabled>
+                Select a user
+              </option>
+              {users.map((u) => (
+                <option key={u.username} value={u.username}>
+                  {u.username}
+                </option>
               ))}
             </select>
           </div>
@@ -108,9 +135,9 @@ const DeleteUserPage = () => {
       </Paper>
       {showToast && (
         <Toast
-          message={apiError}
-          type={apiError.type || (apiError && apiError.resolution ? "error" : "success")}
-          duration={2500}
+          message={error.message}
+          resolution={error.resolution}
+          type={error.type}
           onClose={() => setShowToast(false)}
         />
       )}

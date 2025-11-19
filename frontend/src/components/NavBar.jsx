@@ -1,65 +1,13 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { FaChevronDown, FaChevronUp, FaBars } from 'react-icons/fa';
+import React, { useState, useRef, useEffect } from "react";
+import { FaChevronDown, FaChevronUp, FaBars } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import { menuConfig } from "../config/menuConfig";
 
-const menuItems = [
-  {
-    title: 'Customer Entry',
-    submenus: [
-      { title: 'Add Record', path: '/customer/create' },
-      { title: 'Update Record', path: '/customer/update' },
-    ],
-  },
-  {
-    title: 'Warranty Replacement / Repair',
-    submenus: [
-      { title: 'Create SRF', path: '/warranty/create_srf' },
-      { title: 'Create CNF Challan', path: '/warranty/create_cnf' },
-      { title: 'Print SRF', path: '/warranty/print_srf' },
-      { title: 'Print CNF Challan', path: '/warranty/print_cnf' },
-      { title: 'Update SRF', path: '/warranty/update_srf' },
-      { title: 'Enquiry', path: '/warranty/enquiry' },
-    ],
-  },
-  {
-    title: 'Out of Warranty Repair',
-    submenus: [
-      { title: 'Create SRF', path: '/oow/create_srf' },
-      { title: 'Print SRF', path: '/oow/print_srf' },
-      { title: 'Update SRF', path: '/oow/update_srf' },
-      { title: 'Settle SRF', path: '/oow/settle_srf' },
-      { title: 'Create Vendor Challan', path: '/oow/create_vendor_challan' },
-      { title: 'Print Vendor Challan', path: '/oow/print_vendor_challan' },
-      { title: 'Print Estimate', path: '/oow/print_estimate' },
-      { title: 'Settle Vendor', path: '/oow/settle_vendor' },
-      { title: 'Enquiry', path: '/oow/enquiry' },
-    ],
-  },
-  {
-    title: 'Direct Market Replacement',
-    submenus: [
-      { title: 'Add Record', path: '/market/create' },
-      { title: 'Update Record', path: '/market/update' },
-      { title: 'Enquiry', path: '/market/enquiry' },
-    ],
-  },
-  {
-    title: 'Road Challan',
-    submenus: [
-      { title: 'Create Challan', path: '/challan/create' },
-      { title: 'Print Challan', path: '/challan/print' },
-    ],
-  },
-  {
-    title: 'Retail Sales / Services',
-    submenus: [
-      { title: 'Add Record', path: '/retail/create' },
-      { title: 'Update Record', path: '/retail/update' },
-      { title: 'Settle Record', path: '/retail/settle' },
-      { title: 'Print Receipt', path: '/retail/print_receipt' },
-      { title: 'Enquiry', path: '/retail/enquiry' },
-    ],
-  },
-];
+// Convert menuConfig to menuItems for NavBar (submenus = actions)
+const menuItems = menuConfig.map(({ title, actions }) => ({
+  title,
+  submenus: actions.map(({ label, path }) => ({ title: label, path })),
+}));
 
 const NavBar = ({ open, setOpen }) => {
   const [submenuOpen, setSubmenuOpen] = useState(null);
@@ -73,17 +21,17 @@ const NavBar = ({ open, setOpen }) => {
         setOpen(false);
       }
     };
-    document.addEventListener('mousedown', handleClick);
-    return () => document.removeEventListener('mousedown', handleClick);
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
   }, [open, setOpen]);
-
 
   // Close all submenus when NavBar is opened
   useEffect(() => {
     if (open) setSubmenuOpen(null);
   }, [open]);
 
-  const handleSubmenu = idx => setSubmenuOpen(idx === submenuOpen ? null : idx);
+  const handleSubmenu = (idx) =>
+    setSubmenuOpen(idx === submenuOpen ? null : idx);
 
   if (!open) return null;
 
@@ -101,7 +49,9 @@ const NavBar = ({ open, setOpen }) => {
         >
           <FaBars className="text-2xl" />
         </button>
-        <span className="ml-16 text-2xl font-bold text-black tracking-wide">Navigation Bar</span>
+        <span className="ml-16 text-2xl font-bold text-black tracking-wide">
+          Navigation Bar
+        </span>
       </div>
       <div className="flex-1 overflow-y-auto py-4">
         {menuItems.map((item, idx) => (
@@ -119,15 +69,16 @@ const NavBar = ({ open, setOpen }) => {
             </div>
             {submenuOpen === idx && (
               <div className="ml-4 mt-1 flex flex-col">
-                {item.submenus.map(sub => (
-                  <a
+                {item.submenus.map((sub) => (
+                  <Link
                     key={sub.title}
-                    href={sub.path}
-                    className="text-black no-underline text-sm px-6 py-2 rounded hover:bg-blue-700/30 hover:text-white transition font-medium" style={{ fontFamily: 'Montserrat, Arial, sans-serif' }}
+                    to={sub.path}
+                    className="text-black no-underline text-sm px-6 py-2 rounded hover:bg-blue-700/30 hover:text-white transition font-medium"
+                    style={{ fontFamily: "Montserrat, Arial, sans-serif" }}
                     onClick={() => setOpen(false)}
                   >
                     {sub.title}
-                  </a>
+                  </Link>
                 ))}
               </div>
             )}

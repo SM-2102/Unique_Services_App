@@ -144,22 +144,31 @@ const MenuCard = ({
             className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-gray-800 to-gray-800 bg-clip-text text-transparent hover:from-blue-700 hover:to-blue-500 transition-all duration-300 menu-card-title flex items-center h-full"
             style={{
               fontFamily: "Times New Roman, serif",
-              display: '-webkit-box',
+              display: "-webkit-box",
               WebkitLineClamp: 2,
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              maxHeight: '2.8em',
-              minHeight: '2.8em',
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              maxHeight: "2.8em",
+              minHeight: "2.8em",
               lineHeight: 1.2,
-              fontSize: '1.5rem',
-              alignItems: 'center',
-              width: '100%',
-              textAlign: 'left',
+              fontSize: "1.5rem",
+              alignItems: "center",
+              width: "100%",
+              textAlign: "left",
             }}
             title={title}
           >
-            <span style={{width: '100%', height: '100%', display: 'flex', alignItems: 'center'}}>{title}</span>
+            <span
+              style={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              {title}
+            </span>
           </h3>
           <style>{`
             @media (max-width: 600px) {

@@ -5,7 +5,6 @@ import Footer from "./components/Footer";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import MenuDashboardPage from "./pages/MenuDashboardPage.jsx";
-import PageNotAvailable from "./pages/PageNotAvailable";
 import PageNotFound from "./pages/PageNotFound";
 import ChangePasswordPage from "./pages/ChangePasswordPage.jsx";
 import ShowStandardUsersPage from "./pages/ShowStandardUsersPage.jsx";
@@ -47,14 +46,6 @@ function AppRoutesWithNav() {
             }
           />
           <Route
-            path="/not-available"
-            element={
-              <PrivateRoute>
-                <PageNotAvailable />
-              </PrivateRoute>
-            }
-          />
-          <Route
             path="/change-password"
             element={
               <PrivateRoute>
@@ -79,7 +70,7 @@ function AppRoutesWithNav() {
             }
           />
           <Route
-            path="/customer/create"
+            path="/customer-create"
             element={
               <PrivateRoute>
                 <MasterCreatePage />
@@ -87,18 +78,21 @@ function AppRoutesWithNav() {
             }
           />
           <Route
-            path="/customer/update"
+            path="/customer-update"
             element={
               <PrivateRoute>
                 <MasterUpdatePage />
               </PrivateRoute>
             }
           />
-          <Route path="/*" element={
-            <PrivateRoute>
-              <PageNotFound />
-            </PrivateRoute>
-          } />
+          <Route
+            path="/*"
+            element={
+              <PrivateRoute>
+                <PageNotFound />
+              </PrivateRoute>
+            }
+          />
         </Routes>
       </div>
       <Footer />

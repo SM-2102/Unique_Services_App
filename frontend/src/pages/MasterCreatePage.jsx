@@ -1,12 +1,10 @@
-
-
-
 import React, { useState, useEffect } from "react";
 import Toast from "../components/Toast";
-import { createMaster } from "../services/masterCreate";
-import { getNextMasterCode } from "../services/masterCode";
-import { fetchMasterNames } from "../services/masterNames";
+import { createMaster } from "../services/masterCreateService";
+import { getNextMasterCode } from "../services/masterCodeService";
+import { fetchMasterNames } from "../services/masterNamesService";
 import { Typography } from "@mui/material";
+import { validateMaster } from "../utils/masterValidation";
 
 const initialForm = {
   code: "",
@@ -20,40 +18,21 @@ const initialForm = {
   remark: "",
 };
 
-function validate(form, showContact2) {
-  const errors = {};
-  if (!form.name || form.name.length < 3 || form.name.length > 40) {
-    errors.name = "Customer name is required";
-  }
-  if (!form.address || form.address.length > 40) {
-    errors.address = "Address is required";
-  }
-  if (!form.city || form.city.length > 20) {
-    errors.city = "City is required";
-  }
-  if (form.pin && !/^\d{6}$/.test(form.pin)) {
-    errors.pin = "PIN must be 6 digits";
-  }
-  if (!form.contact1 || !/^\d{10}$/.test(form.contact1)) {
-    errors.contact1 = "Contact 1 must be 10 digits";
-  }
-  if (showContact2 && form.contact2 && !/^\d{10}$/.test(form.contact2)) {
-    errors.contact2 = "Contact 2 must be 10 digits";
-  }
-  if (form.gst && !/^[A-Z0-9]{15}$/.test(form.gst)) {
-    errors.gst = "GST must be 15 characters";
-  }
-  return errors;
-}
-
 const MasterCreatePage = () => {
   const [form, setForm] = useState(initialForm);
   const [codeLoading, setCodeLoading] = useState(true);
   const [masterNames, setMasterNames] = useState([]);
   const [nameSuggestions, setNameSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [error, setError] = useState({});
+  const [showToast, setShowToast] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [showContact2, setShowContact2] = useState(false);
+
   // Fetch next code and master names on mount
   useEffect(() => {
+    setError("");
+    setShowToast(false);
     let mounted = true;
     setCodeLoading(true);
     getNextMasterCode()
@@ -61,7 +40,12 @@ const MasterCreatePage = () => {
         if (mounted) setForm((prev) => ({ ...prev, code }));
       })
       .catch(() => {
-        setToast({ show: true, message: "Failed to fetch next code", type: "error" });
+        setError({
+          message: "Failed to fetch next code",
+          type: "error",
+        });
+        setShowToast(true);
+        return;
       })
       .finally(() => {
         if (mounted) setCodeLoading(false);
@@ -74,12 +58,10 @@ const MasterCreatePage = () => {
       .catch(() => {
         setMasterNames([]);
       });
-    return () => { mounted = false; };
+    return () => {
+      mounted = false;
+    };
   }, []);
-  const [errors, setErrors] = useState({});
-  const [submitting, setSubmitting] = useState(false);
-  const [toast, setToast] = useState({ show: false, message: "", type: "info" });
-  const [showContact2, setShowContact2] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -90,12 +72,14 @@ const MasterCreatePage = () => {
         if (value.length > 40) return;
         // Capitalize first letter of each word
         newValue = value
-          .split(' ')
-          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-          .join(' ');
+          .split(" ")
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(" ");
         // Autocomplete: filter suggestions as user types
         if (newValue.length > 0) {
-          const filtered = masterNames.filter(n => n.toLowerCase().startsWith(newValue.toLowerCase()));
+          const filtered = masterNames.filter((n) =>
+            n.toLowerCase().startsWith(newValue.toLowerCase()),
+          );
           setNameSuggestions(filtered);
           setShowSuggestions(filtered.length > 0);
         } else {
@@ -126,7 +110,7 @@ const MasterCreatePage = () => {
         break;
     }
     setForm((prev) => ({ ...prev, [name]: newValue }));
-    setErrors((prev) => ({ ...prev, [name]: undefined }));
+    setError((prev) => ({ ...prev, [name]: undefined }));
   };
 
   const handleAddContact2 = (e) => {
@@ -134,43 +118,59 @@ const MasterCreatePage = () => {
     setShowContact2(true);
   };
 
+
+  // Always compute validation errors for rendering
+  const [errs, errs_label] = validateMaster(form, showContact2);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setToast({ show: false, message: "", type: "info" });
-    const v = validate(form, showContact2);
-    setErrors(v);
-    if (Object.keys(v).length) {
-      setToast({ show: true, message: { message: Object.values(v) }, type: "warning" });
+    setError("");
+    setShowToast(false);
+    if (errs.length > 0) {
+      setError({
+        message: errs[0],
+        type: "warning",
+      });
+      setShowToast(true);
       return;
     }
     setSubmitting(true);
     try {
       const { code, ...rest } = form;
       const payload = Object.fromEntries(
-        Object.entries(rest).map(([k, v]) => [k, v === "" ? null : v])
+        Object.entries(rest).map(([k, v]) => [k, v === "" ? null : v]),
       );
       await createMaster(payload);
-      setToast({
-        show: true,
+      setError({
         message: "Master record created successfully!",
-        type: "success"
+        type: "success",
       });
+      setShowToast(true);
       setForm(initialForm);
-      setTimeout(() => {
-        window.location.reload();
-      }, 1200);
+      // Fetch next master code after successful creation
+      setCodeLoading(true);
+      getNextMasterCode()
+        .then((code) => {
+          setForm((prev) => ({ ...prev, code }));
+        })
+        .catch(() => {
+          setError({
+            message: "Failed to fetch next code",
+            type: "error",
+          });
+          setShowToast(true);
+        })
+        .finally(() => {
+          setCodeLoading(false);
+        });
+      setForm(initialForm);
     } catch (err) {
-      let toastMsg = err;
-      if (err && typeof err === 'object' && (err.message || err.resolution)) {
-        toastMsg = { message: err.message, resolution: err.resolution };
-      } else {
-        toastMsg = { message: "Failed to create master." };
-      }
-      setToast({
-        show: true,
-        message: toastMsg,
-        type: "error"
+      setError({
+        message: err?.message || "Failed to create master.",
+        resolution: err?.resolution || "",
+        type: "error",
       });
+      setShowToast(true);
     } finally {
       setSubmitting(false);
     }
@@ -183,13 +183,21 @@ const MasterCreatePage = () => {
         className="bg-[#f8fafc] shadow-lg rounded-lg p-8 w-full max-w-150 border border-gray-200"
         noValidate
       >
-        <Typography variant="h4" fontWeight={600} mb={4} align="center" color="primary.dark">
+        <Typography
+          variant="h4"
+          fontWeight={600}
+          mb={4}
+          align="center"
+          color="primary.dark"
+        >
           Create Customer Record
-        </Typography>       
+        </Typography>
         <div className="flex flex-col gap-4">
           {/* Code (readonly, small, label beside input) */}
           <div className="flex items-center gap-3 mb-2 justify-center">
-            <label htmlFor="code" className="text-lg font-medium text-gray-700">Master Code</label>
+            <label htmlFor="code" className="text-lg font-medium text-gray-700">
+              Master Code
+            </label>
             <input
               id="code"
               name="code"
@@ -202,8 +210,16 @@ const MasterCreatePage = () => {
             />
           </div>
           {/* Name (label beside input) */}
-          <div className="flex items-center gap-2 w-full" style={{ position: "relative" }}>
-            <label htmlFor="name" className="w-25 text-lg font-medium text-gray-700">Name<span className="text-red-500">*</span></label>
+          <div
+            className="flex items-center gap-2 w-full"
+            style={{ position: "relative" }}
+          >
+            <label
+              htmlFor="name"
+              className="w-25 text-lg font-medium text-gray-700"
+            >
+              Name<span className="text-red-500">*</span>
+            </label>
             <div className="flex-1 relative">
               <input
                 id="name"
@@ -211,34 +227,37 @@ const MasterCreatePage = () => {
                 type="text"
                 value={form.name}
                 onChange={handleChange}
-                className={`w-full px-3 py-2 rounded-lg border ${errors.name ? "border-red-400" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium`}
+                className={`w-full px-3 py-2 rounded-lg border ${errs_label.name ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium`}
                 minLength={3}
                 maxLength={40}
                 required
                 disabled={submitting}
                 autoComplete="name"
                 onFocus={() => {
-                  if (form.name.length > 0 && nameSuggestions.length > 0) setShowSuggestions(true);
+                  if (form.name.length > 0 && nameSuggestions.length > 0)
+                    setShowSuggestions(true);
                 }}
                 onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
               />
               {showSuggestions && (
-                <ul style={{
-                  position: "absolute",
-                  top: "100%",
-                  left: 0,
-                  zIndex: 10,
-                  background: "#fff",
-                  border: "1px solid #d1d5db",
-                  borderRadius: "0.5rem",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-                  width: "100%",
-                  maxHeight: 180,
-                  overflowY: "auto",
-                  margin: 0,
-                  padding: 0,
-                  listStyle: "none"
-                }}>
+                <ul
+                  style={{
+                    position: "absolute",
+                    top: "100%",
+                    left: 0,
+                    zIndex: 10,
+                    background: "#fff",
+                    border: "1px solid #d1d5db",
+                    borderRadius: "0.5rem",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+                    width: "100%",
+                    maxHeight: 180,
+                    overflowY: "auto",
+                    margin: 0,
+                    padding: 0,
+                    listStyle: "none",
+                  }}
+                >
                   {nameSuggestions.map((n) => (
                     <li
                       key={n}
@@ -257,13 +276,18 @@ const MasterCreatePage = () => {
           </div>
           {/* Address (label beside input) */}
           <div className="flex items-center gap-2 w-full">
-            <label htmlFor="address" className="w-25 text-lg font-medium text-gray-700">Address<span className="text-red-500">*</span></label>
+            <label
+              htmlFor="address"
+              className="w-25 text-lg font-medium text-gray-700"
+            >
+              Address<span className="text-red-500">*</span>
+            </label>
             <input
               id="address"
               name="address"
               value={form.address}
               onChange={handleChange}
-              className={`flex-1 px-3 py-2 rounded-lg border ${errors.address ? "border-red-400" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium`}
+              className={`flex-1 px-3 py-2 rounded-lg border ${errs_label.address ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium`}
               maxLength={40}
               required
               rows={2}
@@ -274,14 +298,19 @@ const MasterCreatePage = () => {
           {/* City and PIN on same line, equal label/input width */}
           <div className="flex items-center w-full gap-5">
             <div className="flex items-center gap-2">
-              <label htmlFor="city" className="w-26 text-lg font-medium text-gray-700">City<span className="text-red-500">*</span></label>
+              <label
+                htmlFor="city"
+                className="w-26 text-lg font-medium text-gray-700"
+              >
+                City<span className="text-red-500">*</span>
+              </label>
               <input
                 id="city"
                 name="city"
                 type="text"
                 value={form.city}
                 onChange={handleChange}
-                className={`w-36 px-3 py-2 rounded-lg border ${errors.city ? "border-red-400" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium`}
+                className={`w-36 px-3 py-2 rounded-lg border ${errs_label.city ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium`}
                 maxLength={20}
                 required
                 autoComplete="address-level2"
@@ -289,14 +318,19 @@ const MasterCreatePage = () => {
               />
             </div>
             <div className="flex items-center gap-2">
-              <label htmlFor="pin" className="w-26 text-lg font-medium text-gray-700">Pincode</label>
+              <label
+                htmlFor="pin"
+                className="w-26 text-lg font-medium text-gray-700"
+              >
+                Pincode
+              </label>
               <input
                 id="pin"
                 name="pin"
                 type="text"
                 value={form.pin}
                 onChange={handleChange}
-                className={`w-36 px-3 py-2 rounded-lg border ${errors.pin ? "border-red-400" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium`}
+                className={`w-36 px-3 py-2 rounded-lg border ${errs_label.pin ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium`}
                 maxLength={6}
                 pattern="\d{6}"
                 autoComplete="postal-code"
@@ -307,14 +341,19 @@ const MasterCreatePage = () => {
           {/* Contact 1 and Contact 2/Button on same line, equal label/input width */}
           <div className="flex items-center w-full gap-5">
             <div className="flex items-center w-1/2 gap-2">
-              <label htmlFor="contact1" className="w-26 text-lg font-medium text-gray-700">Contact 1<span className="text-red-500">*</span></label>
+              <label
+                htmlFor="contact1"
+                className="w-26 text-lg font-medium text-gray-700"
+              >
+                Contact 1<span className="text-red-500">*</span>
+              </label>
               <input
                 id="contact1"
                 name="contact1"
                 type="text"
                 value={form.contact1}
                 onChange={handleChange}
-                className={`w-36 px-3 py-2 rounded-lg border ${errors.contact1 ? "border-red-400" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium`}
+                className={`w-36 px-3 py-2 rounded-lg border ${errs_label.contact1 ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium`}
                 maxLength={10}
                 pattern="\d{10}"
                 required
@@ -325,14 +364,19 @@ const MasterCreatePage = () => {
             <div className="flex items-center w-1/2 gap-2">
               {showContact2 ? (
                 <>
-                  <label htmlFor="contact2" className="w-26 text-lg font-medium text-gray-700">Contact 2</label>
+                  <label
+                    htmlFor="contact2"
+                    className="w-26 text-lg font-medium text-gray-700"
+                  >
+                    Contact 2
+                  </label>
                   <input
                     id="contact2"
                     name="contact2"
                     type="text"
                     value={form.contact2}
                     onChange={handleChange}
-                    className={`w-36 px-3 py-2 rounded-lg border ${errors.contact2 ? "border-red-400" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium`}
+                    className={`w-36 px-3 py-2 rounded-lg border ${errs_label.contact2 ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium`}
                     maxLength={10}
                     pattern="\d{10}"
                     autoComplete="tel"
@@ -354,14 +398,19 @@ const MasterCreatePage = () => {
           </div>
           {/* GST (label beside input) */}
           <div className="flex items-center gap-3 w-full">
-            <label htmlFor="gst" className="w-25 text-lg font-medium text-gray-700">GST</label>
+            <label
+              htmlFor="gst"
+              className="w-25 text-lg font-medium text-gray-700"
+            >
+              GST
+            </label>
             <input
               id="gst"
               name="gst"
               type="text"
               value={form.gst}
               onChange={handleChange}
-              className={`flex-1 px-3 py-2 rounded-lg border ${errors.gst ? "border-red-400" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium`}
+              className={`flex-1 px-3 py-2 rounded-lg border ${errs_label.gst ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium`}
               maxLength={15}
               pattern="[A-Z0-9]{15}"
               autoComplete="off"
@@ -370,13 +419,18 @@ const MasterCreatePage = () => {
           </div>
           {/* Remark (label beside input) */}
           <div className="flex items-center gap-3 w-full">
-            <label htmlFor="remark" className="w-25 text-lg font-medium text-gray-700">Remark</label>
+            <label
+              htmlFor="remark"
+              className="w-25 text-lg font-medium text-gray-700"
+            >
+              Remark
+            </label>
             <textarea
               id="remark"
               name="remark"
               value={form.remark}
               onChange={handleChange}
-              className={`flex-1 px-3 py-2 rounded-lg border ${errors.remark ? "border-red-400" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium`}
+              className={`flex-1 px-3 py-2 rounded-lg border ${errs_label.remark ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium`}
               maxLength={50}
               rows={2}
               autoComplete="off"
@@ -394,12 +448,12 @@ const MasterCreatePage = () => {
           </button>
         </div>
       </form>
-      {toast.show && (
+      {showToast && (
         <Toast
-          message={toast.message}
-          type={toast.type}
-          duration={2500}
-          onClose={() => setToast({ ...toast, show: false })}
+          message={error.message}
+          resolution={error.resolution}
+          type={error.type}
+          onClose={() => setShowToast(false)}
         />
       )}
     </div>

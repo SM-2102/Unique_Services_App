@@ -3,55 +3,42 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Container, Paper, Typography } from "@mui/material";
 import Toast from "../components/Toast";
 import { useAuth } from "../context/AuthContext";
-import { changePassword } from "../services/user";
+import { changePassword } from "../services/changePasswordService";
+import { validateChangePassword } from "../utils/changePasswordValidation";
+
+const initialState = {
+  old_password: "",
+  new_password: "",
+  confirm_password: "",
+};
 
 const ChangePasswordPage = () => {
   const { user } = useAuth();
-  const [form, setForm] = useState({
-    old_password: "",
-    new_password: "",
-    confirm_password: "",
-  });
+  const [form, setForm] = useState(initialState);
+ 
   // Handle input changes (must be inside component to access setForm)
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
+
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [apiError, setApiError] = useState("");
+  const [error, setError] = useState("");
   const [showToast, setShowToast] = useState(false);
 
-  const validate = () => {
-    const errs = {};
-    if (!form.old_password || form.old_password.length < 6) {
-      errs.old_password = "Old password is too short";
-    }
-    if (!form.new_password || form.new_password.length < 6) {
-      errs.new_password = "New password is too short";
-    }
-    if (form.old_password === form.new_password) {
-      errs.new_password = "Cannot reuse old password";
-    }
-    if (!form.confirm_password || form.confirm_password.length < 6) {
-      errs.confirm_password = "Confirm password is too short";
-    }
-    if (form.new_password !== form.confirm_password) {
-      errs.confirm_password = "Passwords do not match";
-    }
-    return errs;
-  };
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setApiError("");
+    setError("");
     setShowToast(false);
-    const errs = validate();
-    if (Object.keys(errs).length) {
-      setApiError({
-        message: Object.values(errs),
-        type: "warning"
+    const errs = validateChangePassword(form);
+    if (errs.length > 0) {
+      setError({
+        message: errs[0],
+        type: "warning",
       });
       setShowToast(true);
       return;
@@ -59,33 +46,65 @@ const ChangePasswordPage = () => {
     setSubmitting(true);
     try {
       await changePassword(user.username, form.old_password, form.new_password);
-      setApiError({
+      setError({
         message: "Password changed successfully!",
-        type: "success"
+        type: "success",
       });
-      setShowToast(true);
-      setForm({ old_password: "", new_password: "", confirm_password: "" });
+      setForm(initialState);
     } catch (err) {
-      setApiError({
+      setError({
         message: err?.message || "Failed to change password.",
         resolution: err?.resolution || "",
-        type: "error"
+        type: "error",
       });
-      setShowToast(true);
     } finally {
+      setShowToast(true);
       setSubmitting(false);
     }
   };
 
   return (
     <Container maxWidth="sm" sx={{ mt: 10 }}>
-      <Paper elevation={4} sx={{ p: 2.5, borderRadius: 3, background: "#f8fafc", maxWidth: 430, mx: "auto", minHeight: 0 }}>
-        <Typography variant="h5" fontWeight={700} mb={2} align="center" color="primary.dark">
+      <Paper
+        elevation={4}
+        sx={{
+          p: 2.5,
+          borderRadius: 3,
+          background: "#f8fafc",
+          maxWidth: 430,
+          mx: "auto",
+          minHeight: 0,
+        }}
+      >
+        <Typography
+          variant="h5"
+          fontWeight={700}
+          mb={2}
+          align="center"
+          color="primary.dark"
+        >
           Change Password
         </Typography>
-        <form onSubmit={handleSubmit} noValidate className="w-full flex flex-col gap-3">
+        <Typography
+          variant="subtitle1"
+          align="center"
+          color="text.secondary"
+          sx={{ mb: 2 }}
+        >
+          Current User : <b>{user?.username}</b>
+        </Typography>
+        <form
+          onSubmit={handleSubmit}
+          noValidate
+          className="w-full flex flex-col gap-3"
+        >
           <div className="flex items-center gap-2 relative">
-            <label htmlFor="old_password" className="text-gray-700 text-base font-medium w-35 text-left">Old Password</label>
+            <label
+              htmlFor="old_password"
+              className="text-gray-700 text-base font-medium w-35 text-left"
+            >
+              Old Password
+            </label>
             <input
               id="old_password"
               name="old_password"
@@ -103,7 +122,9 @@ const ChangePasswordPage = () => {
               className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-blue-600 focus:outline-none"
               onClick={() => setShowOldPassword((v) => !v)}
               tabIndex={-1}
-              aria-label={showOldPassword ? "Hide old password" : "Show old password"}
+              aria-label={
+                showOldPassword ? "Hide old password" : "Show old password"
+              }
               disabled={submitting}
             >
               {showOldPassword ? (
@@ -114,7 +135,12 @@ const ChangePasswordPage = () => {
             </button>
           </div>
           <div className="flex items-center gap-2 relative">
-            <label htmlFor="new_password" className="text-gray-700 text-base font-medium w-35 text-left">New Password</label>
+            <label
+              htmlFor="new_password"
+              className="text-gray-700 text-base font-medium w-35 text-left"
+            >
+              New Password
+            </label>
             <input
               id="new_password"
               name="new_password"
@@ -132,7 +158,9 @@ const ChangePasswordPage = () => {
               className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-blue-600 focus:outline-none"
               onClick={() => setShowNewPassword((v) => !v)}
               tabIndex={-1}
-              aria-label={showNewPassword ? "Hide new password" : "Show new password"}
+              aria-label={
+                showNewPassword ? "Hide new password" : "Show new password"
+              }
               disabled={submitting}
             >
               {showNewPassword ? (
@@ -143,7 +171,12 @@ const ChangePasswordPage = () => {
             </button>
           </div>
           <div className="flex items-center gap-2 relative">
-            <label htmlFor="confirm_password" className="text-gray-700 text-base font-medium w-35 text-left">Confirm Password</label>
+            <label
+              htmlFor="confirm_password"
+              className="text-gray-700 text-base font-medium w-35 text-left"
+            >
+              Confirm Password
+            </label>
             <input
               id="confirm_password"
               name="confirm_password"
@@ -161,7 +194,11 @@ const ChangePasswordPage = () => {
               className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-blue-600 focus:outline-none"
               onClick={() => setShowConfirmPassword((v) => !v)}
               tabIndex={-1}
-              aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
+              aria-label={
+                showConfirmPassword
+                  ? "Hide confirm password"
+                  : "Show confirm password"
+              }
               disabled={submitting}
             >
               {showConfirmPassword ? (
@@ -184,9 +221,9 @@ const ChangePasswordPage = () => {
       </Paper>
       {showToast && (
         <Toast
-          message={apiError}
-          type={apiError.type || "info"}
-          duration={2500}
+          message={error.message}
+          resolution={error.resolution}
+          type={error.type}
           onClose={() => setShowToast(false)}
         />
       )}

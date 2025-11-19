@@ -5,7 +5,8 @@
 
 ## To Do List
 
-- Master
+- Road Challan
+- Backup
   
 ---
 
@@ -30,6 +31,10 @@
 - [ ] **MasterCreate** - Create Master record
 - [ ] **MasterUpdate** - Update Master record
 
+### Road Challan Module
+- [ ] **RoadChallanCreate** - Create Road Challan record
+- [ ] **RoadChallanPrint** - Print Road Challan record
+
 ---
 
 
@@ -53,11 +58,18 @@
 ### Master Module
 - [ ] **/master/create**
 - [ ] **/master/next_code**
-- [ ] **/master/check_available** - rewrite backend
-- [ ] **/master/list_names** - router name check
-- [ ] **/master/code** - rewrite backend
-- [ ] **/master/name** - rewrite backend
-- [ ] **patch/{code}**
+- [ ] **/master/check_available**
+- [ ] **/master/list_names** 
+- [ ] **/master/code** 
+- [ ] **/master/name**
+- [ ] **/master/patch/{code}**
+- [ ] **/master/fetch_address** - (Challan)
+
+### Challan Module
+- [ ] **/road_challan/next_code**
+- [ ] **/road_challan/create**
+- [ ] **/road_challan/last_challan_code**
+- [ ] **/road_challan/print**
 
 ---
 
@@ -66,6 +78,7 @@
 - [x] **Authorization**
 - [ ] **Database Schema** - needs refinement - Settlement
 - [x] **Initial Deployment**
+- [ ] **Backup**
 - [x] **Login & Menu**
 - [x] **User**
 - [ ] **Master**
@@ -77,7 +90,6 @@
 - [ ] **Final Deployment**
 
 ---
-
 
 
 

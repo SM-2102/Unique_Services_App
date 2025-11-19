@@ -1,6 +1,12 @@
 import React from "react";
 import {
-  LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
 } from "recharts";
 
 // Custom Legend to place inside chart container
@@ -9,36 +15,41 @@ const CustomLegend = (props) => {
   return (
     <div
       style={{
-        position: 'absolute',
+        position: "absolute",
         right: 0,
         bottom: 0,
         borderRadius: 6,
-        boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+        boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
         fontSize: 9,
         lineHeight: 1.5,
         zIndex: 2,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'flex-end',
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "flex-end",
       }}
     >
-      {payload && payload.map((entry, idx) => (
-        <span key={`legend-item-${idx}`} style={{ display: 'flex', alignItems: 'center', marginBottom: 0 }}>
-          <span style={{
-            display: 'inline-block',
-            width: 7,
-            height: 7,
-            backgroundColor: entry.color,
-            borderRadius: 0,
-            marginRight: 5,
-          }} />
-          {entry.value}
-        </span>
-      ))}
+      {payload &&
+        payload.map((entry, idx) => (
+          <span
+            key={`legend-item-${idx}`}
+            style={{ display: "flex", alignItems: "center", marginBottom: 0 }}
+          >
+            <span
+              style={{
+                display: "inline-block",
+                width: 7,
+                height: 7,
+                backgroundColor: entry.color,
+                borderRadius: 0,
+                marginRight: 5,
+              }}
+            />
+            {entry.value}
+          </span>
+        ))}
     </div>
   );
 };
-
 
 // Elegant date formatter: dd-mm-yy
 const formatDMY = (dateStr) => {
@@ -50,7 +61,6 @@ const formatDMY = (dateStr) => {
   const year = String(d.getFullYear()).slice(-2);
   return `${day}-${month}-${year}`;
 };
-
 
 const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
@@ -68,13 +78,22 @@ const CustomTooltip = ({ active, payload }) => {
           {data.srf_number}
         </span>
         <span className="block mt-1 text-gray-600">
-          SRF Date: <span className="font-normal text-gray-800">{formatDMY(data.srf_date)}</span>
+          SRF Date:{" "}
+          <span className="font-normal text-gray-800">
+            {formatDMY(data.srf_date)}
+          </span>
         </span>
         <span className="block text-gray-600">
-          Repair Date: <span className="font-normal text-gray-800">{formatDMY(data.repair_date)}</span>
+          Repair Date:{" "}
+          <span className="font-normal text-gray-800">
+            {formatDMY(data.repair_date)}
+          </span>
         </span>
         <span className="block text-gray-600">
-          Delivery Date: <span className="font-normal text-gray-800">{formatDMY(data.delivery_date)}</span>
+          Delivery Date:{" "}
+          <span className="font-normal text-gray-800">
+            {formatDMY(data.delivery_date)}
+          </span>
         </span>
       </div>
     );
@@ -82,20 +101,19 @@ const CustomTooltip = ({ active, payload }) => {
   return null;
 };
 
-const OutOfWarrantyTimeline = ({ data, loading, error }) => {
-  const chartRaw = data?.out_of_warranty?.srf_receive_vs_delivery_bar_graph || [];
+const OutOfWarrantyTimeline = ({ data }) => {
+  const chartRaw =
+    data?.out_of_warranty?.srf_receive_vs_delivery_bar_graph || [];
 
-  if (loading) {
-    return <div className="text-center py-4">Loading timeline data...</div>;
-  }
-  if (error) {
-    return <div className="text-center py-4 text-red-500">Error loading timeline data</div>;
-  }
   if (!Array.isArray(chartRaw) || chartRaw.length === 0) {
-    return <div className="text-center py-4 text-gray-500">No timeline data available</div>;
+    return (
+      <div className="text-center py-4 text-gray-500">
+        No timeline data available
+      </div>
+    ); 
   }
   // Prepare data for the chart
-  const chartData = chartRaw.map(item => ({
+  const chartData = chartRaw.map((item) => ({
     srf_number: item.srf_number,
     srf_date: new Date(item.srf_date).getTime(),
     repair_date: new Date(item.repair_date).getTime(),
@@ -106,11 +124,18 @@ const OutOfWarrantyTimeline = ({ data, loading, error }) => {
     _delivery_date: item.delivery_date,
   }));
   return (
-    <div style={{ position: 'relative', width: '100%', height: 190, paddingTop: '7px' }}>
+    <div
+      style={{
+        position: "relative",
+        width: "100%",
+        height: 190,
+        paddingTop: "7px",
+      }}
+    >
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={chartData} >
+        <LineChart data={chartData}>
           <XAxis dataKey="srf_number" hide />
-          <YAxis type="number" domain={['auto', 'auto']} hide />
+          <YAxis type="number" domain={["auto", "auto"]} hide />
           <Tooltip content={<CustomTooltip />} />
           <Legend content={<CustomLegend />} />
           <Line
@@ -120,7 +145,12 @@ const OutOfWarrantyTimeline = ({ data, loading, error }) => {
             stroke="#8884d8"
             strokeWidth={2}
             dot={{ r: 1 }}
-            activeDot={{ r: 3, stroke: '#8884d8', strokeWidth: 2, fill: '#8884d8' }}
+            activeDot={{
+              r: 3,
+              stroke: "#8884d8",
+              strokeWidth: 2,
+              fill: "#8884d8",
+            }}
           />
           <Line
             type="monotone"
@@ -129,7 +159,12 @@ const OutOfWarrantyTimeline = ({ data, loading, error }) => {
             stroke="#82ca9d"
             strokeWidth={2}
             dot={{ r: 1 }}
-            activeDot={{ r: 3, stroke: '#82ca9d', strokeWidth: 2, fill: '#82ca9d' }}
+            activeDot={{
+              r: 3,
+              stroke: "#82ca9d",
+              strokeWidth: 2,
+              fill: "#82ca9d",
+            }}
           />
           <Line
             type="monotone"
@@ -138,12 +173,33 @@ const OutOfWarrantyTimeline = ({ data, loading, error }) => {
             stroke="#ff7300"
             strokeWidth={2}
             dot={{ r: 1 }}
-            activeDot={{ r: 3, stroke: '#ff7300', strokeWidth: 2, fill: '#ff7300' }}
+            activeDot={{
+              r: 3,
+              stroke: "#ff7300",
+              strokeWidth: 2,
+              fill: "#ff7300",
+            }}
           />
           {/* Custom SVG axis lines overlay */}
           <g>
-            <line x1="0" y1="100%" x2="100%" y2="100%" stroke="grey" strokeWidth="3" vectorEffect="non-scaling-stroke" />
-            <line x1="0" y1="0" x2="0" y2="100%" stroke="grey" strokeWidth="3" vectorEffect="non-scaling-stroke" />
+            <line
+              x1="0"
+              y1="100%"
+              x2="100%"
+              y2="100%"
+              stroke="grey"
+              strokeWidth="3"
+              vectorEffect="non-scaling-stroke"
+            />
+            <line
+              x1="0"
+              y1="0"
+              x2="0"
+              y2="100%"
+              stroke="grey"
+              strokeWidth="3"
+              vectorEffect="non-scaling-stroke"
+            />
           </g>
         </LineChart>
       </ResponsiveContainer>

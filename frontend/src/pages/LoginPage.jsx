@@ -3,7 +3,7 @@ import Toast from "../components/Toast";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { login } from "../services/auth";
+import { login } from "../services/loginService";
 import loginImage from "../assets/login_image.png";
 
 function LoginPage() {
@@ -30,7 +30,7 @@ function LoginPage() {
     } else {
       setError({
         message: result.message || "Login failed",
-        resolution: result.resolution || ""
+        resolution: result.resolution || "",
       });
       setShowToast(true);
     }
@@ -40,13 +40,13 @@ function LoginPage() {
     <>
       {showToast && (
         <Toast
-          message={error}
+          message={error.message}
+          resolution={error.resolution}
           type="error"
           onClose={() => setShowToast(false)}
         />
       )}
       <div className="h-[calc(100vh-7rem)] relative flex items-center justify-center">
-
         {/* Background Image as IMG (prevents cropping) */}
         <img
           src={loginImage}
@@ -57,8 +57,10 @@ function LoginPage() {
         {/* Subtle dark overlay (optional, improves readability) */}
         <div className="absolute inset-0"></div>
 
-        <div className="relative z-10 w-full max-w-sm bg-[#f9fcff] border border-blue-800 rounded-xl shadow-lg p-6 flex flex-col"
-              style={{ marginLeft: "60%" }}>          
+        <div
+          className="relative z-10 w-full max-w-sm bg-[#f9fcff] border border-blue-800 rounded-xl shadow-lg p-6 flex flex-col"
+          style={{ marginLeft: "60%" }}
+        >
           <h2 className="text-2xl font-bold mb-6 text-gray-800 tracking-wide text-center">
             Unique Services Management App
           </h2>
@@ -79,9 +81,8 @@ function LoginPage() {
                   if (value.length > 25) return;
                   // Capitalize first letter of each word
                   value = value
-                    .split(' ')
-                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                    .join(' ');
+                          .toLowerCase()
+                          .replace(/(^|\s)([a-z])/g, (match) => match.toUpperCase());
                   setUsername(value);
                 }}
                 className="flex-1 px-3 py-2 rounded-lg border border-gray-300 bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium pr-10"

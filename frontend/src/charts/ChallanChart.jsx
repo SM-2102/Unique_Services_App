@@ -1,16 +1,14 @@
 // Chart for Challan Card
 import React, { useEffect, useRef, useState } from "react";
-import SpinnerLoading from "../components/SpinnerLoading";
+
 import {
   ResponsiveContainer,
   ComposedChart,
   Line,
   Bar,
   XAxis,
-  YAxis,
   Tooltip,
   Legend,
-  CartesianGrid,
 } from "recharts";
 
 const monthNames = [
@@ -136,7 +134,7 @@ const labelStyle = {
   letterSpacing: "0.5px",
 };
 
-const ChallanChart = ({ data, loading, error }) => {
+const ChallanChart = ({ data }) => {
   const [count, setCount] = useState(0);
   const [itemCount, setItemCount] = useState(0);
   const challanIntervalRef = useRef(null);
@@ -144,7 +142,7 @@ const ChallanChart = ({ data, loading, error }) => {
   const target = data?.challan?.number_of_challans || 0;
   const itemsTarget = data?.challan?.number_of_items || 0;
   const months = data?.challan?.challan_rolling_months || [];
-  
+
   // Animation for challan count
   useEffect(() => {
     if (target > 0) {
@@ -201,22 +199,6 @@ const ChallanChart = ({ data, loading, error }) => {
     };
   }, [itemsTarget]);
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[120px]">
-        <SpinnerLoading text="Loading Challan Data ..." />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div>
-        <SpinnerLoading text="Error Loading ..." />
-      </div>
-    );
-  }
-
   return (
     <div style={{ width: "100%", maxWidth: 900, margin: "0.5rem auto" }}>
       {/* Info Cards */}
@@ -256,7 +238,7 @@ const ChallanChart = ({ data, loading, error }) => {
               tick={{ fontSize: 14 }}
               tickFormatter={formatShortMonth}
             />
-            
+
             <Tooltip content={<CustomTooltip />} />
             <Legend
               verticalAlign="middle"

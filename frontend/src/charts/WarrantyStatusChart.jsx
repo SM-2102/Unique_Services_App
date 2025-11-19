@@ -1,6 +1,6 @@
 // Warranty Division Bar Chart
-import React, { useEffect, useState, useRef } from "react";
-const WarrantyStatusChart = ({ data, loading, error }) => {
+import React, { useEffect, useState } from "react";
+const WarrantyStatusChart = ({ data }) => {
   const [chartData, setChartData] = useState([]);
 
   useEffect(() => {
@@ -74,7 +74,18 @@ const WarrantyStatusChart = ({ data, loading, error }) => {
   return (
     <div
       className="relative w-full overflow-hidden"
-      style={{ marginTop: "15px", padding: "0 8px 12px 0", width: "100%", height: 200, minWidth: 0, minHeight: 0, boxSizing: 'border-box', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
+      style={{
+        marginTop: "15px",
+        padding: "0 8px 12px 0",
+        width: "100%",
+        height: 200,
+        minWidth: 0,
+        minHeight: 0,
+        boxSizing: "border-box",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+      }}
     >
       {/* Tooltip */}
       {tooltip.show && (
@@ -99,7 +110,10 @@ const WarrantyStatusChart = ({ data, loading, error }) => {
       )}
       <div className="flex flex-row items-start justify-start gap-0 w-full h-full">
         {/* Horizontal bars and labels */}
-        <div className="flex flex-col gap-2 w-full min-w-0 overflow-y-auto" style={{height: '100%'}}>
+        <div
+          className="flex flex-col gap-2 w-full min-w-0 overflow-y-auto"
+          style={{ height: "100%" }}
+        >
           {chartData.map((item, idx) => {
             const total = item.Y + item.N;
             const yPercentage = total > 0 ? (item.Y / total) * 100 : 0;

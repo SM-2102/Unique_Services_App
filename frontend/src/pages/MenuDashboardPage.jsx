@@ -1,14 +1,5 @@
 import React from "react";
 import MenuCard from "../components/MenuCard";
-import { useNavigate } from "react-router-dom";
-import {
-  FaUser,
-  FaTools,
-  FaShoppingBag,
-  FaStore,
-  FaReceipt,
-} from "react-icons/fa";
-import { MdOutlineBuild } from "react-icons/md";
 import CustomerChart from "../charts/CustomerChart";
 import ChallanChart from "../charts/ChallanChart";
 import MarketStatusChart from "../charts/MarketStatusChart";
@@ -20,84 +11,16 @@ import RetailDivisionDonutChart from "../charts/RetailDivisionDonutChart";
 import RetailSettledPieChart from "../charts/RetailSettledPieChart";
 import { useDashboardData } from "../hooks/useDashboardData";
 import SpinnerLoading from "../components/SpinnerLoading";
+import { menuConfig } from "../config/menuConfig";
 
-const cards = [
-  {
-    key: "customer",
-    title: "Customer Entry",
-    icon: <FaUser />,
-    bgColor: "#ffe4ec", // light pink
-    actions: [
-      { label: "Add Record", path: "/customer/create" },
-      { label: "Update Record", path: "/customer/update" },
-    ],
-  },
-  {
-    key: "warranty",
-    title: "Warranty Replacement / Repair",
-    icon: <FaTools />,
-    bgColor: "#fff7e6", // light orange
-    actions: [
-      { label: "Create SRF", path: "/warranty/create_srf" },
-      { label: "Create CNF Challan", path: "/warranty/create_cnf" },
-      { label: "Print SRF", path: "/warranty/print_srf" },
-      { label: "Print CNF Challan", path: "/warranty/print_cnf" },
-      { label: "Update SRF", path: "/warranty/update_srf" },
-    ],
-  },
-  {
-    key: "out_of_warranty",
-    title: "Out of Warranty Repair",
-    icon: <MdOutlineBuild />,
-    bgColor: "#e6fff7", // light teal
-    actions: [
-      { label: "Create SRF", path: "/oow/create_srf" },
-      { label: "Print SRF", path: "/oow/print_srf" },
-      { label: "Update SRF", path: "/oow/update_srf" },
-      { label: "Settle SRF", path: "/oow/settle_srf" },
-      { label: "Create Vendor Challan", path: "/oow/create_vendor_challan" },
-      { label: "Print Vendor Challan", path: "/oow/print_vendor_challan" },
-      { label: "Print Estimate", path: "/oow/print_estimate" },
-      { label: "Settle Vendor", path: "/oow/settle_vendor" },
-    ],
-  },
-  {
-    key: "market",
-    title: "Direct Market Replacement",
-    icon: <FaShoppingBag />,
-    bgColor: "#f0f4f8", // light lime
-    actions: [
-      { label: "Add Record", path: "/market/create" },
-      { label: "Update Record", path: "/market/update" },
-    ],
-  },
-  {
-    key: "challan",
-    title: "Road Challan",
-    icon: <FaReceipt />,
-    bgColor: "#faf6c0ff", // light yellow
-    actions: [
-      { label: "Create Challan", path: "/challan/create" },
-      { label: "Print Challan", path: "/challan/print" },
-    ],
-  },
-  {
-    key: "retail",
-    title: "Retail Sales / Services",
-    icon: <FaStore />,
-    bgColor: "#e7d7f8ff", // light purple
-    actions: [
-      { label: "Add Record", path: "/retail/create" },
-      { label: "Update Record", path: "/retail/update" },
-      { label: "Settle Record", path: "/retail/settle" },
-      { label: "Print Receipt", path: "/retail/print_receipt" },
-    ],
-  },
-];
+// Filter out actions with showInDashboard: false
+const cards = menuConfig.map(({ actions, ...rest }) => ({
+  ...rest,
+  actions: actions.filter((a) => a.showInDashboard !== false),
+}));
 
 const MenuDashboardPage = () => {
-  const navigate = useNavigate();
-  const { data, loading, error, refetch } = useDashboardData();
+  const { data, loading, error } = useDashboardData();
 
   return (
     // Using flex and max-height to prevent scrolling
@@ -118,16 +41,36 @@ const MenuDashboardPage = () => {
           <MenuCard
             key={key}
             title={title}
-            icon={icon}
+            icon={icon ? React.createElement(icon) : null}
             actions={actions}
             bgColor={bgColor}
             className="min-h-[300px] max-w-full w-full"
           >
             {key === "customer" && (
-              <CustomerChart data={data} loading={loading} error={error} />
+              loading ? (
+                <div className="w-full flex justify-center items-center">
+                  <SpinnerLoading text="Loading Customer Data ..." />
+                </div>
+              ) : error ? (
+                <div className="w-full flex justify-center items-center">
+                  <SpinnerLoading text={`Error Loading ...`} />
+                </div>
+              ) : (
+                <CustomerChart data={data} />
+              )
             )}
             {key === "challan" && (
-              <ChallanChart data={data} loading={loading} error={error} />
+              loading ? (
+                <div className="w-full flex justify-center items-center">
+                  <SpinnerLoading text="Loading Challan Data ..." />
+                </div>
+              ) : error ? (
+                <div className="w-full flex justify-center items-center">
+                  <SpinnerLoading text={`Error Loading ...`} />
+                </div>
+              ) : (
+                <ChallanChart data={data} />
+              )
             )}
             {key === "retail" && (
               <div className="flex flex-col md:flex-row gap-0 items-start justify-start w-full">
@@ -153,11 +96,17 @@ const MenuDashboardPage = () => {
             )}
             {key === "market" && (
               <div className="mt-2">
-                <MarketStatusChart
-                  data={data}
-                  loading={loading}
-                  error={error}
-                />
+                {loading ? (
+                  <div className="w-full flex justify-center items-center">
+                    <SpinnerLoading text="Loading Market Data ..." />
+                  </div>
+                ) : error ? (
+                  <div className="w-full flex justify-center items-center">
+                    <SpinnerLoading text={`Error Loading ...`} />
+                  </div>
+                ) : (
+                  <MarketStatusChart data={data} />
+                )}
               </div>
             )}
             {key === "warranty" && (
@@ -191,7 +140,7 @@ const MenuDashboardPage = () => {
                 ) : error ? (
                   <div className="w-full flex justify-center items-center">
                     <SpinnerLoading text={`Error Loading ...`} />
-                  </div>  
+                  </div>
                 ) : (
                   <>
                     <div className="w-full md:w-2/3 md:pr-0 md:px-0">

@@ -4,12 +4,9 @@ import API_ENDPOINTS from "../config/api";
 
 export const useDashboardData = () => {
   const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   const fetchDashboardData = async () => {
     try {
-      setLoading(true);
       const response = await fetch(API_ENDPOINTS.MENU_DASHBOARD, {
         method: "GET",
         headers: {
@@ -23,10 +20,7 @@ export const useDashboardData = () => {
 
       const dashboardData = await response.json();
       setData(dashboardData);
-      setError(null);
     } catch (err) {
-      console.error("Error fetching dashboard data:", err);
-      setError(err.message);
       // Set fallback data in case of error
       setData({
         customer: { number_of_customers: 0, top_customers: [] },
@@ -43,7 +37,6 @@ export const useDashboardData = () => {
         },
       });
     } finally {
-      setLoading(false);
     }
   };
 
@@ -51,5 +44,5 @@ export const useDashboardData = () => {
     fetchDashboardData();
   }, []);
 
-  return { data, loading, error, refetch: fetchDashboardData };
+  return { data, refetch: fetchDashboardData };
 };

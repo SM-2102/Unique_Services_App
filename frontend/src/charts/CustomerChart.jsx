@@ -13,9 +13,6 @@ import {
 } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 
-import SpinnerLoading from "../components/SpinnerLoading";
-import { FaUsers } from "react-icons/fa";
-
 const stylishFont = {
   fontFamily: 'Poppins, Montserrat, "Segoe UI", Arial, sans-serif',
   letterSpacing: "0.03em",
@@ -41,10 +38,9 @@ function toTitleCase(str) {
   return str.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
-const CustomerChart = ({ data, loading, error }) => {
+const CustomerChart = ({ data }) => {
   const [count, setCount] = useState(0);
   const intervalRef = useRef(null);
-  const [listVisible, setListVisible] = useState(false);
   const target = data?.customer?.number_of_customers || 0;
   // Convert top_customers object to array of { name, value }
   const topCustomersObj = data?.customer?.top_customers || {};
@@ -52,7 +48,7 @@ const CustomerChart = ({ data, loading, error }) => {
     .map(([name, value]) => ({ name: toTitleCase(name), value }))
     .sort((a, b) => b.value - a.value)
     .slice(0, 5);
-    
+
   useEffect(() => {
     if (target > 0) {
       let start = 0;
@@ -91,21 +87,6 @@ const CustomerChart = ({ data, loading, error }) => {
     );
   }, []);
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[120px]">
-        <SpinnerLoading text="Loading Customer Data ..." />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div>
-        <SpinnerLoading text="Error Loading ..." />
-      </div>
-    );
-  }
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center">

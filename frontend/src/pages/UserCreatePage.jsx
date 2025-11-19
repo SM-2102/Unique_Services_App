@@ -1,98 +1,64 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import {
-  Box,
-  Button,
-  Container,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-  Typography,
-  Paper,
-} from "@mui/material";
-import { createUser } from "../services/auth";
+import { Container, Typography, Paper } from "@mui/material";
+import { createUser } from "../services/createUserService";
 import Toast from "../components/Toast";
+import { validateCreateUser } from "../utils/createUserValidation";
 
 const roles = ["USER", "ADMIN"];
 
-const CreateUserPage = () => {
-  const [form, setForm] = useState({
+const initialForm = {
     username: "",
     password: "",
     role: "USER",
     phone_number: "",
-  });
-  const [errors, setErrors] = useState({});
-  const [submitting, setSubmitting] = useState(false);
-  const [apiError, setApiError] = useState("");
-  const [showToast, setShowToast] = useState(false);
-  const navigate = useNavigate();
-
-  const validate = () => {
-    const errs = {};
-    if (!form.username || form.username.length < 3) {
-      errs.username = "Enter your full name";
-    }
-    if (!form.password || form.password.length < 6) {
-      errs.password = "Password is too short";
-    }
-    if (!form.phone_number || !/^\d{10}$/.test(form.phone_number)) {
-      errs.phone_number = "Invalid contact number";
-    }
-    if (!roles.includes(form.role)) {
-      errs.role = "Role must be USER or ADMIN";
-    }
-    return errs;
   };
+
+const CreateUserPage = () => {
+  const [form, setForm] = useState(initialForm); 
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+  const [showToast, setShowToast] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     let newValue = value;
     if (name === "username") {
       if (value.length > 25) return; // Prevent input beyond 25 chars
-      // Capitalize first letter of each word
+      // Capitalize first letter of each word, rest lowercase
       newValue = value
-        .split(' ')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ');
+        .toLowerCase()
+        .replace(/(^|\s)([a-z])/g, (match) => match.toUpperCase());
     }
     setForm({ ...form, [name]: newValue });
-    setErrors({ ...errors, [name]: undefined });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setApiError("");
+    setError("");
     setShowToast(false);
-    const errs = validate();
-    if (Object.keys(errs).length) {
-      // Show all field errors in a warning toast
-      setApiError({
-        message: Object.values(errs),
+    const errs = validateCreateUser(form);
+    if (errs.length > 0) {
+      setError({
+        message: errs[0],
+        type: "warning",
       });
       setShowToast(true);
-      setErrors(errs);
       return;
     }
     setSubmitting(true);
     try {
       await createUser(form);
-      setApiError({
+      setError({
         message: `User created successfully!`,
-        resolution: "",
-        type: "success"
+        type: "success",
       });
       setShowToast(true);
-      setTimeout(() => {
-        window.location.reload();
-      }, 1200);
+      setForm(initialForm);
     } catch (err) {
-      setApiError({
+      setError({
         message: err?.message || "Failed to create user.",
         resolution: err?.resolution || "",
-        type: "error"
+        type: "error",
       });
       setShowToast(true);
     } finally {
@@ -102,14 +68,39 @@ const CreateUserPage = () => {
 
   return (
     <Container maxWidth="xs" sx={{ mt: 8 }}>
-      <Paper elevation={4} sx={{ p: 2.5, borderRadius: 3, background: "#f8fafc", maxWidth: 340, mx: "auto", minHeight: 0 }}>
-        <Typography variant="h5" fontWeight={700} mb={2} align="center" color="primary.dark">
+      <Paper
+        elevation={4}
+        sx={{
+          p: 2.5,
+          borderRadius: 3,
+          background: "#f8fafc",
+          maxWidth: 340,
+          mx: "auto",
+          minHeight: 0,
+        }}
+      >
+        <Typography
+          variant="h5"
+          fontWeight={700}
+          mb={2}
+          align="center"
+          color="primary.dark"
+        >
           Create New User
         </Typography>
-        <form onSubmit={handleSubmit} noValidate className="w-full flex flex-col gap-3">
+        <form
+          onSubmit={handleSubmit}
+          noValidate
+          className="w-full flex flex-col gap-3"
+        >
           {/* Username */}
           <div className="flex items-center gap-2">
-            <label htmlFor="username" className="text-gray-700 text-base font-medium w-28 text-left">Username</label>
+            <label
+              htmlFor="username"
+              className="text-gray-700 text-base font-medium w-28 text-left"
+            >
+              Username
+            </label>
             <input
               id="username"
               name="username"
@@ -128,7 +119,12 @@ const CreateUserPage = () => {
 
           {/* Password */}
           <div className="flex items-center gap-2">
-            <label htmlFor="password" className="text-gray-700 text-base font-medium w-28 text-left">Password</label>
+            <label
+              htmlFor="password"
+              className="text-gray-700 text-base font-medium w-28 text-left"
+            >
+              Password
+            </label>
             <input
               id="password"
               name="password"
@@ -146,7 +142,12 @@ const CreateUserPage = () => {
 
           {/* Phone Number */}
           <div className="flex items-center gap-2">
-            <label htmlFor="phone_number" className="text-gray-700 text-base font-medium w-28 text-left">Contact</label>
+            <label
+              htmlFor="phone_number"
+              className="text-gray-700 text-base font-medium w-28 text-left"
+            >
+              Contact
+            </label>
             <input
               id="phone_number"
               name="phone_number"
@@ -163,7 +164,12 @@ const CreateUserPage = () => {
 
           {/* Role */}
           <div className="flex items-center gap-2">
-            <label htmlFor="role" className="text-gray-700 text-base font-medium w-28 text-left">Role</label>
+            <label
+              htmlFor="role"
+              className="text-gray-700 text-base font-medium w-28 text-left"
+            >
+              Role
+            </label>
             <select
               id="role"
               name="role"
@@ -174,7 +180,9 @@ const CreateUserPage = () => {
               disabled={submitting}
             >
               {roles.map((role) => (
-                <option key={role} value={role}>{role}</option>
+                <option key={role} value={role}>
+                  {role}
+                </option>
               ))}
             </select>
           </div>
@@ -192,9 +200,9 @@ const CreateUserPage = () => {
       </Paper>
       {showToast && (
         <Toast
-          message={apiError}
-          type={apiError.type || (Object.keys(errors).length ? "warning" : "error")}
-          duration={2500}
+          message={error.message}
+          resolution={error.resolution}
+          type={error.type}
           onClose={() => setShowToast(false)}
         />
       )}

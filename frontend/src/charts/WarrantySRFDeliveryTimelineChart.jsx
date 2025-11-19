@@ -4,14 +4,11 @@ import {
   ResponsiveContainer,
   LineChart,
   Line,
-  XAxis,
   YAxis,
   Tooltip,
-  Legend,
-  CartesianGrid,
 } from "recharts";
 
-const WarrantySRFDeliveryTimelineChart = ({ data, loading, error }) => {
+const WarrantySRFDeliveryTimelineChart = ({ data }) => {
   const [chartData, setChartData] = useState([]);
 
   useEffect(() => {
@@ -35,7 +32,7 @@ const WarrantySRFDeliveryTimelineChart = ({ data, loading, error }) => {
   }, [data]);
 
   // Custom tooltip for recharts
-  const CustomTooltip = ({ active, payload, label }) => {
+  const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
       const item = payload[0].payload;
       // Format dates for display as dd-mm-yy
@@ -90,21 +87,6 @@ const WarrantySRFDeliveryTimelineChart = ({ data, loading, error }) => {
     return "#ef4444"; // red-500
   };
 
-  // Fallback UI for loading, error, or empty data
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-40 bg-[#fff7e6]">
-        <span className="text-gray-500 text-sm">Loading chart...</span>
-      </div>
-    );
-  }
-  if (error) {
-    return (
-      <div className="flex items-center justify-center h-40 bg-[#fff7e6] ">
-        <span className="text-red-500 text-sm">Error loading chart data.</span>
-      </div>
-    );
-  }
   if (!chartData || chartData.length === 0) {
     return (
       <div className="flex items-center justify-center h-40 bg-[#fff7e6]">
@@ -116,15 +98,15 @@ const WarrantySRFDeliveryTimelineChart = ({ data, loading, error }) => {
   return (
     <div
       style={{
-        width: '100%',
+        width: "100%",
         height: 205,
         minWidth: 0,
         minHeight: 0,
-        boxSizing: 'border-box',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        marginTop: '10px',
+        boxSizing: "border-box",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        marginTop: "10px",
       }}
     >
       <ResponsiveContainer width="100%" height="100%">
