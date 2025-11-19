@@ -54,7 +54,7 @@ const Header = () => {
             className="text-blue-50 text-sm sm:text-lg font-medium mb-1"
             style={{ fontFamily: "Montserrat, sans-serif" }}
           >
-            Delivering Excellence Since 1990
+            12, Sakharitola Street, Kolkata - 700014
           </span>
         </div>
       </div>
