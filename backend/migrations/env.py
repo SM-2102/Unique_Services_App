@@ -6,18 +6,18 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
-from src.auth.models import User
-from src.master.models import Master
-from src.service_center.models import Service_Centre
-from src.service_charge.models import OW_Service_Charge
-from src.retail.models import Retail
-from src.market.models import Market
-from src.challan.models import Challan
-from src.warranty.models import Warranty
-from src.out_of_warranty.models import OutOfWarranty
-from src.db.models import BlockedJTI
+from auth.models import User
+from master.models import Master
+from service_center.models import Service_Centre
+from service_charge.models import OW_Service_Charge
+from retail.models import Retail
+from market.models import Market
+from challan.models import Challan
+from warranty.models import Warranty
+from out_of_warranty.models import OutOfWarranty
+from db.models import BlockedJTI
 from sqlmodel import SQLModel
-from src.config import Config
+from config import Config
 
 database_url = Config.DATABASE_URL
 

@@ -1,7 +1,13 @@
 from sqlalchemy import func, select, union_all
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
-from src.exceptions import IncorrectCodeFormat, MasterAlreadyExists, MasterNotFound, CannotChangeMasterName
+from exceptions import (
+    CannotChangeMasterName,
+    IncorrectCodeFormat,
+    MasterAlreadyExists,
+    MasterNotFound,
+)
 
 from .models import Master
 from .schemas import CreateMaster, UpdateMaster
@@ -12,19 +18,20 @@ class MasterService:
     async def create_master(
         self, session: AsyncSession, master: CreateMaster, token: dict
     ):
-        master_data_dict = master.model_dump()
-        master_data_dict["code"] = await self.master_next_code(session)
-        if await self.check_master_name_available(master.name, session):
+        for _ in range(3):  # Retry up to 3 times
+            master_data_dict = master.model_dump()
+            master_data_dict["code"] = await self.master_next_code(session)
+            if await self.check_master_name_available(master.name, session):
+                raise MasterAlreadyExists()
+            master_data_dict["created_by"] = token["user"]["username"]
+            new_master = Master(**master_data_dict)
+            session.add(new_master)
+            try:
+                await session.commit()
+                return new_master
+            except IntegrityError:
+                await session.rollback()
             raise MasterAlreadyExists()
-        master_data_dict["created_by"] = token["user"]["username"]
-        new_master = Master(**master_data_dict)
-        session.add(new_master)
-        try:
-            await session.commit()
-        except:
-            await session.rollback()
-            raise MasterAlreadyExists()
-        return new_master
 
     async def master_next_code(self, session: AsyncSession):
         statement = select(Master.code).order_by(Master.code.desc()).limit(1)
@@ -52,9 +59,9 @@ class MasterService:
         return names
 
     async def get_master_by_code(self, code: str, session: AsyncSession):
-        #format code to C____
+        # format code to C____
         if len(code) != 5:
-                code = 'C' + code.zfill(4)
+            code = "C" + code.zfill(4)
         if not code.startswith("C") or not code[1:].isdigit():
             raise IncorrectCodeFormat()
         statement = select(Master).where(Master.code == code)
@@ -90,4 +97,3 @@ class MasterService:
             raise MasterAlreadyExists()
         await session.refresh(existing_master)
         return existing_master
-

@@ -1,25 +1,32 @@
-from src.exceptions import UserAlreadyExists
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy.future import select
 
-from src.exceptions import CannotDeleteCurrentUser, InvalidCredentials, UserNotFound
-from src.user.schema import UserChangePassword, UserCreate
-from src.auth.utils import generate_hash_password, verify_password
-from src.auth.models import User
+from auth.models import User
+from auth.utils import generate_hash_password, verify_password
+from exceptions import (
+    CannotDeleteCurrentUser,
+    InvalidCredentials,
+    UserAlreadyExists,
+    UserNotFound,
+)
+from user.schema import UserChangePassword, UserCreate
+
 
 class UserService:
 
     async def list_users(self, session: AsyncSession):
-        statement = select(User).where(User.is_active == 'Y')
+        statement = select(User).where(User.is_active == "Y")
         result = await session.execute(statement)
         return result.scalars().all()
-    
+
     async def list_standard_users(self, session: AsyncSession):
-        statement = select(User).where((User.is_active == 'Y') & (User.role == 'USER'))
+        statement = select(User).where((User.is_active == "Y") & (User.role == "USER"))
         result = await session.execute(statement)
         return result.scalars().all()
 
     async def create_user(self, session: AsyncSession, user: UserCreate):
+        user.username = user.username.strip()
+        user.username = " ".join(user.username.split())
         user_data_dict = user.model_dump()
         new_user = User(**user_data_dict)
         new_user.password = generate_hash_password(user_data_dict["password"])
@@ -34,19 +41,23 @@ class UserService:
     async def user_exists(self, username: str, session: AsyncSession) -> bool:
         existing_user = await self.get_user_by_username(username, session)
         return existing_user is not None
-    
+
     async def get_user_by_username(self, username: str, session: AsyncSession):
-        statement = select(User).where((User.username == username) & (User.is_active == 'Y'))
+        username = username.strip()
+        username = " ".join(username.split())
+        statement = select(User).where(
+            User.username.ilike(username), User.is_active == "Y"
+        )
         result = await session.execute(statement)
         return result.scalars().first()
-    
+
     async def delete_user(self, username: str, session: AsyncSession, token: dict):
         user_to_delete = await self.get_user_by_username(username, session)
         if not user_to_delete:
             raise UserNotFound()
         if token["user"]["username"] == username:
             raise CannotDeleteCurrentUser()
-        user_to_delete.is_active = 'N'
+        user_to_delete.is_active = "N"
         session.add(user_to_delete)
         await session.commit()
 

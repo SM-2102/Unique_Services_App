@@ -1,14 +1,15 @@
 import uuid
 from datetime import datetime, timedelta
+from exceptions import InvalidToken
 
 import jwt
 from passlib.context import CryptContext
 
-from src.config import Config
+from config import Config
 
 password_context = CryptContext(schemes=["bcrypt"])
 
-ACCESS_TOKEN_EXPIRY = 36000
+ACCESS_TOKEN_EXPIRY = 60
 
 
 def generate_hash_password(password: str) -> str:
@@ -43,6 +44,8 @@ def decode_user_token(token: str) -> dict:
             jwt=token, key=Config.JWT_SECRET_KEY, algorithms=[Config.JWT_ALGORITHM]
         )
         return token_data
-
+    except jwt.ExpiredSignatureError:
+        # Explicitly raise InvalidToken for expired tokens
+        raise InvalidToken()
     except jwt.PyJWTError:
         return None

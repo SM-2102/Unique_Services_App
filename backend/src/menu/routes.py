@@ -6,9 +6,9 @@ from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from src.auth.dependencies import AccessTokenBearer
-from src.db.db import get_session
-from src.menu.service import MenuService
+from auth.dependencies import AccessTokenBearer
+from db.db import get_session
+from menu.service import MenuService
 
 menu_router = APIRouter()
 menu_service = MenuService()
@@ -31,22 +31,26 @@ Returns dashboard data:
 - final_status_bar_graph_out_of_warranty.
 
 """
+
+
 @menu_router.get("/dashboard", status_code=status.HTTP_200_OK)
-async def get_dashboard_data(session: AsyncSession = Depends(get_session), _=Depends(access_token_bearer)):
+async def get_dashboard_data(
+    session: AsyncSession = Depends(get_session), _=Depends(access_token_bearer)
+):
     number_of_customers = await menu_service.number_of_masters(session)
     top_customers = await menu_service.top_customers(session)
 
-    retail_division_wise_data = await menu_service.retail_number_of_records_per_division(
+    retail_division_wise_data = (
+        await menu_service.retail_number_of_records_per_division(session)
+    )
+    retail_received_settled_unsettled = await menu_service.retail_pie_chart_counts(
         session
     )
-    retail_received_settled_unsettled = await menu_service.retail_pie_chart_counts(session)
 
     number_of_challan = await menu_service.number_of_challan(session)
 
     challan_number_of_items = await menu_service.challan_number_of_items(session)
-    challan_rolling_months = await menu_service.challan_counts_rolling_months(
-        session
-    )
+    challan_rolling_months = await menu_service.challan_counts_rolling_months(session)
 
     market_status_per_division = await menu_service.market_status_division_wise(session)
 
@@ -54,10 +58,8 @@ async def get_dashboard_data(session: AsyncSession = Depends(get_session), _=Dep
         await menu_service.warranty_pending_completed_per_division(session)
     )
     warranty_srf_delivery = await menu_service.warranty_srf_vs_delivery(session)
-    
-    ow_srf_repair_delivery = await menu_service.ow_srf_vs_repair_vs_delivery(
-        session
-    )
+
+    ow_srf_repair_delivery = await menu_service.ow_srf_vs_repair_vs_delivery(session)
     ow_pending_completed_per_division = (
         await menu_service.ow_pending_completed_per_division(session)
     )
@@ -88,4 +90,3 @@ async def get_dashboard_data(session: AsyncSession = Depends(get_session), _=Dep
         },
     }
     return JSONResponse(content=dashboard_data)
-

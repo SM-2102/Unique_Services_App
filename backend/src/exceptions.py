@@ -57,6 +57,7 @@ class UserNotFound(BaseException):
 class IncorrectCodeFormat(BaseException):
     """Incorrect Code Format"""
 
+
 class CannotChangeMasterName(BaseException):
     """Cannot change the master name once set"""
 

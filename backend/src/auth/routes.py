@@ -4,11 +4,11 @@ from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from src.auth.dependencies import AccessTokenBearer, RefreshTokenBearer
-from src.auth.service import AuthService
-from src.db.db import get_session
-from src.db.jti import add_jti_to_blocklist
-from src.exceptions import InvalidToken
+from auth.dependencies import AccessTokenBearer, RefreshTokenBearer
+from auth.service import AuthService
+from db.db import get_session
+from db.jti import add_jti_to_blocklist
+from exceptions import InvalidToken
 
 from .schemas import UserLogin, UserResponse
 from .utils import create_user_token
@@ -19,8 +19,6 @@ auth_router = APIRouter()
 auth_service = AuthService()
 access_token_bearer = AccessTokenBearer()
 refresh_token_bearer = RefreshTokenBearer()
-
-
 
 
 # """
@@ -37,6 +35,7 @@ async def login(user: UserLogin, session: AsyncSession = Depends(get_session)):
     refresh_token = create_user_token(
         user_data={"username": valid_user.username, "role": valid_user.role},
         expiry=timedelta(days=REFRESH_TOKEN_EXPIRY_DAYS),
+        refresh=True
     )
     response = JSONResponse(
         content={
@@ -48,9 +47,9 @@ async def login(user: UserLogin, session: AsyncSession = Depends(get_session)):
         key="access_token",
         value=access_token,
         httponly=True,
-        secure=True,  # Set to True in production (requires HTTPS)
+        secure=False,  # Set to True in production (requires HTTPS)
         samesite="lax",  # Or 'strict' or 'none' as needed
-        max_age=3600 * 2,  # 10 hours
+        max_age=3600 * 3, # 3 hours
         path="/",
     )
     # Optionally, set the refresh token as a cookie too
@@ -58,7 +57,7 @@ async def login(user: UserLogin, session: AsyncSession = Depends(get_session)):
         key="refresh_token",
         value=refresh_token,
         httponly=True,
-        secure=True,
+        secure=False, # Set to True in production
         samesite="lax",
         max_age=3600 * 24 * REFRESH_TOKEN_EXPIRY_DAYS,
         path="/",
@@ -92,8 +91,11 @@ async def logout(token_details=Depends(access_token_bearer)):
 
 
 @auth_router.get("/me", status_code=status.HTTP_200_OK, response_model=UserResponse)
-async def get_current_user(token_data=Depends(access_token_bearer), session: AsyncSession = Depends(get_session)):
-    username = token_data['user']['username']
+async def get_current_user(
+    token_data=Depends(access_token_bearer),
+    session: AsyncSession = Depends(get_session),
+):
+    username = token_data["user"]["username"]
     user = await auth_service.get_user_by_username(username, session)
     return user
 
@@ -120,9 +122,9 @@ async def refresh_token(token_data=Depends(refresh_token_bearer)):
             key="access_token",
             value=new_access_token,
             httponly=True,
-            secure=True,  # Set to True in production
+            secure=False,  # Set to True in production
             samesite="lax",
-            max_age=3600 * 10,
+            max_age=3600 * 3, # 3 hours
             path="/",
         )
         return response

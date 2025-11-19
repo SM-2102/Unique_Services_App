@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str
     FRONTEND_URL: str
 
-    model_config = SettingsConfigDict(env_file="src/.env", extra="ignore")
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
 
 Config = Settings()

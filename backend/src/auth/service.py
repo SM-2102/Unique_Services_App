@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy.future import select
 
-from src.exceptions import InvalidCredentials, UserNotFound
+from exceptions import InvalidCredentials, UserNotFound
 
 from .models import User
 from .schemas import UserLogin
@@ -9,7 +9,7 @@ from .utils import verify_password
 
 
 class AuthService:
-    
+
     async def login(self, user: UserLogin, session: AsyncSession) -> bool:
         existing_user = await self.get_user_by_username(user.username, session)
         if not existing_user:
@@ -19,6 +19,11 @@ class AuthService:
         raise InvalidCredentials()
 
     async def get_user_by_username(self, username: str, session: AsyncSession):
-        statement = select(User).where((User.username == username) & (User.is_active == 'Y'))
+        # Normalize username spacing
+        username = username.strip()
+        username = " ".join(username.split())
+        statement = select(User).where(
+            User.username.ilike(username), User.is_active == "Y"
+        )
         result = await session.execute(statement)
         return result.scalars().first()

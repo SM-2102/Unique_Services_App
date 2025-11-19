@@ -4,10 +4,10 @@ from fastapi import Depends, Request
 from fastapi.security import HTTPBearer
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
-from src.auth.models import User
-from src.db.db import get_session
-from src.db.jti import jti_in_blocklist
-from src.exceptions import (
+from auth.models import User
+from db.db import get_session
+from db.jti import jti_in_blocklist
+from exceptions import (
     AccessDenied,
     AccessTokenRequired,
     InvalidToken,
@@ -32,7 +32,11 @@ class TokenBearer(HTTPBearer):
             token = auth_header.split(" ", 1)[1]
         # If not present, try to get from cookie
         if not token:
-            token = request.cookies.get("access_token")
+            # For refresh token endpoints, use the refresh_token cookie
+            if isinstance(self, RefreshTokenBearer):
+                token = request.cookies.get("refresh_token")
+            else:
+                token = request.cookies.get("access_token")
         if not token:
             raise InvalidToken()
         token_data = decode_user_token(token)

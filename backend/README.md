@@ -8,7 +8,8 @@
 - Remove `src.` from all files
 - In `main.py` change the `.exceptions` import
 - In `main.py` change the `.middleware` import
-- `samesite` of `set.cookie` has to be set `none`
+- `samesite` of `set.cookie` has to be set to `none`
+- `secure` of `set.cookie` has to be set to `true`
 
 ### Alembic Database Migrations
 1. Initialize Alembic (run once):
@@ -25,5 +26,4 @@
 	```
 
 ### JWT Token Usage
-
 Create JWT Token - `import secrets` and `secrets.token_hex(16)`

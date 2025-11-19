@@ -1,13 +1,15 @@
 from datetime import date, timedelta
+
 from sqlalchemy import case, func, select, union_all
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
-from src.challan.models import Challan
-from src.market.models import Market
-from src.retail.models import Retail
-from src.master.models import Master
-from src.out_of_warranty.models import OutOfWarranty
-from src.warranty.models import Warranty
+from challan.models import Challan
+from market.models import Market
+from master.models import Master
+from out_of_warranty.models import OutOfWarranty
+from retail.models import Retail
+from warranty.models import Warranty
+
 
 class MenuService:
 
@@ -36,7 +38,7 @@ class MenuService:
         result = await session.execute(statement)
         top_customers = result.all()
         return {row.name: row.total_count for row in top_customers}
-    
+
     async def retail_number_of_records_per_division(self, session: AsyncSession):
         statement = select(Retail.division, func.count()).group_by(Retail.division)
         result = await session.execute(statement)
@@ -58,7 +60,7 @@ class MenuService:
             "received_not_settled": data["received_not_settled"],
             "settled": data["settled"],
         }
-    
+
     async def number_of_challan(self, session: AsyncSession):
         statement = select(func.count(Challan.challan_number))
         result = await session.execute(statement)
@@ -129,7 +131,7 @@ class MenuService:
             {"division": division, "final_status": final_status, "count": count}
             for division, final_status, count in rows
         ]
-    
+
     async def warranty_pending_completed_per_division(self, session: AsyncSession):
         statement = select(
             Warranty.division, Warranty.settlement, func.count().label("count")
@@ -155,7 +157,7 @@ class MenuService:
                 Warranty.srf_date.isnot(None),
                 Warranty.delivery_date.isnot(None),
                 Warranty.srf_date >= sixty_days_ago,
-                Warranty.srf_number.like('R_____/1'),
+                Warranty.srf_number.like("R_____/1"),
             )
             .order_by(Warranty.srf_date)
             .limit(25)
@@ -211,7 +213,7 @@ class MenuService:
                 OutOfWarranty.repair_date.isnot(None),
                 OutOfWarranty.delivery_date.isnot(None),
                 OutOfWarranty.srf_date >= sixty_days_ago,
-                OutOfWarranty.srf_number.like('S_____/1'),
+                OutOfWarranty.srf_number.like("S_____/1"),
             )
             .order_by(OutOfWarranty.srf_number)
             .limit(25)
@@ -230,8 +232,3 @@ class MenuService:
             for r in rows
         ]
         return data
-
-
-
-
-

@@ -3,19 +3,19 @@ import json
 from fastapi import Request
 from starlette.middleware.base import BaseHTTPMiddleware
 
-
-def capitalize_values(obj):
-    if isinstance(obj, dict):
-        return {k: capitalize_values(v) for k, v in obj.items()}
-    elif isinstance(obj, list):
-        return [capitalize_values(item) for item in obj]
-    elif isinstance(obj, str):
-        return obj.upper()
+# Utility to recursively strip leading/trailing spaces from all string values in a dict/list
+def strip_outer_whitespace(data):
+    if isinstance(data, dict):
+        return {k: strip_outer_whitespace(v) for k, v in data.items()}
+    elif isinstance(data, list):
+        return [strip_outer_whitespace(item) for item in data]
+    elif isinstance(data, str):
+        return data.strip()
     else:
-        return obj
+        return data
+    
 
-
-class CapitalizeJSONMiddleware(BaseHTTPMiddleware):
+class StripJSONMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         excluded_paths = [
             "/auth/login",
@@ -32,7 +32,7 @@ class CapitalizeJSONMiddleware(BaseHTTPMiddleware):
             if body_bytes:
                 try:
                     original_data = json.loads(body_bytes)
-                    capitalized_data = capitalize_values(original_data)
+                    capitalized_data = strip_outer_whitespace(original_data)
                     request._body = json.dumps(capitalized_data).encode("utf-8")
                 except json.JSONDecodeError:
                     pass 
