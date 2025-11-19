@@ -1,0 +1,63 @@
+from fastapi import FastAPI
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
+
+from auth.routes import auth_router
+from exceptions import register_exceptions
+from master.routes import master_router
+from menu.routes import menu_router
+from middleware.middleware import register_middleware
+from user.routes import user_router
+
+version = "v1"
+
+app = FastAPI(
+    version=version,
+    title="Unique Services",
+    description="Unique Services Management System",
+    license_info={"name": "MIT License", "url": "https://opensource.org/license/mit"},
+    contact={
+        "name": "Sukanya Manna",
+        "url": "https://github.com/SM-2102",
+        "email": "sukanya.manna.2002@gmail.com",
+    },
+    openapi_url=f"/openapi.json",
+    docs_url=f"/docs",
+    redoc_url=f"/redoc",
+)
+
+app.mount("/public", StaticFiles(directory="public"), name="public")
+
+
+@app.get("/")
+def read_root():
+    return {
+        "title": "Unique Services",
+        "description": "Unique Services Management System",
+        "version": version,
+        "contact": {
+            "name": "Sukanya Manna",
+            "url": "https://github.com/SM-2102",
+            "email": "sukanya.manna.2002@gmail.com",
+        },
+        "license": {"name": "MIT License", "url": "https://opensource.org/license/mit"},
+        "message": "Welcome to Unique Services Management System",
+    }
+
+
+@app.get("/favicon.ico", include_in_schema=False)
+async def favicon():
+    return FileResponse("public/favicon.ico")
+
+
+# Register middleware
+register_middleware(app)
+
+# Register exception handlers
+register_exceptions(app)
+
+# Routes
+app.include_router(auth_router, prefix="/auth", tags=["Authentication"])
+app.include_router(user_router, prefix="/user", tags=["User"])
+app.include_router(menu_router, prefix="/menu", tags=["Menu"])
+app.include_router(master_router, prefix="/master", tags=["Master"])

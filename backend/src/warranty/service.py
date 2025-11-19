@@ -2,7 +2,7 @@ from datetime import date, timedelta
 
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
-from src.warranty.models import Warranty
+from warranty.models import Warranty
 
 
 class WarrantyService:

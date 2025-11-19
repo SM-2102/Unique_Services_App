@@ -8,6 +8,7 @@ import {
 } from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
 import API_ENDPOINTS from "../config/api";
+import { authFetch } from "../services/authFetchService";
 import SpinnerLoading from "./SpinnerLoading";
 
 const UserMenu = () => {
@@ -47,9 +48,14 @@ const UserMenu = () => {
       setUserLoading(true);
       setUserError(null);
       try {
-        const res = await fetch(API_ENDPOINTS.AUTH_ME, {
-          credentials: "include",
-        });
+        const res = await authFetch(
+          API_ENDPOINTS.AUTH_ME,
+          {},
+          () => {
+            setUser(null);
+            setUserError("Session expired. Please log in again.");
+          }
+        );
         if (res.ok) {
           const data = await res.json();
           setUser(data.user || data);
@@ -89,7 +95,7 @@ const UserMenu = () => {
 
   const handleShowStandardUsers = () => {
     navigate("/show-standard-users");
-  }
+  };
 
   return (
     <div className="relative" ref={menuRef}>
@@ -161,7 +167,7 @@ const UserMenu = () => {
                 <FaUsers className="mr-3 h-4 w-4 text-green-500" />
                 Show Users
               </button>
-              </>
+            </>
           )}
 
           <button

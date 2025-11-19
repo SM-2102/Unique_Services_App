@@ -1,8 +1,7 @@
 // Market Status Stacked Bar Chart
 import React, { useEffect, useState } from "react";
-import SpinnerLoading from "../components/SpinnerLoading";
 
-const MarketStatusChart = ({ data, loading, error }) => {
+const MarketStatusChart = ({ data }) => {
   const [chartData, setChartData] = useState([]);
 
   useEffect(() => {
@@ -73,21 +72,6 @@ const MarketStatusChart = ({ data, loading, error }) => {
       }, idx * 200);
     });
   }, [chartData]);
-
-  if (loading) {
-    return (
-      <div>
-        <SpinnerLoading text="Loading Market Status Data ..." />
-      </div>
-    );
-  }
-  if (error) {
-    return (
-      <div>
-        <SpinnerLoading text="Error Loading ..." />
-      </div>
-    );
-  }
 
   return (
     <div className="bg-[#f0f4f8] p-3 rounded-lg relative w-full max-w-full overflow-x-auto">

@@ -29,8 +29,10 @@ class MasterResponse(BaseModel):
 class UpdateMaster(CreateMaster):
     pass
 
+
 class MasterCode(BaseModel):
     code: str
+
 
 class MasterName(BaseModel):
     name: str

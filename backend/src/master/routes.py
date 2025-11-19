@@ -4,11 +4,17 @@ from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from src.auth.dependencies import AccessTokenBearer
-from src.db.db import get_session
-from src.exceptions import MasterNotFound
-from src.master.schemas import CreateMaster, MasterResponse, UpdateMaster, MasterName, MasterCode
-from src.master.service import MasterService
+from auth.dependencies import AccessTokenBearer
+from db.db import get_session
+from exceptions import MasterNotFound
+from master.schemas import (
+    CreateMaster,
+    MasterCode,
+    MasterName,
+    MasterResponse,
+    UpdateMaster,
+)
+from master.service import MasterService
 
 master_router = APIRouter()
 master_service = MasterService()
@@ -42,13 +48,14 @@ async def master_next_code(
     return JSONResponse(content={"next_code": next_code})
 
 
-
 """
 List all master names.
 """
 
 
-@master_router.get("/list_names", response_model=List[str], status_code=status.HTTP_200_OK)
+@master_router.get(
+    "/list_names", response_model=List[str], status_code=status.HTTP_200_OK
+)
 async def list_master_names(
     session: AsyncSession = Depends(get_session), _=Depends(access_token_bearer)
 ):
@@ -107,11 +114,3 @@ async def update_master(
         raise MasterNotFound()
     new_master = await master_service.update_master(code, master, session, token)
     return f"Master Updated : {new_master.name}"
-
-
-@master_router.get("/top_customers", status_code=status.HTTP_200_OK)
-async def get_top_customers(
-    session: AsyncSession = Depends(get_session),
-):
-    top_customers = await master_service.top_customers(session)
-    return top_customers

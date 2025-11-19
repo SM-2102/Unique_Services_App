@@ -1,6 +1,5 @@
 // Settled vs Unsettled Pie Chart for Retail Data
 import React, { useEffect, useState } from "react";
-import SpinnerLoading from "../components/SpinnerLoading";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";

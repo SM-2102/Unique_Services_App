@@ -17,10 +17,12 @@ def capitalize_values(obj):
 
 class CapitalizeJSONMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
-        excluded_paths = ["/auth/login", 
-                          "/user/create_user", 
-                          "/user/reset_password",
-                          "/user/delete_user"]
+        excluded_paths = [
+            "/auth/login",
+            "/user/create_user",
+            "/user/reset_password",
+            "/user/delete_user",
+        ]
 
         if request.url.path in excluded_paths:
             return await call_next(request)
@@ -33,7 +35,7 @@ class CapitalizeJSONMiddleware(BaseHTTPMiddleware):
                     capitalized_data = capitalize_values(original_data)
                     request._body = json.dumps(capitalized_data).encode("utf-8")
                 except json.JSONDecodeError:
-                    pass  # Let FastAPI handle invalid JSON
+                    pass 
 
         response = await call_next(request)
         return response

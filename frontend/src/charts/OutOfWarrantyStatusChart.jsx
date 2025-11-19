@@ -23,7 +23,6 @@ const OutOfWarrantyStatusChart = ({ data, loading, error }) => {
     }
   }, [data]);
 
-
   // Tooltip state
   const [tooltip, setTooltip] = useState({
     show: false,
@@ -112,11 +111,19 @@ const OutOfWarrantyStatusChart = ({ data, loading, error }) => {
         <div className="flex flex-col gap-2 w-full min-w-0 overflow-y-auto">
           {chartData.map((item, idx) => {
             const total = item.COMPLETED + item.PENDING;
-            const completedPercentage = total > 0 ? (item.COMPLETED / total) * 100 : 0;
-            const pendingPercentage = total > 0 ? (item.PENDING / total) * 100 : 0;
-            const barState = barStates[idx] || { completed: false, pending: false };
+            const completedPercentage =
+              total > 0 ? (item.COMPLETED / total) * 100 : 0;
+            const pendingPercentage =
+              total > 0 ? (item.PENDING / total) * 100 : 0;
+            const barState = barStates[idx] || {
+              completed: false,
+              pending: false,
+            };
             return (
-              <div key={item.division} className="flex items-end justify-end w-full">
+              <div
+                key={item.division}
+                className="flex items-end justify-end w-full"
+              >
                 {/* Fixed width label */}
                 <span
                   className="text-xs font-medium text-gray-700 text-right mr-1"
