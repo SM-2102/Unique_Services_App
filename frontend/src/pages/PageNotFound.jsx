@@ -13,10 +13,10 @@ const PageNotFound = () => {
           </div>
         </div>
         <h1 className="text-2xl font-semibold text-gray-800 mb-2">
-          Page Not Found
+          Page Not Available
         </h1>
         <p className="text-gray-500 mb-6">
-          Check the URL or Go Back to the Home Page.
+          This feature is currently under construction. Thanks for your patience.
         </p>
         <div className="flex justify-center gap-3">
           <button
