@@ -3,8 +3,6 @@
 - Do NOT copy the `middleware/` directory
 - Do NOT copy the `migrations/` folder
 - Do NOT copy the `db/` folder
-- In `main.py` change the `.exceptions` import
-- In `main.py` change the `.middleware` import
 - `samesite` of `set.cookie` has to be set to `none`
 - `secure` of `set_cookie` has to be set to `true`
 

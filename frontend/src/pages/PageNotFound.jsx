@@ -16,7 +16,8 @@ const PageNotFound = () => {
           Page Not Available
         </h1>
         <p className="text-gray-500 mb-6">
-          This feature is currently under construction. Thanks for your patience.
+          This feature is currently under construction. <br />
+          Thank you for your patience.
         </p>
         <div className="flex justify-center gap-3">
           <button

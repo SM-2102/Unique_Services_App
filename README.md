@@ -5,8 +5,16 @@
 
 ## To Do List
 
-- Road Challan
 - Backup
+- Implement page not found
+- Master Create - Refresh
+- Make all forms refresh after submission
+- Master Update name span w-full
+- Menu Dashbaord Spinner not rendering
+- Change master route to by_code and by_name
+- Road Challan 
+- Market 
+
   
 ---
 
@@ -28,12 +36,17 @@
 - [x] **PageNotAvailable** – Maintenance/feature unavailable page
 
 ### Master Module
-- [ ] **MasterCreate** - Create Master record
-- [ ] **MasterUpdate** - Update Master record
+- [x] **MasterCreatePage** - Create Master record
+- [x] **MasterUpdatePage** - Update Master record
 
 ### Road Challan Module
-- [ ] **RoadChallanCreate** - Create Road Challan record
-- [ ] **RoadChallanPrint** - Print Road Challan record
+- [ ] **RoadChallanCreatePage** - Create Road Challan record
+- [ ] **RoadChallanPrintPage** - Print Road Challan record
+
+### Market Module
+- [ ] **MarketCreatePage** - Create Market record
+- [ ] **MarketUpdatePage** - Update Market record
+- [ ] **MarketEnquriryPage** - Market Enquiry and Print
 
 ---
 
@@ -56,20 +69,27 @@
 - [x] **/menu/dashboard**
 
 ### Master Module
-- [ ] **/master/create**
-- [ ] **/master/next_code**
-- [ ] **/master/check_available**
-- [ ] **/master/list_names** 
-- [ ] **/master/code** 
-- [ ] **/master/name**
-- [ ] **/master/patch/{code}**
-- [ ] **/master/fetch_address** - (Challan)
+- [x] **/master/create**
+- [x] **/master/next_code**
+- [x] **/master/check_available**
+- [x] **/master/list_names** 
+- [x] **/master/by_code** 
+- [x] **/master/by_name**
+- [x] **/master/patch/{code}**
+- [ ] **/master/fetch_address** 
 
 ### Challan Module
 - [ ] **/road_challan/next_code**
 - [ ] **/road_challan/create**
 - [ ] **/road_challan/last_challan_code**
 - [ ] **/road_challan/print**
+
+### Market Module
+- [ ] **/market/create**
+- [ ] **/market/by_code**
+- [ ] **/market/update**
+- [ ] **/market/pending**
+- [ ] **/market/search**
 
 ---
 
@@ -81,7 +101,7 @@
 - [ ] **Backup**
 - [x] **Login & Menu**
 - [x] **User**
-- [ ] **Master**
+- [x] **Master**
 - [ ] **Retail**
 - [ ] **Market**
 - [ ] **Challan**
