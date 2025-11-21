@@ -8,6 +8,7 @@ import { FiSearch } from "react-icons/fi";
 import { createRoadChallan } from "../services/roadChallanCreateService";
 import Breadcrumb from "../components/Breadcrumb";
 import { FaUserFriends, FaFileAlt, FaPlusCircle } from "react-icons/fa";
+import { fetchMasterNames } from "../services/masterNamesService";
 
 const initialForm = {
   challan_number: "",
@@ -66,15 +67,21 @@ const RoadChallanCreatePage = () => {
     }
   }, [form.name, showSuggestions]);
 
-  useEffect(() => {
-    let mounted = true;
-    import("../services/masterNamesService").then((mod) => {
-      mod.fetchMasterNames().then((data) => {
-        if (mounted && Array.isArray(data)) setMasterNames(data);
-      }).catch(() => setMasterNames([]));
-    });
-    return () => { mounted = false; };
-  }, []);
+ useEffect(() => {
+  let mounted = true;
+
+  fetchMasterNames()
+    .then((data) => {
+      if (mounted && Array.isArray(data)) {
+        setMasterNames(data);
+      }
+    })
+    .catch(() => setMasterNames([]));
+
+  return () => {
+    mounted = false;
+  };
+}, []);
 
   // Validation
   const [errs, errs_label] = validateChallan(form, items, maxChallanDate);
@@ -241,7 +248,7 @@ const RoadChallanCreatePage = () => {
               readOnly
               disabled={codeLoading || submitting}
               autoComplete="off"
-              className="w-30 text-center px-3 py-2 rounded-lg border border-gray-300 bg-gray-100 text-gray-900 font-medium cursor-not-allowed"
+              className="w-35 text-center px-3 py-2 rounded-lg border border-gray-300 bg-gray-100 text-gray-900 font-medium cursor-not-allowed"
             />
           </div>
           {/* Challan Date (styled similar to Challan Number, below it) */}
@@ -255,7 +262,7 @@ const RoadChallanCreatePage = () => {
               type="date"
               value={form.challan_date}
               onChange={handleChange}
-              className="w-35 text-center px-3 py-2 rounded-lg border border-gray-300 text-gray-900 font-medium"
+              className="w-40 text-center px-3 py-2 rounded-lg border border-gray-300 text-gray-900 font-medium"
               required
               disabled={submitting}
               min={maxChallanDate}
