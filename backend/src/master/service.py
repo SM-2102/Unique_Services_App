@@ -97,3 +97,21 @@ class MasterService:
             raise MasterAlreadyExists()
         await session.refresh(existing_master)
         return existing_master
+
+    async def get_address(self, name: str, session: AsyncSession):
+        master = await self.get_master_by_name(name, session)
+        full_address = master.address + ", " + master.city
+        if master.pin:
+            full_address += " - " + master.pin
+        return full_address
+
+    async def get_master_details(self, code: str, session: AsyncSession):
+        master = await self.get_master_by_code(code, session)
+        full_address = master.address + ", " + master.city
+        if master.pin:
+            full_address += " - " + master.pin
+        return {
+            "name": master.name,
+            "full_address": full_address,
+            "contact1": master.contact1
+        }

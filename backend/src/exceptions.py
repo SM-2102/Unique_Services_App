@@ -61,6 +61,9 @@ class IncorrectCodeFormat(BaseException):
 class CannotChangeMasterName(BaseException):
     """Cannot change the master name once set"""
 
+class RoadChallanNotFound(BaseException):
+    """Road Challan Not Found"""
+
 
 def create_exception_handler(
     status_code: int, initial_detail: Any
@@ -212,6 +215,18 @@ def register_exceptions(app: FastAPI):
                 "message": "Cannot change the master name",
                 "resolution": "Keep the master name unchanged",
                 "error_code": "cannot_change_master_name",
+            },
+        ),
+    )
+
+    app.add_exception_handler(
+        RoadChallanNotFound,
+        create_exception_handler(
+            status_code=status.HTTP_404_NOT_FOUND,
+            initial_detail={
+                "message": "Road Challan Not Found",
+                "resolution": "Please check the challan number provided",
+                "error_code": "road_challan_not_found",
             },
         ),
     )

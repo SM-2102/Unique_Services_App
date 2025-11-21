@@ -8,6 +8,7 @@ from master.routes import master_router
 from menu.routes import menu_router
 from middleware.middleware import register_middleware
 from user.routes import user_router
+from challan.routes import challan_router
 
 version = "v1"
 
@@ -61,3 +62,4 @@ app.include_router(auth_router, prefix="/auth", tags=["Authentication"])
 app.include_router(user_router, prefix="/user", tags=["User"])
 app.include_router(menu_router, prefix="/menu", tags=["Menu"])
 app.include_router(master_router, prefix="/master", tags=["Master"])
+app.include_router(challan_router, prefix="/challan", tags=["Challan"])

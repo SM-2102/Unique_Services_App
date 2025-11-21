@@ -9,6 +9,7 @@ from db.db import get_session
 from exceptions import MasterNotFound
 from master.schemas import (
     CreateMaster,
+    MasterAddress,
     MasterCode,
     MasterName,
     MasterResponse,
@@ -54,7 +55,7 @@ List all master names.
 
 
 @master_router.get(
-    "/list_names", response_model=List[str], status_code=status.HTTP_200_OK
+    "/list_names", response_model=List, status_code=status.HTTP_200_OK
 )
 async def list_master_names(
     session: AsyncSession = Depends(get_session), _=Depends(access_token_bearer)
@@ -69,7 +70,7 @@ Get master details by code.
 
 
 @master_router.post(
-    "/code", response_model=MasterResponse, status_code=status.HTTP_200_OK
+    "/by_code", response_model=MasterResponse, status_code=status.HTTP_200_OK
 )
 async def get_master_by_code(
     data: MasterCode,
@@ -86,7 +87,7 @@ Get master details by name.
 
 
 @master_router.post(
-    "/name", response_model=MasterResponse, status_code=status.HTTP_200_OK
+    "/by_name", response_model=MasterResponse, status_code=status.HTTP_200_OK
 )
 async def get_master_by_name(
     data: MasterName,
@@ -113,4 +114,19 @@ async def update_master(
     if not existing_master:
         raise MasterNotFound()
     new_master = await master_service.update_master(code, master, session, token)
-    return f"Master Updated : {new_master.name}"
+    return JSONResponse(content={"message": f"Master Updated : {new_master.name}"})
+
+
+"""
+Get master address, city, pin by name
+"""
+@master_router.post(
+    "/fetch_address", response_model=MasterAddress, status_code=status.HTTP_200_OK
+)
+async def get_master_address_by_name(
+    data: MasterName,
+    session: AsyncSession = Depends(get_session),
+    _=Depends(access_token_bearer),
+):
+    address = await master_service.get_address(data.name, session)
+    return {"full_address": address}

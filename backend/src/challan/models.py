@@ -42,7 +42,7 @@ class Challan(SQLModel, table=True):
     order_date: date = Field(sa_column=Column(pg.DATE, nullable=True))
     invoice_number: str = Field(sa_column=Column(pg.VARCHAR(15), nullable=True))
     invoice_date: date = Field(sa_column=Column(pg.DATE, nullable=True))
-    remark: str = Field(sa_column=Column(pg.VARCHAR(50), nullable=True))
+    remark: str = Field(sa_column=Column(pg.VARCHAR(50), nullable=False))
     created_by: str = Field(
         sa_column=Column(pg.VARCHAR(15), ForeignKey("users.username"), nullable=False)
     )
