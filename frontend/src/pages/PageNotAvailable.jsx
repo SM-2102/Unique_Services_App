@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { FiAlertTriangle } from "react-icons/fi";
 
-const PageNotFound = () => {
+const PageNotAvailable = () => {
   const navigate = useNavigate();
   return (
     <div className="h-[calc(100vh-7rem)] flex items-center justify-center bg-[#fff]">
@@ -13,11 +13,11 @@ const PageNotFound = () => {
           </div>
         </div>
         <h1 className="text-2xl font-semibold text-gray-800 mb-2">
-          Page Not Found
+          Page Not Available
         </h1>
         <p className="text-gray-500 mb-6">
-          The page you are looking for does not exist. <br />
-          Please check the URL.
+          This feature is currently under construction. <br />
+          Thank you for your patience.
         </p>
         <div className="flex justify-center gap-3">
           <button
@@ -38,4 +38,4 @@ const PageNotFound = () => {
   );
 };
 
-export default PageNotFound;
+export default PageNotAvailable;

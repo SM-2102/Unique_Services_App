@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
+import Breadcrumb from "../components/Breadcrumb";
+import { FaUserFriends, FaPlusCircle } from "react-icons/fa";
 import Toast from "../components/Toast";
 import { createMaster } from "../services/masterCreateService";
 import { getNextMasterCode } from "../services/masterCodeService";
 import { fetchMasterNames } from "../services/masterNamesService";
-import { Typography } from "@mui/material";
 import { validateMaster } from "../utils/masterValidation";
 
 const initialForm = {
@@ -118,7 +119,6 @@ const MasterCreatePage = () => {
     setShowContact2(true);
   };
 
-
   // Always compute validation errors for rendering
   const [errs, errs_label] = validateMaster(form, showContact2);
 
@@ -143,27 +143,13 @@ const MasterCreatePage = () => {
       await createMaster(payload);
       setError({
         message: "Master record created successfully!",
+        resolution: "Customer Name : " + form.name,
         type: "success",
       });
       setShowToast(true);
-      setForm(initialForm);
-      // Fetch next master code after successful creation
-      setCodeLoading(true);
-      getNextMasterCode()
-        .then((code) => {
-          setForm((prev) => ({ ...prev, code }));
-        })
-        .catch(() => {
-          setError({
-            message: "Failed to fetch next code",
-            type: "error",
-          });
-          setShowToast(true);
-        })
-        .finally(() => {
-          setCodeLoading(false);
-        });
-      setForm(initialForm);
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
     } catch (err) {
       setError({
         message: err?.message || "Failed to create master.",
@@ -177,21 +163,22 @@ const MasterCreatePage = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-[80vh] mt-8 mb-4">
+    <div className="flex min-h-[80vh] mt-8 mb-4">
+      {/* Reusable Breadcrumb - left aligned, smaller */}
+      <div className="w-120 pl-8 pr-4">
+        <Breadcrumb
+          items={[ 
+            { label: "Customers", icon: <FaUserFriends className="text-blue-600 mr-1" /> },
+            { label: "Create Record", icon: <FaPlusCircle className="text-green-600 mr-1" /> }
+          ]}
+        />
+      </div>
+
       <form
         onSubmit={handleSubmit}
         className="bg-[#f8fafc] shadow-lg rounded-lg p-8 w-full max-w-150 border border-gray-200"
         noValidate
       >
-        <Typography
-          variant="h4"
-          fontWeight={600}
-          mb={4}
-          align="center"
-          color="primary.dark"
-        >
-          Create Customer Record
-        </Typography>
         <div className="flex flex-col gap-4">
           {/* Code (readonly, small, label beside input) */}
           <div className="flex items-center gap-3 mb-2 justify-center">
@@ -456,7 +443,7 @@ const MasterCreatePage = () => {
           onClose={() => setShowToast(false)}
         />
       )}
-    </div>
+      </div>
   );
 };
 

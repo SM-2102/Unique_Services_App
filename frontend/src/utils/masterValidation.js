@@ -1,4 +1,3 @@
-
 /**
  * Validate change password form fields
  * @param {object} form - { name, address, city, pin, contact1, contact2, gst }

@@ -6,22 +6,22 @@ import { authFetch } from "./authFetchService";
  * @param {string} code
  * @returns {Promise<object>} Master data
  */
-export async function searchMasterByCode(code) {
+async function searchMasterByCode(code) {
   const response = await authFetch(API_ENDPOINTS.MASTER_SEARCH_CODE, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    credentials: "include",
     body: JSON.stringify({ code }),
   });
+  const data = await response.json();
   if (!response.ok) {
-    const data = await response.json().catch(() => ({}));
-    const error = new Error(
-      data.message || data.detail || "Failed to search master by code",
-    );
-    if (data.resolution) error.resolution = data.resolution;
-    throw error;
+    throw { 
+      message: data.message || data.detail || "Failed to search master by code",
+      resolution: data.resolution || ""
+    };
   }
-  return response.json();
+  return data;
 }
+
+export { searchMasterByCode };

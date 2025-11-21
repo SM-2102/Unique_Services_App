@@ -5,10 +5,16 @@ import { authFetch } from "./authFetchService";
  * Fetch all master customer names for autocomplete
  * @returns {Promise<string[]>} List of customer names
  */
-export async function fetchMasterNames() {
-  const res = await authFetch(API_ENDPOINTS.MASTER_LIST_NAMES, {
+async function fetchMasterNames() {
+  const response = await authFetch(API_ENDPOINTS.MASTER_LIST_NAMES, {
     method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
-  if (!res.ok) throw new Error("Failed to fetch master names");
-  return res.json();
+  if (!response.ok) 
+    throw new Error("Failed to fetch master names");
+  return response.json();
 }
+
+export { fetchMasterNames };

@@ -1,11 +1,16 @@
 // Custom hook for fetching dashboard data
+
 import { useState, useEffect } from "react";
 import API_ENDPOINTS from "../config/api";
 
 export const useDashboardData = () => {
   const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const fetchDashboardData = async () => {
+    setLoading(true);
+    setError(null);
     try {
       const response = await fetch(API_ENDPOINTS.MENU_DASHBOARD, {
         method: "GET",
@@ -21,6 +26,7 @@ export const useDashboardData = () => {
       const dashboardData = await response.json();
       setData(dashboardData);
     } catch (err) {
+      setError(err);
       // Set fallback data in case of error
       setData({
         customer: { number_of_customers: 0, top_customers: [] },
@@ -37,12 +43,14 @@ export const useDashboardData = () => {
         },
       });
     } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchDashboardData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return { data, refetch: fetchDashboardData };
+  return { data, loading, error, refetch: fetchDashboardData };
 };

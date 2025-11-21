@@ -19,8 +19,14 @@ const API_ENDPOINTS = {
   MASTER_NEXT_CODE: `${BASE_API_URL}master/next_code`,
   MASTER_LIST_NAMES: `${BASE_API_URL}master/list_names`,
   MASTER_UPDATE: `${BASE_API_URL}master/update/`, //append code
-  MASTER_SEARCH_CODE: `${BASE_API_URL}master/code`,
-  MASTER_SEARCH_NAME: `${BASE_API_URL}master/name`,
+  MASTER_SEARCH_CODE: `${BASE_API_URL}master/by_code`,
+  MASTER_SEARCH_NAME: `${BASE_API_URL}master/by_name`,
+  MASTER_SEARCH_ADDRESS: `${BASE_API_URL}master/fetch_address`,
+
+  CHALLAN_CREATE: `${BASE_API_URL}challan/create`,
+  CHALLAN_NEXT_NUMBER: `${BASE_API_URL}challan/next_code_with_challan_date`,
+  CHALLAN_LAST_NUMBER: `${BASE_API_URL}challan/last_challan_number`,
+  CHALLAN_PRINT: `${BASE_API_URL}challan/print`,
 };
 
 export default API_ENDPOINTS;

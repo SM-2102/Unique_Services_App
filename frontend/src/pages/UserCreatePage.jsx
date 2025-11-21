@@ -7,14 +7,14 @@ import { validateCreateUser } from "../utils/createUserValidation";
 const roles = ["USER", "ADMIN"];
 
 const initialForm = {
-    username: "",
-    password: "",
-    role: "USER",
-    phone_number: "",
-  };
+  username: "",
+  password: "",
+  role: "USER",
+  phone_number: "",
+};
 
 const CreateUserPage = () => {
-  const [form, setForm] = useState(initialForm); 
+  const [form, setForm] = useState(initialForm);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [showToast, setShowToast] = useState(false);
@@ -50,6 +50,7 @@ const CreateUserPage = () => {
       await createUser(form);
       setError({
         message: `User created successfully!`,
+        resolution: "User : " + form.username,
         type: "success",
       });
       setShowToast(true);

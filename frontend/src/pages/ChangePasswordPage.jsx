@@ -15,7 +15,7 @@ const initialState = {
 const ChangePasswordPage = () => {
   const { user } = useAuth();
   const [form, setForm] = useState(initialState);
- 
+
   // Handle input changes (must be inside component to access setForm)
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -29,7 +29,6 @@ const ChangePasswordPage = () => {
   const [error, setError] = useState("");
   const [showToast, setShowToast] = useState(false);
 
-  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -48,6 +47,7 @@ const ChangePasswordPage = () => {
       await changePassword(user.username, form.old_password, form.new_password);
       setError({
         message: "Password changed successfully!",
+        resolution: "Your password has been updated",
         type: "success",
       });
       setForm(initialState);

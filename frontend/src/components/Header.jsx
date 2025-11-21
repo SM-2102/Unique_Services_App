@@ -10,11 +10,10 @@ import DashboardButton from "./Dashboard";
 const Header = () => {
   const location = useLocation();
   const isLoginPage = location.pathname === "/";
-  const isMenuPage = location.pathname === "/dashboard";
   const [navOpen, setNavOpen] = React.useState(false);
 
   // Only show NavBar icon on allowed pages
-  const showNavIcon = !isLoginPage && !isMenuPage;
+  const showNavIcon = !isLoginPage;
 
   return (
     <header className="fixed top-0 left-0 w-full z-50 flex flex-col sm:flex-row items-center sm:justify-between bg-blue-900 p-2 sm:p-3 sm:px-8 shadow h-auto sm:h-22">
@@ -48,13 +47,15 @@ const Header = () => {
             className="text-white text-2xl sm:text-4xl font-semibold tracking-wide leading-tight mt-1"
             style={{ fontFamily: "Times New Roman, Times, serif" }}
           >
-            Unique Services
+            {/* Unique Services */}
+            XYZ Solutions Pvt. Ltd.
           </span>
           <span
             className="text-blue-50 text-sm sm:text-lg font-medium mb-1"
             style={{ fontFamily: "Montserrat, sans-serif" }}
           >
-            12, Sakharitola Street, Kolkata - 700014
+            Your Trusted Partner for Quality Solutions
+            {/* 12, Sakharitola Street, Kolkata - 700014 */}
           </span>
         </div>
       </div>

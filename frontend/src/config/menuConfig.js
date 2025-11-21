@@ -1,5 +1,11 @@
 // Centralized menu and card actions config for NavBar and MenuDashboardPage
-import { FaUser, FaTools, FaShoppingBag, FaStore, FaReceipt } from "react-icons/fa";
+import {
+  FaUser,
+  FaTools,
+  FaShoppingBag,
+  FaStore,
+  FaReceipt,
+} from "react-icons/fa";
 import { MdOutlineBuild } from "react-icons/md";
 
 export const menuConfig = [

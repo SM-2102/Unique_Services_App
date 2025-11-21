@@ -1,4 +1,5 @@
 import API_ENDPOINTS from "../config/api.js";
+import { authFetch } from "./authFetchService";
 
 /**
  * Change user password
@@ -8,22 +9,19 @@ import API_ENDPOINTS from "../config/api.js";
  * @returns {Promise<object>} Result of password change
  */
 async function changePassword(username, old_password, new_password) {
-  const response = await fetch(API_ENDPOINTS.CHANGE_PASSWORD, {
+  const response = await authFetch(API_ENDPOINTS.CHANGE_PASSWORD, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    credentials: "include",
     body: JSON.stringify({ username, old_password, new_password }),
   });
-
+  const data = await response.json();
   if (!response.ok) {
-    const data = await response.json().catch(() => ({}));
-    // Return both message and resolution if available
-    const error = new Error(
-      data.message || data.detail || "Failed to create user",
-    );
-    if (data.resolution) error.resolution = data.resolution;
-    throw error;
+    throw { 
+      message: data.message, 
+      resolution: data.resolution 
+    };
   }
+  return data;
 }
 
 export { changePassword };
