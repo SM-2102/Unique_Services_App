@@ -1,4 +1,5 @@
 import API_ENDPOINTS from "../config/api";
+import { authFetch } from "./authFetchService";
 
 /**
  * Delete a user by username
@@ -6,21 +7,18 @@ import API_ENDPOINTS from "../config/api";
  * @returns {Promise<object>} Result of deletion
  */
 async function deleteUser(username) {
-  const response = await fetch(`${API_ENDPOINTS.DELETE_USER}`, {
+  const response = await authFetch(`${API_ENDPOINTS.DELETE_USER}`, {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
-    credentials: "include",
     body: JSON.stringify({ username }),
   });
-  const data = await response.json().catch(() => ({}));
+  const data = await response.json();
   if (!response.ok) {
-    const error = new Error(
-      data.message || data.detail || "Failed to delete user.",
-    );
-    if (data.resolution) error.resolution = data.resolution;
-    throw error;
+    throw { 
+      message: data.message, 
+      resolution: data.resolution 
+    };
   }
-  return data;
 }
 
 export { deleteUser };

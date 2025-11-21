@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+// Ref and state for name input width
+
 import Toast from "../components/Toast";
 import { updateMaster } from "../services/masterUpdateService";
 import { searchMasterByCode } from "../services/masterSearchByCodeService";
 import { fetchMasterNames } from "../services/masterNamesService";
-import { Typography } from "@mui/material";
 import { FiSearch } from "react-icons/fi";
 import { validateMaster } from "../utils/masterValidation";
+import Breadcrumb from "../components/Breadcrumb";
+import { FaUserFriends, FaEdit } from "react-icons/fa";
 
 const initialForm = {
   code: "",
@@ -28,6 +31,13 @@ const MasterUpdatePage = () => {
   const [showToast, setShowToast] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [showContact2, setShowContact2] = useState(false);
+  const nameInputRef = useRef(null);
+  const [nameInputWidth, setNameInputWidth] = useState("100%");
+  useEffect(() => {
+    if (nameInputRef.current) {
+      setNameInputWidth(nameInputRef.current.offsetWidth + "px");
+    }
+  }, [form.name, showSuggestions]);
 
   useEffect(() => {
     let mounted = true;
@@ -99,7 +109,7 @@ const MasterUpdatePage = () => {
   };
 
   const [errs, errs_label] = validateMaster(form, showContact2);
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -121,6 +131,7 @@ const MasterUpdatePage = () => {
       await updateMaster(form.code, payload);
       setError({
         message: "Master record updated successfully!",
+        resolution: "Customer Name : " + form.name,
         type: "success",
       });
       setShowToast(true);
@@ -138,21 +149,21 @@ const MasterUpdatePage = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-[80vh] mt-8 mb-4">
+    <div className="flex min-h-[80vh] mt-8 mb-4">
+      {/* Reusable Breadcrumb - left aligned, smaller */}
+      <div className="w-1/3 pl-8">
+        <Breadcrumb
+          items={[ 
+            { label: "Customers", icon: <FaUserFriends className="text-blue-600 mr-1" /> },
+            { label: "Update Record", icon: <FaEdit className="text-green-600 mr-1" /> }
+          ]}
+        />
+      </div>
       <form
         onSubmit={handleSubmit}
         className="bg-[#f8fafc] shadow-lg rounded-lg p-8 w-full max-w-150 border border-gray-200"
         noValidate
       >
-        <Typography
-          variant="h4"
-          fontWeight={600}
-          mb={4}
-          align="center"
-          color="primary.dark"
-        >
-          Update Customer Record
-        </Typography>
         <div className="flex flex-col gap-4">
           {/* Code (readonly, small, label beside input) */}
           <div className="flex items-center gap-3 mb-2 justify-center">
@@ -218,25 +229,63 @@ const MasterUpdatePage = () => {
             >
               Name<span className="text-red-500">*</span>
             </label>
-            <div className="flex-1 relative flex items-center gap-2">
-              <input
-                id="name"
-                name="name"
-                type="text"
-                value={form.name}
-                onChange={handleChange}
-                className={`w-full px-3 py-2 rounded-lg border ${errs_label.name ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium`}
-                minLength={3}
-                maxLength={40}
-                required
-                disabled={submitting}
-                autoComplete="name"
-                onFocus={() => {
-                  if (form.name.length > 0 && nameSuggestions.length > 0)
-                    setShowSuggestions(true);
-                }}
-                onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
-              />
+            <div className="flex-1 flex items-center gap-2">
+              <div style={{ position: "relative", width: "100%" }}>
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  value={form.name}
+                  onChange={handleChange}
+                  className={`w-full px-3 py-2 rounded-lg border ${errs_label.name ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium`}
+                  minLength={3}
+                  maxLength={40}
+                  required
+                  disabled={submitting}
+                  autoComplete="name"
+                  onFocus={() => {
+                    if (form.name.length > 0 && nameSuggestions.length > 0)
+                      setShowSuggestions(true);
+                  }}
+                  onBlur={() =>
+                    setTimeout(() => setShowSuggestions(false), 150)
+                  }
+                  ref={nameInputRef}
+                />
+                {showSuggestions && (
+                  <ul
+                    style={{
+                      position: "absolute",
+                      top: "100%",
+                      left: 0,
+                      zIndex: 10,
+                      background: "#fff",
+                      border: "1px solid #d1d5db",
+                      borderRadius: "0.5rem",
+                      boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+                      width: nameInputWidth,
+                      maxHeight: 180,
+                      overflowY: "auto",
+                      margin: 0,
+                      padding: 0,
+                      listStyle: "none",
+                    }}
+                  >
+                    {nameSuggestions.map((n) => (
+                      <li
+                        key={n}
+                        style={{ padding: "0.5rem 1rem", cursor: "pointer" }}
+                        onMouseDown={() => {
+                          setForm((prev) => ({ ...prev, name: n }));
+                          setShowSuggestions(false);
+                        }}
+                      >
+                        {n}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
               <button
                 type="button"
                 title="Search by name"
@@ -246,7 +295,9 @@ const MasterUpdatePage = () => {
                   setError("");
                   setShowToast(false);
                   try {
-                    const mod = await import("../services/masterSearchByNameService");
+                    const mod = await import(
+                      "../services/masterSearchByNameService"
+                    );
                     const data = await mod.searchMasterByName(form.name);
                     setForm((prev) => ({
                       code: data.code ?? "",
@@ -275,39 +326,6 @@ const MasterUpdatePage = () => {
                 <FiSearch size={22} />
               </button>
             </div>
-            {showSuggestions && (
-              <ul
-                style={{
-                  position: "absolute",
-                  top: "100%",
-                  left: 0,
-                  zIndex: 10,
-                  background: "#fff",
-                  border: "1px solid #d1d5db",
-                  borderRadius: "0.5rem",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-                  width: "100%",
-                  maxHeight: 180,
-                  overflowY: "auto",
-                  margin: 0,
-                  padding: 0,
-                  listStyle: "none",
-                }}
-              >
-                {nameSuggestions.map((n) => (
-                  <li
-                    key={n}
-                    style={{ padding: "0.5rem 1rem", cursor: "pointer" }}
-                    onMouseDown={() => {
-                      setForm((prev) => ({ ...prev, name: n }));
-                      setShowSuggestions(false);
-                    }}
-                  >
-                    {n}
-                  </li>
-                ))}
-              </ul>
-            )}
           </div>
           {/* Address (label beside input) */}
           <div className="flex items-center gap-2 w-full">

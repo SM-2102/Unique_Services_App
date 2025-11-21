@@ -8,7 +8,13 @@ import React, { useEffect, useState } from "react";
  * @param {number} duration - Duration in ms (default: 1500)
  * @param {function} onClose - Callback when toast closes
  */
-const Toast = ({ message, resolution = "", type = "info", duration = 1500, onClose }) => {
+const Toast = ({
+  message,
+  resolution = "",
+  type = "info",
+  duration = 1500,
+  onClose,
+}) => {
   const [visible, setVisible] = useState(true);
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -107,11 +113,11 @@ const Toast = ({ message, resolution = "", type = "info", duration = 1500, onClo
       style={{ pointerEvents: "none" }}
     >
       <div className="flex-1">
-        <span className="text-white font-semibold block text-base mb-0.5">
+        <span className="text-white font-semibold block text-base mb-0.5 justify-center flex items-center">
           {message}
         </span>
         {resolution && (
-          <span className="text-white text-xs opacity-90 block mt-0.5">
+          <span className="text-white text-xs opacity-90 block mt-0.5 justify-center flex items-center">
             {resolution}
           </span>
         )}

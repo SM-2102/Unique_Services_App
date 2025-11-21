@@ -13,6 +13,17 @@ import {
 } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 
+// Register Chart.js elements at the top-level (best practice)
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ChartDataLabels,
+);
+
 const stylishFont = {
   fontFamily: 'Poppins, Montserrat, "Segoe UI", Arial, sans-serif',
   letterSpacing: "0.03em",
@@ -74,18 +85,6 @@ const CustomerChart = ({ data }) => {
     };
   }, [target]);
 
-  // Chart.js registration
-  useEffect(() => {
-    ChartJS.register(
-      CategoryScale,
-      LinearScale,
-      BarElement,
-      Title,
-      Tooltip,
-      Legend,
-      ChartDataLabels,
-    );
-  }, []);
 
 
   return (

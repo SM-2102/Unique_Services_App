@@ -48,14 +48,10 @@ const UserMenu = () => {
       setUserLoading(true);
       setUserError(null);
       try {
-        const res = await authFetch(
-          API_ENDPOINTS.AUTH_ME,
-          {},
-          () => {
-            setUser(null);
-            setUserError("Session expired. Please log in again.");
-          }
-        );
+        const res = await authFetch(API_ENDPOINTS.AUTH_ME, {}, () => {
+          setUser(null);
+          setUserError("Session expired. Please log in again.");
+        });
         if (res.ok) {
           const data = await res.json();
           setUser(data.user || data);

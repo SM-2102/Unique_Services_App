@@ -6,7 +6,7 @@ import { authFetch } from "./authFetchService";
  * @param {object} masterData
  * @returns {Promise<void>} Throws on error
  */
-export async function createMaster(masterData) {
+async function createMaster(masterData) {
   const response = await authFetch(API_ENDPOINTS.MASTER_CREATE, {
     method: "POST",
     headers: {
@@ -14,12 +14,13 @@ export async function createMaster(masterData) {
     },
     body: JSON.stringify(masterData),
   });
+  const data = await response.json();
   if (!response.ok) {
-    const data = await response.json().catch(() => ({}));
-    const error = new Error(
-      data.message || data.detail || "Failed to create master",
-    );
-    if (data.resolution) error.resolution = data.resolution;
-    throw error;
+    throw { 
+      message: data.message, 
+      resolution: data.resolution 
+    };
   }
 }
+
+export { createMaster };

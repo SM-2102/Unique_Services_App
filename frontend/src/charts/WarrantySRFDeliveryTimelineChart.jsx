@@ -1,12 +1,6 @@
 // SRF vs Delivery Timeline Chart
 import React, { useEffect, useState } from "react";
-import {
-  ResponsiveContainer,
-  LineChart,
-  Line,
-  YAxis,
-  Tooltip,
-} from "recharts";
+import { ResponsiveContainer, LineChart, Line, YAxis, Tooltip } from "recharts";
 
 const WarrantySRFDeliveryTimelineChart = ({ data }) => {
   const [chartData, setChartData] = useState([]);

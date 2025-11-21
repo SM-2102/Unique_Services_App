@@ -50,11 +50,11 @@ const DeleteUserPage = () => {
       await deleteUser(username);
       seterror({
         message: "User deleted successfully!",
+        resolution: "User : " + username,
         type: "success",
       });
       setShowToast(true);
       setUsername("");
-      // Refresh user list after successful deletion
       fetchUsers();
     } catch (err) {
       seterror({

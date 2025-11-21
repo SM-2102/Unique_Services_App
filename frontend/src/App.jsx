@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import MenuDashboardPage from "./pages/MenuDashboardPage.jsx";
 import PageNotFound from "./pages/PageNotFound";
+import PageNotAvailable from "./pages/PageNotAvailable.jsx";
 import ChangePasswordPage from "./pages/ChangePasswordPage.jsx";
 import ShowStandardUsersPage from "./pages/ShowStandardUsersPage.jsx";
 import CreateUserPage from "./pages/UserCreatePage.jsx";
@@ -13,6 +14,8 @@ import PrivateRoute from "./components/PrivateRoute";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import MasterCreatePage from "./pages/MasterCreatePage.jsx";
 import MasterUpdatePage from "./pages/MasterUpdatePage.jsx";
+import RoadChallanPrintPage from "./pages/RoadChallanPrintPage.jsx";
+import RoadChallanCreatePage from "./pages/RoadChallanCreatePage.jsx";
 
 function AppRoutesWithNav() {
   return (
@@ -90,6 +93,166 @@ function AppRoutesWithNav() {
             element={
               <PrivateRoute>
                 <PageNotFound />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/challan-create"
+            element={
+              <PrivateRoute>
+                <RoadChallanCreatePage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/challan-print"
+            element={
+              <PrivateRoute>
+                < RoadChallanPrintPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/warranty-create_srf"
+            element={
+              <PrivateRoute>
+                <PageNotAvailable />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/warranty-create_cnf"
+            element={
+              <PrivateRoute>
+                <PageNotAvailable />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/warranty-print_srf"
+            element={
+              <PrivateRoute>
+                <PageNotAvailable />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/warranty-print_cnf"
+            element={
+              <PrivateRoute>
+                <PageNotAvailable />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/warranty-update_srf"
+            element={
+              <PrivateRoute>
+                <PageNotAvailable />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/warranty-enquiry"
+            element={
+              <PrivateRoute>
+                <PageNotAvailable />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/oow-create_srf"
+            element={
+              <PrivateRoute>
+                <PageNotAvailable />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/oow-print_srf"
+            element={
+              <PrivateRoute>
+                <PageNotAvailable />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/oow-update_srf"
+            element={
+              <PrivateRoute>
+                <PageNotAvailable />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/oow-settle_srf"
+            element={
+              <PrivateRoute>
+                <PageNotAvailable />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/oow-create_vendor_challan"
+            element={
+              <PrivateRoute>
+                <PageNotAvailable />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/oow-print_vendor_challan"
+            element={
+              <PrivateRoute>
+                <PageNotAvailable />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/oow-print_estimate"
+            element={
+              <PrivateRoute>
+                <PageNotAvailable />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/oow-settle_vendor"
+            element={
+              <PrivateRoute>
+                <PageNotAvailable />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/oow-enquiry"
+            element={
+              <PrivateRoute>
+                <PageNotAvailable />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/market-create"
+            element={
+              <PrivateRoute>
+                <PageNotAvailable />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/market-update"
+            element={
+              <PrivateRoute>
+                <PageNotAvailable />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/market-enquiry"
+            element={
+              <PrivateRoute>
+                <PageNotAvailable />
               </PrivateRoute>
             }
           />

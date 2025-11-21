@@ -73,85 +73,79 @@ const MenuDashboardPage = () => {
               )
             )}
             {key === "retail" && (
-              <div className="flex flex-col md:flex-row gap-0 items-start justify-start w-full">
-                {loading ? (
-                  <div className="w-full flex justify-center items-center">
-                    <SpinnerLoading text="Loading Retail Data ..." />
+              loading ? (
+                <div className="w-full flex justify-center items-center">
+                  <SpinnerLoading text="Loading Retail Data ..." />
+                </div>
+              ) : error ? (
+                <div className="w-full flex justify-center items-center">
+                  <SpinnerLoading text={`Error Loading ...`} />
+                </div>
+              ) : (
+                <div className="flex flex-col md:flex-row gap-0 items-start justify-start w-full">
+                  <div className="w-full md:px-0">
+                    <RetailDivisionDonutChart data={data} />
                   </div>
-                ) : error ? (
-                  <div className="w-full flex justify-center items-center">
-                    <SpinnerLoading text={`Error Loading ...`} />
+                  <div className="w-full md:px-0">
+                    <RetailSettledPieChart data={data} />
                   </div>
-                ) : (
-                  <>
-                    <div className="w-full md:px-0">
-                      <RetailDivisionDonutChart data={data} />
-                    </div>
-                    <div className="w-full md:px-0">
-                      <RetailSettledPieChart data={data} />
-                    </div>
-                  </>
-                )}
-              </div>
+                </div>
+              )
             )}
             {key === "market" && (
-              <div className="mt-2">
-                {loading ? (
-                  <div className="w-full flex justify-center items-center">
-                    <SpinnerLoading text="Loading Market Data ..." />
-                  </div>
-                ) : error ? (
-                  <div className="w-full flex justify-center items-center">
-                    <SpinnerLoading text={`Error Loading ...`} />
-                  </div>
-                ) : (
+              loading ? (
+                <div className="w-full flex justify-center items-center">
+                  <SpinnerLoading text="Loading Market Data ..." />
+                </div>
+              ) : error ? (
+                <div className="w-full flex justify-center items-center">
+                  <SpinnerLoading text={`Error Loading ...`} />
+                </div>
+              ) : (
+                <div className="mt-2">
                   <MarketStatusChart data={data} />
-                )}
-              </div>
+                </div>
+              )
             )}
             {key === "warranty" && (
-              <div className="flex flex-col md:flex-row gap-0 items-start justify-start w-full">
-                {loading ? (
-                  <div className="w-full flex justify-center items-center">
-                    <SpinnerLoading text="Loading Warranty Data ..." />
+              loading ? (
+                <div className="w-full flex justify-center items-center">
+                  <SpinnerLoading text="Loading Warranty Data ..." />
+                </div>
+              ) : error ? (
+                <div className="w-full flex justify-center items-center">
+                  <SpinnerLoading text={`Error Loading ...`} />
+                </div>
+              ) : (
+                <div className="flex flex-col md:flex-row gap-0 items-start justify-start w-full">
+                  <div className="w-full md:w-2/5 md:pr-0 md:px-0">
+                    <WarrantyStatusChart data={data} />
                   </div>
-                ) : error ? (
-                  <div className="w-full flex justify-center items-center">
-                    <SpinnerLoading text={`Error Loading ...`} />
+                  <div className="w-full md:w-3/5 md:pl-0 md:px-0">
+                    <WarrantySRFDeliveryTimelineChart data={data} />
                   </div>
-                ) : (
-                  <>
-                    <div className="w-full md:w-2/5 md:pr-0 md:px-0">
-                      <WarrantyStatusChart data={data} />
-                    </div>
-                    <div className="w-full md:w-3/5 md:pl-0 md:px-0">
-                      <WarrantySRFDeliveryTimelineChart data={data} />
-                    </div>
-                  </>
-                )}
-              </div>
+                </div>
+              )
             )}
             {key === "out_of_warranty" && (
-              <div className="flex flex-col md:flex-row gap-0 items-start justify-start w-full">
-                {loading ? (
-                  <div className="w-full flex justify-center items-center">
-                    <SpinnerLoading text="Loading Out of Warranty Data ..." />
+              loading ? (
+                <div className="w-full flex justify-center items-center">
+                  <SpinnerLoading text="Loading Out of Warranty Data ..." />
+                </div>
+              ) : error ? (
+                <div className="w-full flex justify-center items-center">
+                  <SpinnerLoading text={`Error Loading ...`} />
+                </div>
+              ) : (
+                <div className="flex flex-col md:flex-row gap-0 items-start justify-start w-full">
+                  <div className="w-full md:w-2/3 md:pr-0 md:px-0">
+                    <OutOfWarrantyTimeline data={data} />
                   </div>
-                ) : error ? (
-                  <div className="w-full flex justify-center items-center">
-                    <SpinnerLoading text={`Error Loading ...`} />
+                  <div className="w-full md:w-1/3 md:pl-0 md:px-0">
+                    <OutOfWarrantyStatusChart data={data} />
                   </div>
-                ) : (
-                  <>
-                    <div className="w-full md:w-2/3 md:pr-0 md:px-0">
-                      <OutOfWarrantyTimeline data={data} />
-                    </div>
-                    <div className="w-full md:w-1/3 md:pl-0 md:px-0">
-                      <OutOfWarrantyStatusChart data={data} />
-                    </div>
-                  </>
-                )}
-              </div>
+                </div>
+              )
             )}
           </MenuCard>
         ))}

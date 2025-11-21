@@ -15,7 +15,6 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-
   // Call this on 401 or logout
   const handleUnauthorized = useCallback(() => {
     setIsAuthenticated(false);
@@ -30,7 +29,7 @@ export function AuthProvider({ children }) {
       const res = await authFetch(
         API_ENDPOINTS.AUTH_ME,
         {},
-        handleUnauthorized
+        handleUnauthorized,
       );
       if (res.ok) {
         const data = await res.json();

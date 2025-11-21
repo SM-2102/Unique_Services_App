@@ -1,4 +1,5 @@
 import API_ENDPOINTS from "../config/api";
+import { authFetch } from "./authFetchService";
 
 /**
  * Logout user by calling backend. Relies on backend to clear HTTP-only cookie.
@@ -6,9 +7,11 @@ import API_ENDPOINTS from "../config/api";
  */
 async function logout() {
   try {
-    const response = await fetch(API_ENDPOINTS.LOGOUT, {
+    const response = await authFetch(API_ENDPOINTS.LOGOUT, {
       method: "POST",
-      credentials: "include", // Important: send cookies
+      headers: { 
+        "Content-Type": "application/json" 
+      },
     });
     if (response.ok) {
       return { success: true };

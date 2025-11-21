@@ -7,7 +7,7 @@ import { authFetch } from "./authFetchService";
  * @param {object} masterData - Data to update (address, city, pin, contact1, contact2, gst, remark)
  * @returns {Promise<object>} Response data
  */
-export async function updateMaster(code, masterData) {
+async function updateMaster(code, masterData) {
   if (!code) throw new Error("Enter customer code");
   const url = `${API_ENDPOINTS.MASTER_UPDATE}${code}`;
   const response = await authFetch(url, {
@@ -15,17 +15,16 @@ export async function updateMaster(code, masterData) {
     headers: {
       "Content-Type": "application/json",
     },
-    credentials: "include",
     body: JSON.stringify(masterData),
   });
+  const data = await response.json();
   if (!response.ok) {
-    const data = await response.json().catch(() => ({}));
-    const error = new Error(
-      data.message || data.detail || "Failed to update master",
-    );
-    error.data = data; // Attach all error data for toast
-    if (data.resolution) error.resolution = data.resolution;
-    throw error;
+    throw { 
+      message: data.message || data.detail || "Failed to update master",
+      resolution: data.resolution || ""
+    };
   }
-  return response.json();
+  return data;
 }
+
+export { updateMaster };
