@@ -63,7 +63,7 @@ const CustomerChart = ({ data }) => {
   useEffect(() => {
     if (target > 0) {
       let start = 0;
-      const duration = 1300; // ms
+      const duration = 500; // ms
       const step = Math.ceil(target / (duration / 20));
       if (intervalRef.current) {
         clearInterval(intervalRef.current);

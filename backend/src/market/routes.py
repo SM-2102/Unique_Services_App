@@ -1,3 +1,4 @@
+from datetime import date
 from typing import List, Optional
 
 from fastapi import APIRouter, Depends, status
@@ -110,10 +111,26 @@ async def master_enquiry(
     final_status: Optional[str] = None,
     name: Optional[str] = None,
     division: Optional[str] = None,
+    from_delivery_date: Optional[date] = None,
+    to_delivery_date: Optional[date] = None,
+    delivered_by: Optional[str] = None,
+    invoice_date: Optional[date] = None,
     session: AsyncSession = Depends(get_session),
     _=Depends(access_token_bearer),
 ):
-    enquiry_list = await market_service.get_market_enquiry(
-        session, final_status, name, division
-    )
-    return enquiry_list
+    try:
+        enquiry_list = await market_service.get_market_enquiry(
+            session, final_status, name, division, from_delivery_date,
+            to_delivery_date, delivered_by, invoice_date
+        )
+        return enquiry_list
+    except:
+        return []
+    
+@market_router.get("/list_delivered_by", response_model=List, status_code=status.HTTP_200_OK)
+async def list_delivered_by(
+    session: AsyncSession = Depends(get_session), _=Depends(access_token_bearer)
+):
+    names = await market_service.list_delivered_by(session)
+    return names
+

@@ -18,6 +18,7 @@ import RoadChallanPrintPage from "./pages/RoadChallanPrintPage.jsx";
 import RoadChallanCreatePage from "./pages/RoadChallanCreatePage.jsx";
 import MarketCreatePage from "./pages/MarketCreatePage.jsx";
 import MarketUpdatePage from "./pages/MarketUpdatePage.jsx";
+import MarketEnquiryPage from "./pages/MarketEnquiryPage.jsx";
 
 function AppRoutesWithNav() {
   return (
@@ -254,7 +255,7 @@ function AppRoutesWithNav() {
             path="/market-enquiry"
             element={
               <PrivateRoute>
-                <PageNotAvailable />
+                <MarketEnquiryPage />
               </PrivateRoute>
             }
           />

@@ -1,4 +1,6 @@
+from datetime import date
 from typing import List, Optional
+from utils.date_utils import format_date_ddmmyyyy
 
 from sqlalchemy import case, func, select
 from sqlalchemy.exc import IntegrityError
@@ -118,6 +120,10 @@ class MarketService:
         final_status: Optional[str] = None,
         name: Optional[str] = None,
         division: Optional[str] = None,
+        from_delivery_date: Optional[date] = None,
+        to_delivery_date: Optional[date] = None,
+        delivered_by: Optional[str] = None,
+        invoice_date: Optional[date] = None,
     ) -> List[MarketEnquiry]:
         # Check if master name exists
         statement = select(Market, Master.name).join(Master, Master.code == Market.code)
@@ -134,6 +140,19 @@ class MarketService:
         if division:
             statement = statement.where(Market.division.ilike(f"%{division}%"))
 
+        if from_delivery_date:
+            statement = statement.where(Market.delivery_date >= from_delivery_date)
+        if to_delivery_date:
+            statement = statement.where(Market.delivery_date <= to_delivery_date)
+
+        if delivered_by:
+            statement = statement.where(Market.delivery_by.ilike(f"%{delivered_by}%"))
+
+        if invoice_date:
+            statement = statement.where(Market.invoice_date == invoice_date)
+
+        statement = statement.order_by(Market.mcode)
+
         result = await session.execute(statement)
         rows = result.all()
         return [
@@ -142,10 +161,16 @@ class MarketService:
                 name=row.name,
                 division=row.Market.division,
                 invoice_number=row.Market.invoice_number,
-                invoice_date=row.Market.invoice_date,
+                invoice_date=format_date_ddmmyyyy(row.Market.invoice_date),
                 quantity=row.Market.quantity,
-                delivery_date=row.Market.delivery_date,
+                delivery_date=format_date_ddmmyyyy(row.Market.delivery_date) if row.Market.delivery_date else None,
                 delivery_by=row.Market.delivery_by,
             )
             for row in rows
         ]
+    
+    async def list_delivered_by(self, session: AsyncSession):
+        statement = select(Market.delivery_by).distinct().where(Market.delivery_by.isnot(None))
+        result = await session.execute(statement)
+        names = result.scalars().all()
+        return names
