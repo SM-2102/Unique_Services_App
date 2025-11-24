@@ -4,12 +4,15 @@
 - Do NOT copy the `middleware/` directory
 - Do NOT copy the `migrations/` folder
 - Do NOT copy the `db/` folder
+- Do NOT copy the `backups\` folder
 - __init__.py must be copied to main.py
 - Remove `src.` from all files
 - In `main.py` change the `.exceptions` import
 - In `main.py` change the `.middleware` import
 - `samesite` of `set.cookie` has to be set to `none`
 - `secure` of `set.cookie` has to be set to `true`
+- `favicon.ico` has to handled in main.py
+- In `requirements.txt` - remove `psycopg2` 
 
 ### Alembic Database Migrations
 1. Initialize Alembic (run once):
