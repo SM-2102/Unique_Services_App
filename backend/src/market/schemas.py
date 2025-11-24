@@ -50,7 +50,7 @@ class MarketEnquiry(BaseModel):
     name: str
     division: str
     invoice_number: str
-    invoice_date: date
+    invoice_date: str
     quantity: int
-    delivery_date: Optional[date] = None
+    delivery_date: Optional[str] = None
     delivery_by: Optional[str] = None

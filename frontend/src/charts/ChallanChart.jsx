@@ -147,7 +147,7 @@ const ChallanChart = ({ data }) => {
   useEffect(() => {
     if (target > 0) {
       let start = 0;
-      const duration = 1100; // ms
+      const duration = 500; // ms
       const step = Math.ceil(target / (duration / 20));
       if (challanIntervalRef.current) {
         clearInterval(challanIntervalRef.current);
@@ -175,7 +175,7 @@ const ChallanChart = ({ data }) => {
   useEffect(() => {
     if (itemsTarget > 0) {
       let start = 0;
-      const duration = 1100; // ms
+      const duration = 500; // ms
       const step = Math.ceil(itemsTarget / (duration / 20));
       if (itemIntervalRef.current) {
         clearInterval(itemIntervalRef.current);

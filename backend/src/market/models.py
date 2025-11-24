@@ -23,7 +23,7 @@ class Market(SQLModel, table=True):
     delivery_date: date = Field(sa_column=Column(pg.DATE, nullable=True))
     delivery_by: str = Field(sa_column=Column(pg.VARCHAR(20), nullable=True))
     remark: str = Field(sa_column=Column(pg.VARCHAR(40), nullable=True))
-    final_status: str = Field(sa_column=Column(pg.CHAR(1), default="N"))
+    final_status: str = Field(sa_column=Column(pg.CHAR(1), default="N", nullable=False))
     created_by: str = Field(
         sa_column=Column(pg.VARCHAR(15), ForeignKey("users.username"), nullable=False)
     )

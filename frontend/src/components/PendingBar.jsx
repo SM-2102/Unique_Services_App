@@ -8,14 +8,15 @@ const PendingBar = ({ pendingData = [], onSelect }) => {
     if (onSelect) onSelect(id);
     setOpen(false);
   };
+      // className="fixed top-0 left-0 w-80 max-w-[90vw] h-screen bg-black/10 backdrop-blur-xl z-[1200] shadow-2xl flex flex-col animate-fade-in"
 
   return (
     <>
       {/* Sliding Panel (keeps out of header/footer via top/bottom offsets) */}
       <div
-        className={`fixed right-0 w-80 max-w-[90vw] z-[2000] transition-transform duration-300
-          ${open ? "translate-x-0" : "translate-x-full"} bg-blue-900/10 backdrop-blur-md shadow-2xl
-          border border-blue-800/20 top-[88px] bottom-[30px] rounded-l-md overflow-hidden flex flex-col`}
+        className={`fixed right-0 w-70 max-w-[90vw] z-[1200] transition-transform duration-300
+          ${open ? "translate-x-0" : "translate-x-full"} bg-black/10 backdrop-blur-xl shadow-2xl
+           top-[88px] bottom-[0px] rounded-l-md overflow-hidden flex flex-col animate-fade-in`}
       >
         {/* List (no separate header/footer inside - uses surrounding layout offsets) */}
         <ul
@@ -28,15 +29,22 @@ const PendingBar = ({ pendingData = [], onSelect }) => {
               onClick={() => handleSelect(item.id)}
               className="flex items-center justify-between gap-3 cursor-pointer rounded-md px-2 py-1 transition-colors duration-150 bg-transparent hover:bg-blue-800/10"
             >
-              <div className="truncate text-sm text-black font-medium">
+              <div className="truncate text-sm text-blue-900 font-bold">
                 {item.id} -{" "}
-                <span className="text-black font-normal">{item.name}</span>
+                <span className="text-blue-950 font-medium">{item.name}</span>
               </div>
             </li>
           ))}
           {pendingData.length === 0 && (
-            <li className="text-center text-sm text-slate-300 py-6">
-              No pending items
+            <li className="flex flex-col items-center justify-center py-8 text-center">
+              <span className="mb-2">
+                <svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="#3b82f6" className="mx-auto">
+                  <circle cx="12" cy="12" r="10" strokeWidth="2" strokeDasharray="4 2" />
+                  <path d="M8 12h8M12 8v8" strokeWidth="2" strokeLinecap="round" />
+                </svg>
+              </span>
+              <span className="text-base font-semibold text-blue-700">No pending items</span>
+              <span className="text-xs text-gray-500 mt-1">You're all caught up!</span>
             </li>
           )}
         </ul>
@@ -45,7 +53,7 @@ const PendingBar = ({ pendingData = [], onSelect }) => {
       <div
         onClick={() => setOpen(!open)}
         className={`fixed top-1/2 -translate-y-1/2 z-[3000] flex items-center gap-2 bg-blue-900 text-white shadow-lg cursor-pointer
-          px-4 py-3 rounded-l-xl select-none transition-all duration-300 ${open ? "right-80" : "right-0"}`}
+          px-4 py-3 rounded-l-xl select-none transition-all duration-300 ${open ? "right-70" : "right-0"}`}
         title="Toggle Pending Bar"
       >
         {open ? (

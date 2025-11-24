@@ -31,9 +31,10 @@ const API_ENDPOINTS = {
   MARKET_NEXT_NUMBER: `${BASE_API_URL}market/next_mcode`,
   MARKET_CREATE: `${BASE_API_URL}market/create`,
   MARKET_UPDATE: `${BASE_API_URL}market/update/`, //append mcode
-  MARKET_ENQUIRY: `${BASE_API_URL}market/enquiry/`, //append final_status, division, name
+  MARKET_ENQUIRY: `${BASE_API_URL}market/enquiry`, //append final_status, division, name
   MARKET_PENDING: `${BASE_API_URL}market/list_pending`,
   MARKET_SEARCH_CODE: `${BASE_API_URL}market/by_mcode`,
+  MARKET_DELIVERED_BY: `${BASE_API_URL}market/list_delivered_by`,
 };
 
 export default API_ENDPOINTS;

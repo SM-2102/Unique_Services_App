@@ -7,6 +7,7 @@ import { searchMarketByCode } from "../services/marketSearchByCodeService";
 import FinalStatusToggle from "../components/FinalStatus";
 import PendingBar from "../components/PendingBar";
 import { fetchMarketPending } from "../services/marketPendingService";
+import { fetchMarketDeliveredBy } from "../services/marketDeliveredByService";
 
 const initialForm = {
   mcode: "",
@@ -29,6 +30,11 @@ const MarketUpdatePage = () => {
   const [isLocked, setIsLocked] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [pendingItems, setPendingItems] = useState([]);
+  const [deliveredByList, setDeliveredByList] = useState([]);
+  const [deliveredBySuggestions, setDeliveredBySuggestions] = useState([]);
+  const [showDeliveredBySuggestions, setShowDeliveredBySuggestions] = useState(
+    false,
+  );
 
   const handleSearch = async (searchCode) => {
     // If this was called as an event handler (e.g. onClick={handleSearch}),
@@ -90,12 +96,6 @@ const MarketUpdatePage = () => {
     }
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    let newValue = value;
-    setForm((prev) => ({ ...prev, [name]: newValue }));
-    setError((prev) => ({ ...prev, [name]: undefined }));
-  };
   useEffect(() => {
     const fetchPending = async () => {
       try {
@@ -106,7 +106,17 @@ const MarketUpdatePage = () => {
       }
     };
 
+    const fetchDeliveredBy = async () => {
+      try {
+        const data = await fetchMarketDeliveredBy();
+        if (Array.isArray(data)) setDeliveredByList(data);
+      } catch (error) {
+        setDeliveredByList([]);
+      }
+    };
+
     fetchPending();
+    fetchDeliveredBy();
   }, []);
 
   // Validation
@@ -155,6 +165,25 @@ const MarketUpdatePage = () => {
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    let newValue = value;
+    if (name === "delivery_by") {
+      // Autocomplete: filter suggestions as user types
+      if (newValue.length > 0) {
+        const filtered = deliveredByList.filter((n) =>
+          n.toLowerCase().startsWith(newValue.toLowerCase()),
+        );
+        setDeliveredBySuggestions(filtered);
+        setShowDeliveredBySuggestions(filtered.length > 0);
+      } else {
+        setShowDeliveredBySuggestions(false);
+      }
+    }
+    setForm((prev) => ({ ...prev, [name]: newValue }));
+    setError((prev) => ({ ...prev, [name]: undefined }));
   };
 
   return (
@@ -313,23 +342,66 @@ const MarketUpdatePage = () => {
           </div>
           {/* Challan Number & Challan Date - label beside input, w-1/2 each */}
           <div className="flex items-center w-full gap-3">
-            <div className="flex items-center w-1/2 gap-2">
+            <div className="flex items-center w-1/2">
               <label
                 htmlFor="delivery_by"
-                className="w-65 text-md font-medium text-gray-700"
+                className="w-64 text-md font-medium text-gray-700"
               >
                 Delivered By
               </label>
-              <input
-                id="delivery_by"
-                name="delivery_by"
-                type="text"
-                value={form.delivery_by}
-                onChange={handleChange}
-                className="w-full px-3 py-1 rounded-lg border border-gray-300 bg-gray-50 text-gray-900"
-                maxLength={10}
-                disabled={isLocked || submitting}
-              />
+              <div className="w-full relative">
+                <input
+                  id="delivery_by"
+                  name="delivery_by"
+                  type="text"
+                  value={form.delivery_by}
+                  onChange={handleChange}
+                  className="w-full px-3 py-1 rounded-lg border border-gray-300 bg-gray-50 text-gray-900"
+                  maxLength={20}
+                  disabled={isLocked || submitting}
+                  autoComplete="off"
+                  onFocus={() => {
+                    if (form.delivery_by.length > 0 && deliveredBySuggestions.length > 0)
+                      setShowDeliveredBySuggestions(true);
+                  }}
+                  onBlur={() =>
+                    setTimeout(() => setShowDeliveredBySuggestions(false), 150)
+                  }
+                />
+                {showDeliveredBySuggestions && (
+                  <ul
+                    style={{
+                      position: "absolute",
+                      top: "100%",
+                      left: 0,
+                      zIndex: 10,
+                      background: "#fff",
+                      border: "1px solid #d1d5db",
+                      borderRadius: "0.5rem",
+                      boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+                      width: "100%",
+                      maxHeight: 180,
+                      overflowY: "auto",
+                      margin: 0,
+                      padding: 0,
+                      listStyle: "none",
+                    }}
+                  >
+                    {deliveredBySuggestions.map((n) => (
+                      <li
+                        key={n}
+                        style={{ padding: "0.5rem 1rem", cursor: "pointer" }}
+                        onMouseDown={() => {
+                          setForm((prev) => ({ ...prev, delivery_by: n }));
+                          setShowDeliveredBySuggestions(false);
+                        }}
+                      >
+                        {n}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             </div>
             <div className="flex items-center w-1/2 gap-2">
               <label

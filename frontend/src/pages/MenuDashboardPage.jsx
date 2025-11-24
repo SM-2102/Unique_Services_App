@@ -1,4 +1,5 @@
 import React from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import MenuCard from "../components/MenuCard";
 import CustomerChart from "../charts/CustomerChart";
 import ChallanChart from "../charts/ChallanChart";
@@ -14,16 +15,34 @@ import SpinnerLoading from "../components/SpinnerLoading";
 import { menuConfig } from "../config/menuConfig";
 
 // Filter out actions with showInDashboard: false
+// Pass all actions to MenuCard, but filter for overlay rendering
 const cards = menuConfig.map(({ actions, ...rest }) => ({
   ...rest,
-  actions: actions.filter((a) => a.showInDashboard !== false),
+  actions,
+  dashboardActions: actions.filter((a) => a.showInDashboard !== false),
 }));
 
 const MenuDashboardPage = () => {
   const { data, loading, error } = useDashboardData();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Get open submenu from query param
+  const queryParams = new URLSearchParams(location.search);
+  const openCardKey = queryParams.get("open") || null;
+
+  // Handler to update query param when submenu is opened/closed
+  const handleOpenCardKey = (key) => {
+    const params = new URLSearchParams(location.search);
+    if (key) {
+      params.set("open", key);
+    } else {
+      params.delete("open");
+    }
+    navigate({ search: params.toString() }, { replace: true });
+  };
 
   return (
-    // Using flex and max-height to prevent scrolling
     <div className="flex flex-col min-h-[calc(100vh-7rem)] pt-8 px-6 md:px-10 lg:px-20 bg-[#fff] mb-5">
       <div className="relative mb-6">
         <h2
@@ -37,15 +56,20 @@ const MenuDashboardPage = () => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 flex-grow min-w-0 w-full">
-        {cards.map(({ key, title, icon, actions, bgColor }) => (
+        {cards.map(({ key, title, icon, actions, dashboardActions, bgColor }) => (
           <MenuCard
             key={key}
+            cardKey={key}
+            openCardKey={openCardKey}
+            setOpenCardKey={handleOpenCardKey}
             title={title}
             icon={icon ? React.createElement(icon) : null}
             actions={actions}
+            dashboardActions={dashboardActions}
             bgColor={bgColor}
             className="min-h-[300px] max-w-full w-full"
           >
+            {/* ...existing chart rendering logic... */}
             {key === "customer" &&
               (loading ? (
                 <div className="w-full flex justify-center items-center">

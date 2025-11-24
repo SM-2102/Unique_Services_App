@@ -17,16 +17,19 @@ const MenuCard = ({
   onClick,
   icon,
   actions = [],
+  dashboardActions = [],
   bgColor,
+  cardKey,
+  openCardKey,
+  setOpenCardKey,
 }) => {
   const [showBook, setShowBook] = useState(false);
-  // Icon flash/alternate effect
   useEffect(() => {
     if (!shouldShowEnquiry(title)) return;
     const interval = setInterval(() => setShowBook((v) => !v), 1500);
     return () => clearInterval(interval);
   }, [title]);
-  const [isOpen, setIsOpen] = useState(false);
+  const isOpen = openCardKey === cardKey;
   const ref = useRef(null);
   const navigate = useNavigate();
 
@@ -39,20 +42,33 @@ const MenuCard = ({
     );
   };
 
+  // Get the enquiry action path if available
+  const getEnquiryPath = () => {
+    if (actions && actions.length > 0) {
+      const enquiryAction = actions.find(a => a.label.toLowerCase() === "enquiry" && a.path);
+      return enquiryAction ? enquiryAction.path : null;
+    }
+    return null;
+  };
+
   useEffect(() => {
     const handleOutside = (e) => {
       if (isOpen && ref.current && !ref.current.contains(e.target)) {
-        setIsOpen(false);
+        setOpenCardKey(null);
       }
     };
     if (isOpen) document.addEventListener("mousedown", handleOutside);
     return () => document.removeEventListener("mousedown", handleOutside);
-  }, [isOpen]);
+  }, [isOpen, setOpenCardKey]);
 
   const handleCardClick = (e) => {
     // If actions exist, toggle the overlay instead of invoking onClick
     if (actions && actions.length > 0) {
-      setIsOpen((v) => !v);
+      if (!isOpen) {
+        setOpenCardKey(cardKey);
+      } else {
+        setOpenCardKey(null);
+      }
       return;
     }
     if (onClick) onClick(e);
@@ -85,21 +101,21 @@ const MenuCard = ({
       />
 
       {/* overlay that contains action buttons when open */}
-      {isOpen && actions && actions.length > 0 && (
+      {isOpen && dashboardActions && dashboardActions.length > 0 && (
         <div className="absolute inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-10 px-4">
           {(() => {
             let containerClass = "";
             const buttonClass =
               "px-3 py-2 w-[172px] text-sm gap-1.5 flex items-center justify-center border border-transparent shadow-sm";
 
-            if (actions.length === 1) {
+            if (dashboardActions.length === 1) {
               // Single button centered
               containerClass = "flex justify-center items-center w-full";
-            } else if (actions.length === 2) {
+            } else if (dashboardActions.length === 2) {
               // Two buttons stacked vertically
               containerClass =
                 "grid grid-cols-1 max-w-[200px] w-full gap-2.5 place-items-center";
-            } else if (actions.length === 5) {
+            } else if (dashboardActions.length === 5) {
               // Special layout: 2x2 grid + 1 centered below
               containerClass =
                 "grid grid-cols-2 max-w-[350px] w-full gap-2.5 place-items-center";
@@ -111,10 +127,10 @@ const MenuCard = ({
 
             return (
               <div className={containerClass}>
-                {actions.map((a, idx) => {
+                {dashboardActions.map((a, idx) => {
                   // For the 5-button case: center the last one
                   const specialClass =
-                    actions.length === 5 && idx === 4
+                    dashboardActions.length === 5 && idx === 4
                       ? "col-span-2 justify-self-center"
                       : "";
 
@@ -124,7 +140,7 @@ const MenuCard = ({
                       onClick={(ev) => {
                         ev.stopPropagation();
                         if (a.path) navigate(a.path);
-                        setIsOpen(false);
+                        // Do not close overlay here; let browser navigation handle state
                       }}
                       className={`${buttonClass} ${specialClass} rounded-md bg-white/95 border border-white/40 shadow-sm hover:shadow-md font-medium text-blue-800 hover:bg-white hover:scale-105 transform transition-all duration-150`}
                     >
@@ -198,7 +214,12 @@ const MenuCard = ({
           onClick={(e) => {
             if (shouldShowEnquiry(title)) {
               e.stopPropagation();
-              navigate("/page-not-available");
+              const enquiryPath = getEnquiryPath();
+              if (enquiryPath) {
+                navigate(enquiryPath);
+              } else {
+                navigate("/page-not-available");
+              }
             }
           }}
           tabIndex={shouldShowEnquiry(title) ? 0 : -1}
