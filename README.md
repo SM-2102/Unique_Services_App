@@ -5,8 +5,15 @@
 
 ## To Do List
 
-- Market Enquiry Page
-- Filtering
+- Filter - put it more up
+- Create User - password eye
+- Menu Dasboard refresh
+- Store in memory - menu
+- Market - filter - include invoice number
+- Market - backend - fetching of invoice number
+- Menu Dasboard - add enquiry/ admin
+- Disable admin buttons for user
+- Retail add column - Settles Y or N
   
 ---
 
@@ -40,6 +47,14 @@
 - [x] **MarketUpdatePage** - Update Market record
 - [ ] **MarketEnquiryPage** - Market Enquiry
 
+### Retail Module
+- [ ] **RetailCreatePage** - Create Retail record
+- [ ] **RetailUpdatePage** - Update Retail record
+- [ ] **RetailEnquiryPage** - Retail Enquiry
+- [ ] **RetailPrintPage** - Retail Print Receipt
+- [ ] **RetailSettleUser** - Proposed For Settlement
+- [ ] **RetailSettleAdmin** - Settled Retail Record
+
 ---
 
 
@@ -63,7 +78,6 @@
 ### Master Module
 - [x] **/master/create**
 - [x] **/master/next_code**
-- [x] **/master/check_available**
 - [x] **/master/list_names** 
 - [x] **/master/by_code** 
 - [x] **/master/by_name**
@@ -82,7 +96,12 @@
 - [x] **/market/create**
 - [x] **/market/by_code** 
 - [x] **/market/update/{code}**
-- [ ] **/market/enquiry**
+- [ ] **/market/enquiry/{params}**
+- [ ] **/market/list_delivered_by**
+- [ ] **/market/list_invoice_number**
+
+### Retail Module
+- [ ] **/retail/next_code** - X(5)
 
 ---
 

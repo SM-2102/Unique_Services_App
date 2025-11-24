@@ -1,6 +1,5 @@
 from datetime import date
 from typing import List, Optional
-from utils.date_utils import format_date_ddmmyyyy
 
 from sqlalchemy import case, func, select
 from sqlalchemy.exc import IntegrityError
@@ -17,7 +16,7 @@ from market.schemas import (
 )
 from master.models import Master
 from master.service import MasterService
-from utils.date_utils import parse_date
+from utils.date_utils import format_date_ddmmyyyy, parse_date
 
 master_service = MasterService()
 
@@ -163,14 +162,20 @@ class MarketService:
                 invoice_number=row.Market.invoice_number,
                 invoice_date=format_date_ddmmyyyy(row.Market.invoice_date),
                 quantity=row.Market.quantity,
-                delivery_date=format_date_ddmmyyyy(row.Market.delivery_date) if row.Market.delivery_date else None,
+                delivery_date=(
+                    format_date_ddmmyyyy(row.Market.delivery_date)
+                    if row.Market.delivery_date
+                    else None
+                ),
                 delivery_by=row.Market.delivery_by,
             )
             for row in rows
         ]
-    
+
     async def list_delivered_by(self, session: AsyncSession):
-        statement = select(Market.delivery_by).distinct().where(Market.delivery_by.isnot(None))
+        statement = (
+            select(Market.delivery_by).distinct().where(Market.delivery_by.isnot(None))
+        )
         result = await session.execute(statement)
         names = result.scalars().all()
         return names
