@@ -18,7 +18,10 @@ const PendingBar = ({ pendingData = [], onSelect }) => {
           border border-blue-800/20 top-[88px] bottom-[30px] rounded-l-md overflow-hidden flex flex-col`}
       >
         {/* List (no separate header/footer inside - uses surrounding layout offsets) */}
-        <ul className="flex-1 overflow-y-auto py-3 px-3 space-y-2 font-sans" style={{ fontFamily: "Montserrat, Arial, sans-serif" }}>
+        <ul
+          className="flex-1 overflow-y-auto py-3 px-3 space-y-2 font-sans"
+          style={{ fontFamily: "Montserrat, Arial, sans-serif" }}
+        >
           {pendingData.map((item) => (
             <li
               key={item.id}
@@ -26,12 +29,15 @@ const PendingBar = ({ pendingData = [], onSelect }) => {
               className="flex items-center justify-between gap-3 cursor-pointer rounded-md px-2 py-1 transition-colors duration-150 bg-transparent hover:bg-blue-800/10"
             >
               <div className="truncate text-sm text-black font-medium">
-                {item.id} - <span className="text-black font-normal">{item.name}</span>
+                {item.id} -{" "}
+                <span className="text-black font-normal">{item.name}</span>
               </div>
             </li>
           ))}
           {pendingData.length === 0 && (
-            <li className="text-center text-sm text-slate-300 py-6">No pending items</li>
+            <li className="text-center text-sm text-slate-300 py-6">
+              No pending items
+            </li>
           )}
         </ul>
       </div>
@@ -42,7 +48,11 @@ const PendingBar = ({ pendingData = [], onSelect }) => {
           px-4 py-3 rounded-l-xl select-none transition-all duration-300 ${open ? "right-80" : "right-0"}`}
         title="Toggle Pending Bar"
       >
-        {open ? <FaChevronRight className="text-base" /> : <FaChevronLeft className="text-base" />}
+        {open ? (
+          <FaChevronRight className="text-base" />
+        ) : (
+          <FaChevronLeft className="text-base" />
+        )}
         <span className="text-md font-bold">Pending</span>
       </div>
     </>

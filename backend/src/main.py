@@ -5,9 +5,9 @@ from fastapi.staticfiles import StaticFiles
 from auth.routes import auth_router
 from challan.routes import challan_router
 from exceptions import register_exceptions
+from market.routes import market_router
 from master.routes import master_router
 from menu.routes import menu_router
-from market.routes import market_router
 from middleware.middleware import register_middleware
 from user.routes import user_router
 

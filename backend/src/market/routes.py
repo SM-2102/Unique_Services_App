@@ -2,15 +2,20 @@ from typing import List, Optional
 
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
-from market.schemas import MarketEnquiry
-from market.schemas import MarketResponse
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from auth.dependencies import AccessTokenBearer
 from db.db import get_session
-from market.service import MarketService
-from market.schemas import MarketPending, CreateMarket, MarketCode, MarketUpdate
 from exceptions import MarketNotFound
+from market.schemas import (
+    CreateMarket,
+    MarketCode,
+    MarketEnquiry,
+    MarketPending,
+    MarketResponse,
+    MarketUpdate,
+)
+from market.service import MarketService
 
 market_router = APIRouter()
 market_service = MarketService()
@@ -28,9 +33,8 @@ async def create_market(
     token=Depends(access_token_bearer),
 ):
     new_market = await market_service.create_market(session, market, token)
-    return JSONResponse(
-        content={"message": f"Market Created : {new_market.mcode}"}
-    )
+    return JSONResponse(content={"message": f"Market Created : {new_market.mcode}"})
+
 
 """
 Get the next available market code.
@@ -50,7 +54,9 @@ List all pending market records.
 """
 
 
-@market_router.get("/list_pending", response_model=List[MarketPending], status_code=status.HTTP_200_OK)
+@market_router.get(
+    "/list_pending", response_model=List[MarketPending], status_code=status.HTTP_200_OK
+)
 async def list_market_pending(
     session: AsyncSession = Depends(get_session), _=Depends(access_token_bearer)
 ):
@@ -75,7 +81,6 @@ async def get_market_by_mcode(
     return market
 
 
-
 """
 Update market details by mcode
 """
@@ -98,6 +103,8 @@ async def update_market(
 """
 Filter by final status and customer name
 """
+
+
 @market_router.get("/enquiry", response_model=List[MarketEnquiry])
 async def master_enquiry(
     final_status: Optional[str] = None,
@@ -106,5 +113,7 @@ async def master_enquiry(
     session: AsyncSession = Depends(get_session),
     _=Depends(access_token_bearer),
 ):
-    enquiry_list = await market_service.get_market_enquiry(session, final_status, name, division)
+    enquiry_list = await market_service.get_market_enquiry(
+        session, final_status, name, division
+    )
     return enquiry_list

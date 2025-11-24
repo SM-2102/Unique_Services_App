@@ -44,7 +44,9 @@ class ChallanService:
         for _ in range(3):  # Retry up to 3 times in case of IntegrityError
             master = await master_service.get_master_by_name(challan.name, session)
             challan_data_dict = challan.model_dump()
-            challan_data_dict["challan_number"] = await self.next_challan_number(session)
+            challan_data_dict["challan_number"] = await self.next_challan_number(
+                session
+            )
             challan_data_dict["created_by"] = token["user"]["username"]
             challan_data_dict["code"] = master.code
             # Convert date fields to date objects

@@ -18,7 +18,7 @@ const initialForm = {
   delivery_by: "",
   delivery_date: "",
   quantity: "",
-  remark:"",
+  remark: "",
   final_status: "Pending",
 };
 
@@ -28,7 +28,7 @@ const MarketUpdatePage = () => {
   const [error, setError] = useState({});
   const [isLocked, setIsLocked] = useState(false);
   const [showToast, setShowToast] = useState(false);
-  const [pendingItems, setPendingItems] = useState([])
+  const [pendingItems, setPendingItems] = useState([]);
 
   const handleSearch = async (searchCode) => {
     // If this was called as an event handler (e.g. onClick={handleSearch}),
@@ -36,15 +36,16 @@ const MarketUpdatePage = () => {
     if (
       searchCode &&
       typeof searchCode === "object" &&
-      (searchCode.nativeEvent || typeof searchCode.preventDefault === "function" || searchCode.currentTarget)
+      (searchCode.nativeEvent ||
+        typeof searchCode.preventDefault === "function" ||
+        searchCode.currentTarget)
     ) {
       searchCode = undefined;
     }
 
     const codeToSearch = searchCode ?? form.mcode;
     if (!codeToSearch) {
-      setError({ message: "Please provide Receipt Number", 
-        type: "warning" });
+      setError({ message: "Please provide Receipt Number", type: "warning" });
       setShowToast(true);
       return;
     }
@@ -89,14 +90,13 @@ const MarketUpdatePage = () => {
     }
   };
 
-
-const handleChange = (e) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     let newValue = value;
     setForm((prev) => ({ ...prev, [name]: newValue }));
     setError((prev) => ({ ...prev, [name]: undefined }));
   };
- useEffect(() => {
+  useEffect(() => {
     const fetchPending = async () => {
       try {
         const response = await fetchMarketPending();
@@ -175,7 +175,10 @@ const handleChange = (e) => {
         <div className="flex flex-col gap-4">
           {/* mcode (readonly, small, label beside input) */}
           <div className="flex items-center gap-3 justify-center">
-            <label htmlFor="mcode" className="text-md font-medium text-gray-700">
+            <label
+              htmlFor="mcode"
+              className="text-md font-medium text-gray-700"
+            >
               Receipt Number
             </label>
             <input
@@ -225,7 +228,7 @@ const handleChange = (e) => {
                   readOnly
                   disabled={isLocked || submitting}
                   autoComplete="name"
-                 ></input>
+                ></input>
               </div>
             </div>
           </div>
@@ -249,8 +252,7 @@ const handleChange = (e) => {
                   errs_label.division ? "border-red-300" : "border-gray-300"
                 } bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small cursor-not-allowed`}
                 disabled={isLocked || submitting}
-              >
-              </input>
+              ></input>
             </div>
 
             <div className="flex items-center w-1/2 gap-2">
@@ -370,7 +372,7 @@ const handleChange = (e) => {
                   className={`w-full px-3 py-1 rounded-lg border ${errs_label.remark ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
                   disabled={isLocked || submitting}
                   autoComplete="remark"
-                 ></input>
+                ></input>
               </div>
             </div>
           </div>
@@ -430,13 +432,12 @@ const handleChange = (e) => {
         />
       )}
       <PendingBar
-  pendingData={pendingItems}
-  onSelect={(mcode) => {
-    setForm((prev) => ({ ...prev, mcode }));   // fill MCODE
-    handleSearch(mcode);                        // auto-trigger search with passed code
-  }}
-/>
-
+        pendingData={pendingItems}
+        onSelect={(mcode) => {
+          setForm((prev) => ({ ...prev, mcode })); // fill MCODE
+          handleSearch(mcode); // auto-trigger search with passed code
+        }}
+      />
     </div>
   );
 };

@@ -1,15 +1,11 @@
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy.future import select
 
 from auth.models import User
 from auth.utils import generate_hash_password, verify_password
-from exceptions import (
-    CannotDeleteCurrentUser,
-    InvalidCredentials,
-    UserNotFound,
-)
+from exceptions import CannotDeleteCurrentUser, InvalidCredentials, UserNotFound
 from user.schema import UserChangePassword, UserCreate
-from sqlalchemy.exc import IntegrityError
 
 
 class UserService:

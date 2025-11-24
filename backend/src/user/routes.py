@@ -101,7 +101,8 @@ Check whether password matches and change to new password.
 
 @user_router.post("/reset_password", status_code=status.HTTP_200_OK)
 async def reset_password(
-    user: UserChangePassword, session: AsyncSession = Depends(get_session),
+    user: UserChangePassword,
+    session: AsyncSession = Depends(get_session),
     _=Depends(access_token_bearer),
 ):
     user = await user_service.reset_password(user, session)

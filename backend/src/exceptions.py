@@ -65,6 +65,7 @@ class CannotChangeMasterName(BaseException):
 class RoadChallanNotFound(BaseException):
     """Road Challan Not Found"""
 
+
 class MarketNotFound(BaseException):
     """Market Not Found"""
 

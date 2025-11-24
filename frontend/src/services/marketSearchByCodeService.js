@@ -17,7 +17,8 @@ async function searchMarketByCode(mcode) {
   const data = await response.json();
   if (!response.ok) {
     throw {
-      message: data.message || data.detail || "Failed to search market by mcode",
+      message:
+        data.message || data.detail || "Failed to search market by mcode",
       resolution: data.resolution || "",
     };
   }

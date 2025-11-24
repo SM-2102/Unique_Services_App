@@ -3,7 +3,7 @@ import API_ENDPOINTS from "../config/api";
 
 /**
  * Fetches the next market number from the backend.
- * Returns [{ mcode : string , name : string }]  
+ * Returns [{ mcode : string , name : string }]
  */
 async function fetchMarketPending() {
   const response = await authFetch(API_ENDPOINTS.MARKET_PENDING, {

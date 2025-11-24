@@ -193,8 +193,8 @@ const MasterUpdatePage = () => {
               type="button"
               title="Search by code"
               className="p-0 rounded-full bg-gradient-to-tr from-blue-200 to-blue-500 text-white shadow-md hover:scale-105 hover:from-blue-600 hover:to-blue-900 focus:outline-none transition-all duration-200 flex items-center justify-center"
-                disabled={submitting || !form.code}
-                onClick={() => handleSearch("code")}
+              disabled={submitting || !form.code}
+              onClick={() => handleSearch("code")}
               tabIndex={0}
               style={{ width: 32, height: 32 }}
             >

@@ -1,22 +1,27 @@
-from market.schemas import MarketEnquiry
-from market.schemas import MarketResponse
-from market.schemas import MarketPending
-from master.models import Master
-from utils.date_utils import parse_date
-from master.service import MasterService
-from sqlalchemy import case, func, select
-from sqlalchemy.ext.asyncio.session import AsyncSession
-from sqlalchemy.exc import IntegrityError
-
-from market.schemas import CreateMarket, MarketUpdate
-from market.models import Market
-from exceptions import IncorrectCodeFormat, MarketNotFound, MasterNotFound
 from typing import List, Optional
+
+from sqlalchemy import case, func, select
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.ext.asyncio.session import AsyncSession
+
+from exceptions import IncorrectCodeFormat, MarketNotFound, MasterNotFound
+from market.models import Market
+from market.schemas import (
+    CreateMarket,
+    MarketEnquiry,
+    MarketPending,
+    MarketResponse,
+    MarketUpdate,
+)
+from master.models import Master
+from master.service import MasterService
+from utils.date_utils import parse_date
 
 master_service = MasterService()
 
+
 class MarketService:
-   
+
     async def create_market(
         self, session: AsyncSession, market: CreateMarket, token: dict
     ):
@@ -52,39 +57,43 @@ class MarketService:
         return next_mcode
 
     async def list_market_pending(self, session: AsyncSession):
-        statement = select(Market.mcode, Master.name).join(Master, Market.code == Master.code).where(Market.final_status == 'N')
+        statement = (
+            select(Market.mcode, Master.name)
+            .join(Master, Market.code == Master.code)
+            .where(Market.final_status == "N")
+        )
         result = await session.execute(statement)
         rows = result.all()
-        return [
-            MarketPending(id=mcode, name=name)
-            for mcode, name in rows
-        ]
+        return [MarketPending(id=mcode, name=name) for mcode, name in rows]
 
     async def get_market_by_mcode(self, mcode: str, session: AsyncSession):
         if len(mcode) != 6:
             mcode = "M" + mcode.zfill(5)
         if not mcode.startswith("M") or not mcode[1:].isdigit():
             raise IncorrectCodeFormat()
-        statement = select(Market, Master.name).join(Master, Market.code == Master.code).where(Market.mcode == mcode)
+        statement = (
+            select(Market, Master.name)
+            .join(Master, Market.code == Master.code)
+            .where(Market.mcode == mcode)
+        )
         result = await session.execute(statement)
         row = result.first()
         if row:
-                return MarketResponse(
-                    mcode=row.Market.mcode,
-                    name=row.name,
-                    division=row.Market.division,
-                    receive_date=row.Market.receive_date,
-                    invoice_number=row.Market.invoice_number,
-                    invoice_date=row.Market.invoice_date,
-                    quantity=row.Market.quantity,
-                    delivery_date=row.Market.delivery_date,
-                    delivery_by=row.Market.delivery_by,
-                    remark=row.Market.remark,
-                    final_status=row.Market.final_status,
-                )  
+            return MarketResponse(
+                mcode=row.Market.mcode,
+                name=row.name,
+                division=row.Market.division,
+                receive_date=row.Market.receive_date,
+                invoice_number=row.Market.invoice_number,
+                invoice_date=row.Market.invoice_date,
+                quantity=row.Market.quantity,
+                delivery_date=row.Market.delivery_date,
+                delivery_by=row.Market.delivery_by,
+                remark=row.Market.remark,
+                final_status=row.Market.final_status,
+            )
         else:
             raise MarketNotFound()
-
 
     async def update_market(
         self, mcode: str, market: MarketUpdate, session: AsyncSession, token: dict
@@ -103,16 +112,15 @@ class MarketService:
         await session.refresh(existing_market)
         return existing_market
 
-
     async def get_market_enquiry(
-            self,
+        self,
         session: AsyncSession,
         final_status: Optional[str] = None,
         name: Optional[str] = None,
         division: Optional[str] = None,
     ) -> List[MarketEnquiry]:
         # Check if master name exists
-        statement = (select(Market, Master.name).join(Master, Master.code == Market.code))
+        statement = select(Market, Master.name).join(Master, Master.code == Market.code)
 
         # Apply filters dynamically
         if final_status:
