@@ -1,22 +1,23 @@
-from utils.file_utils import safe_join, split_text_to_lines
-from utils.date_utils import parse_date
+import io
 import os
+
+from PyPDF2 import PdfReader, PdfWriter
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfbase.pdfmetrics import stringWidth
+from reportlab.pdfgen import canvas
 from sqlalchemy import func, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio.session import AsyncSession
-import io
-from PyPDF2 import PdfReader, PdfWriter
-from reportlab.pdfgen import canvas
-from reportlab.pdfbase.pdfmetrics import stringWidth
-from reportlab.lib.pagesizes import A4
 
 from challan.schemas import ChallanNumber, CreateChallan
 from exceptions import IncorrectCodeFormat, RoadChallanNotFound
 from master.service import MasterService
+from utils.date_utils import parse_date
+from utils.file_utils import safe_join, split_text_to_lines
 
 from .models import Challan
 
-master_service = MasterService()  
+master_service = MasterService()
 
 
 # Constants for PDF layout
@@ -28,57 +29,71 @@ CHALLAN_LINE_SPACING = 10
 CHALLAN_MIN_ROW_HEIGHT = 30
 CHALLAN_ROW_PADDING = 1
 CHALLAN_COLUMNS = [
-    {"x": 28, "width": 22},    # Sl No
-    {"x": 60, "width": 360},   # Spare
-    {"x": 440, "width": 40},   # Quantity
-    {"x": 490, "width": 80},   # Unit
+    {"x": 28, "width": 22},  # Sl No
+    {"x": 60, "width": 360},  # Spare
+    {"x": 440, "width": 40},  # Quantity
+    {"x": 490, "width": 80},  # Unit
 ]
+
 
 class ChallanService:
 
     async def create_challan(
         self, session: AsyncSession, challan: CreateChallan, token: dict
     ):
-        master = await master_service.get_master_by_name(challan.name, session)
-        challan_data_dict = challan.model_dump()
-        challan_data_dict["challan_number"] = await self.next_challan_number(session)
-        challan_data_dict["created_by"] = token["user"]["username"]
-        challan_data_dict["code"] = master.code
-        # Convert date fields to date objects
-        for date_field in ["challan_date", "order_date", "invoice_date"]:
-            if date_field in challan_data_dict:
-                challan_data_dict[date_field] = parse_date(challan_data_dict[date_field])
-        challan_data_dict.pop("name", None)
-        new_challan = Challan(**challan_data_dict)
-        session.add(new_challan)
-        try:
-            await session.commit()
-            return new_challan
-        except IntegrityError:
-            await session.rollback()
+        for _ in range(3):  # Retry up to 3 times in case of IntegrityError
+            master = await master_service.get_master_by_name(challan.name, session)
+            challan_data_dict = challan.model_dump()
+            challan_data_dict["challan_number"] = await self.next_challan_number(session)
+            challan_data_dict["created_by"] = token["user"]["username"]
+            challan_data_dict["code"] = master.code
+            # Convert date fields to date objects
+            for date_field in ["challan_date", "order_date", "invoice_date"]:
+                if date_field in challan_data_dict:
+                    challan_data_dict[date_field] = parse_date(
+                        challan_data_dict[date_field]
+                    )
+            challan_data_dict.pop("name", None)
+            new_challan = Challan(**challan_data_dict)
+            session.add(new_challan)
+            try:
+                await session.commit()
+                return new_challan
+            except IntegrityError:
+                await session.rollback()
 
     async def next_challan_number(self, session: AsyncSession):
-        statement = select(Challan.challan_number).order_by(Challan.challan_number.desc()).limit(1)
+        statement = (
+            select(Challan.challan_number)
+            .order_by(Challan.challan_number.desc())
+            .limit(1)
+        )
         result = await session.execute(statement)
         last_challan_number = result.scalar()
         last_number = last_challan_number[1:] if last_challan_number else "0"
         next_challan_number = int(last_number) + 1
-        next_challan_number_str = "N" + str(next_challan_number).zfill(5)
-        return next_challan_number_str
-    
+        next_challan_number = "N" + str(next_challan_number).zfill(5)
+        return next_challan_number
+
     async def challan_max_date(self, session: AsyncSession):
         statement = select(func.max(Challan.challan_date))
         result = await session.execute(statement)
         max_date = result.scalar()
-        return max_date if max_date else '0000-00-00'
-    
+        return max_date if max_date else "2025-01-01"
+
     async def last_challan_number(self, session: AsyncSession):
-        statement = select(Challan.challan_number).order_by(Challan.challan_number.desc()).limit(1)
+        statement = (
+            select(Challan.challan_number)
+            .order_by(Challan.challan_number.desc())
+            .limit(1)
+        )
         result = await session.execute(statement)
         last_challan_number = result.scalar()
         return last_challan_number
-    
-    async def challan_by_challan_number(self, challan_number: ChallanNumber, session: AsyncSession):
+
+    async def challan_by_challan_number(
+        self, challan_number: ChallanNumber, session: AsyncSession
+    ):
         if len(challan_number) != 6:
             challan_number = "N" + challan_number.zfill(5)
         if not challan_number.startswith("N") or not challan_number[1:].isdigit():
@@ -89,18 +104,28 @@ class ChallanService:
         if challan:
             return challan
         raise RoadChallanNotFound()
-    
-    async def print_challan(self, challan_number: ChallanNumber, token: dict, session: AsyncSession) -> io.BytesIO:
+
+    async def print_challan(
+        self, challan_number: ChallanNumber, token: dict, session: AsyncSession
+    ) -> io.BytesIO:
         """
         Generates a PDF for the given challan number.
         """
         challan_data = await self.challan_by_challan_number(challan_number, session)
         challan_number = challan_data.challan_number
         challan_date = challan_data.challan_date.strftime("%d-%m-%Y")
-        order_number = challan_data.order_number or ''
-        order_date = challan_data.order_date.strftime("%d-%m-%Y") if challan_data.order_date else ""
-        invoice_number = challan_data.invoice_number or ''
-        invoice_date = challan_data.invoice_date.strftime("%d-%m-%Y") if challan_data.invoice_date else ""
+        order_number = challan_data.order_number or ""
+        order_date = (
+            challan_data.order_date.strftime("%d-%m-%Y")
+            if challan_data.order_date
+            else ""
+        )
+        invoice_number = challan_data.invoice_number or ""
+        invoice_date = (
+            challan_data.invoice_date.strftime("%d-%m-%Y")
+            if challan_data.invoice_date
+            else ""
+        )
         code = challan_data.code
         remark = challan_data.remark
         master_details = await master_service.get_master_details(code, session)
@@ -134,8 +159,19 @@ class ChallanService:
 
         # Create overlay
         overlay = self._generate_challan_overlay(
-            rows, challan_number, challan_date, name, full_address, code, contact,
-            order_number, order_date, invoice_number, invoice_date, total, remark
+            rows,
+            challan_number,
+            challan_date,
+            name,
+            full_address,
+            code,
+            contact,
+            order_number,
+            order_date,
+            invoice_number,
+            invoice_date,
+            total,
+            remark,
         )
 
         writer = PdfWriter()
@@ -153,10 +189,21 @@ class ChallanService:
         output_stream.seek(0)
         return output_stream
 
-
     def _generate_challan_overlay(
-        self, rows, challan_number, challan_date, name, full_address, code, contact,
-        order_number, order_date, invoice_number, invoice_date, total, remark
+        self,
+        rows,
+        challan_number,
+        challan_date,
+        name,
+        full_address,
+        code,
+        contact,
+        order_number,
+        order_date,
+        invoice_number,
+        invoice_date,
+        total,
+        remark,
     ):
         """
         Generates a PDF overlay for the challan details and rows.
@@ -190,10 +237,12 @@ class ChallanService:
                 str(idx),
                 str(row["spare"]) if row["spare"] is not None else "",
                 str(row["quantity"]) if row["quantity"] is not None else "",
-                str(row["unit"]) if row["unit"] is not None else ""
+                str(row["unit"]) if row["unit"] is not None else "",
             ]
             row_lines = [
-                split_text_to_lines(text, CHALLAN_FONT, CHALLAN_FONT_SIZE, col["width"], stringWidth)
+                split_text_to_lines(
+                    text, CHALLAN_FONT, CHALLAN_FONT_SIZE, col["width"], stringWidth
+                )
                 for col, text in zip(CHALLAN_COLUMNS, row_data)
             ]
             max_lines = max(len(lines) for lines in row_lines)
@@ -209,7 +258,9 @@ class ChallanService:
                 vertical_offset = (row_height - total_text_height) / 2
                 for i, ln in enumerate(lines):
                     safe_ln = ln or ""
-                    text_width = stringWidth(safe_ln or "", CHALLAN_FONT, CHALLAN_FONT_SIZE)
+                    text_width = stringWidth(
+                        safe_ln or "", CHALLAN_FONT, CHALLAN_FONT_SIZE
+                    )
                     center_x = col["x"] + col["width"] / 2 - text_width / 2
                     y_position = y - vertical_offset - (i * CHALLAN_LINE_SPACING)
                     can.drawString(center_x, y_position, safe_ln)

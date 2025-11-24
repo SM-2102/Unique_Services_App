@@ -6,10 +6,10 @@ from auth.utils import generate_hash_password, verify_password
 from exceptions import (
     CannotDeleteCurrentUser,
     InvalidCredentials,
-    UserAlreadyExists,
     UserNotFound,
 )
 from user.schema import UserChangePassword, UserCreate
+from sqlalchemy.exc import IntegrityError
 
 
 class UserService:
@@ -35,7 +35,7 @@ class UserService:
             await session.commit()
         except:
             await session.rollback()
-            raise UserAlreadyExists()
+            raise IntegrityError()
         return new_user
 
     async def user_exists(self, username: str, session: AsyncSession) -> bool:

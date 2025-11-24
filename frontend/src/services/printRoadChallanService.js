@@ -8,32 +8,29 @@ import API_ENDPOINTS from "../config/api";
  * @returns {Promise<Blob>} PDF blob
  */
 async function printRoadChallan(challanNumber) {
-    const response = await authFetch(
-      API_ENDPOINTS.CHALLAN_PRINT,
-      {
-        method: "POST",
-        headers: {
-          "Accept": "application/pdf",
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ challan_number: challanNumber }),
-      }
-    );
-    if (!response.ok) {
-      let data = {};
-      try {
-        data = await response.json();
-      } catch (e) {
-        // If not JSON, leave data as empty object
-      }
-      throw {
-        message: data.message || "Failed to print challan.",
-        resolution: data.resolution || "",
-      };
+  const response = await authFetch(API_ENDPOINTS.CHALLAN_PRINT, {
+    method: "POST",
+    headers: {
+      Accept: "application/pdf",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ challan_number: challanNumber }),
+  });
+  if (!response.ok) {
+    let data = {};
+    try {
+      data = await response.json();
+    } catch (e) {
+      // If not JSON, leave data as empty object
     }
-    // Get PDF blob
-    const blob = await response.blob();
-    return blob;
+    throw {
+      message: data.message || "Failed to print challan.",
+      resolution: data.resolution || "",
+    };
+  }
+  // Get PDF blob
+  const blob = await response.blob();
+  return blob;
 }
 
 export { printRoadChallan };

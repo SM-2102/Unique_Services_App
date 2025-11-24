@@ -113,5 +113,5 @@ class MasterService:
         return {
             "name": master.name,
             "full_address": full_address,
-            "contact1": master.contact1
+            "contact1": master.contact1,
         }

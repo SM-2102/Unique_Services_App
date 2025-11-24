@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Breadcrumb from "../components/Breadcrumb";
 import { FaUserFriends, FaPlusCircle } from "react-icons/fa";
 import Toast from "../components/Toast";
 import { createMaster } from "../services/masterCreateService";
@@ -68,47 +67,23 @@ const MasterCreatePage = () => {
     const { name, value } = e.target;
     let newValue = value;
     // Enforce max character limits per field
-    switch (name) {
-      case "name":
-        if (value.length > 40) return;
-        // Capitalize first letter of each word
-        newValue = value
-          .split(" ")
-          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-          .join(" ");
-        // Autocomplete: filter suggestions as user types
-        if (newValue.length > 0) {
-          const filtered = masterNames.filter((n) =>
-            n.toLowerCase().startsWith(newValue.toLowerCase()),
-          );
-          setNameSuggestions(filtered);
-          setShowSuggestions(filtered.length > 0);
-        } else {
-          setShowSuggestions(false);
-        }
-        break;
-      case "address":
-        if (value.length > 40) return;
-        break;
-      case "city":
-        if (value.length > 20) return;
-        break;
-      case "pin":
-        if (value.length > 6) return;
-        break;
-      case "contact1":
-      case "contact2":
-        if (value.length > 10) return;
-        break;
-      case "gst":
-        if (value.length > 15) return;
-        newValue = value.toUpperCase();
-        break;
-      case "remark":
-        if (value.length > 50) return;
-        break;
-      default:
-        break;
+    if (name == "name") {
+      if (value.length > 40) return;
+      // Capitalize first letter of each word
+      newValue = value
+        .split(" ")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
+      // Autocomplete: filter suggestions as user types
+      if (newValue.length > 0) {
+        const filtered = masterNames.filter((n) =>
+          n.toLowerCase().startsWith(newValue.toLowerCase()),
+        );
+        setNameSuggestions(filtered);
+        setShowSuggestions(filtered.length > 0);
+      } else {
+        setShowSuggestions(false);
+      }
     }
     setForm((prev) => ({ ...prev, [name]: newValue }));
     setError((prev) => ({ ...prev, [name]: undefined }));
@@ -163,26 +138,24 @@ const MasterCreatePage = () => {
   };
 
   return (
-    <div className="flex min-h-[80vh] mt-8 mb-4">
-      {/* Reusable Breadcrumb - left aligned, smaller */}
-      <div className="w-120 pl-8 pr-4">
-        <Breadcrumb
-          items={[ 
-            { label: "Customers", icon: <FaUserFriends className="text-blue-600 mr-1" /> },
-            { label: "Create Record", icon: <FaPlusCircle className="text-green-600 mr-1" /> }
-          ]}
-        />
-      </div>
-
+    <div className="flex min-h-[80vh] mt-4 justify-center items-center">
       <form
         onSubmit={handleSubmit}
-        className="bg-[#f8fafc] shadow-lg rounded-lg p-8 w-full max-w-150 border border-gray-200"
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+          }
+        }}
+        className="bg-[#f8fafc] shadow-lg rounded-lg p-6 w-full max-w-150 border border-gray-200"
         noValidate
       >
+        <h2 className="text-xl font-semibold text-blue-800 mb-4 pb-2 border-b border-blue-500 justify-center flex items-center gap-2">
+          Create Customer Record
+        </h2>
         <div className="flex flex-col gap-4">
           {/* Code (readonly, small, label beside input) */}
-          <div className="flex items-center gap-3 mb-2 justify-center">
-            <label htmlFor="code" className="text-lg font-medium text-gray-700">
+          <div className="flex items-center gap-3 justify-center">
+            <label htmlFor="code" className="text-md font-medium text-gray-700">
               Master Code
             </label>
             <input
@@ -193,17 +166,17 @@ const MasterCreatePage = () => {
               readOnly
               disabled={codeLoading || submitting}
               autoComplete="off"
-              className="w-25 text-center px-3 py-2 rounded-lg border border-gray-300 bg-gray-100 text-gray-900 font-medium cursor-not-allowed"
+              className="w-25 text-center px-2 py-1 rounded-lg border border-gray-300 bg-gray-100 text-gray-900 font-medium cursor-not-allowed"
             />
           </div>
           {/* Name (label beside input) */}
           <div
-            className="flex items-center gap-2 w-full"
+            className="flex items-center gap-3 w-full"
             style={{ position: "relative" }}
           >
             <label
               htmlFor="name"
-              className="w-25 text-lg font-medium text-gray-700"
+              className="w-25 text-md font-medium text-gray-700"
             >
               Name<span className="text-red-500">*</span>
             </label>
@@ -214,7 +187,7 @@ const MasterCreatePage = () => {
                 type="text"
                 value={form.name}
                 onChange={handleChange}
-                className={`w-full px-3 py-2 rounded-lg border ${errs_label.name ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium`}
+                className={`w-full px-3 py-1 rounded-lg border ${errs_label.name ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
                 minLength={3}
                 maxLength={40}
                 required
@@ -262,10 +235,10 @@ const MasterCreatePage = () => {
             </div>
           </div>
           {/* Address (label beside input) */}
-          <div className="flex items-center gap-2 w-full">
+          <div className="flex items-center gap-3 w-full">
             <label
               htmlFor="address"
-              className="w-25 text-lg font-medium text-gray-700"
+              className="w-25 text-md font-medium text-gray-700"
             >
               Address<span className="text-red-500">*</span>
             </label>
@@ -274,7 +247,7 @@ const MasterCreatePage = () => {
               name="address"
               value={form.address}
               onChange={handleChange}
-              className={`flex-1 px-3 py-2 rounded-lg border ${errs_label.address ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium`}
+              className={`flex-1 px-3 py-1 rounded-lg border ${errs_label.address ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
               maxLength={40}
               required
               rows={2}
@@ -283,11 +256,11 @@ const MasterCreatePage = () => {
             />
           </div>
           {/* City and PIN on same line, equal label/input width */}
-          <div className="flex items-center w-full gap-5">
-            <div className="flex items-center gap-2">
+          <div className="flex items-center w-full gap-7">
+            <div className="flex items-center gap-2 w-1/2">
               <label
                 htmlFor="city"
-                className="w-26 text-lg font-medium text-gray-700"
+                className="w-26 text-md font-medium text-gray-700"
               >
                 City<span className="text-red-500">*</span>
               </label>
@@ -297,17 +270,17 @@ const MasterCreatePage = () => {
                 type="text"
                 value={form.city}
                 onChange={handleChange}
-                className={`w-36 px-3 py-2 rounded-lg border ${errs_label.city ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium`}
+                className={`flex-1 w-full px-3 py-1 rounded-lg border ${errs_label.city ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
                 maxLength={20}
                 required
                 autoComplete="address-level2"
                 disabled={submitting}
               />
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center w-1/2 gap-2">
               <label
                 htmlFor="pin"
-                className="w-26 text-lg font-medium text-gray-700"
+                className="w-26 text-md font-medium text-gray-700"
               >
                 Pincode
               </label>
@@ -317,7 +290,7 @@ const MasterCreatePage = () => {
                 type="text"
                 value={form.pin}
                 onChange={handleChange}
-                className={`w-36 px-3 py-2 rounded-lg border ${errs_label.pin ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium`}
+                className={`flex-1 w-full px-3 py-1 rounded-lg border ${errs_label.pin ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
                 maxLength={6}
                 pattern="\d{6}"
                 autoComplete="postal-code"
@@ -326,11 +299,11 @@ const MasterCreatePage = () => {
             </div>
           </div>
           {/* Contact 1 and Contact 2/Button on same line, equal label/input width */}
-          <div className="flex items-center w-full gap-5">
+          <div className="flex items-center w-full gap-7">
             <div className="flex items-center w-1/2 gap-2">
               <label
                 htmlFor="contact1"
-                className="w-26 text-lg font-medium text-gray-700"
+                className="w-26 text-md font-medium text-gray-700"
               >
                 Contact 1<span className="text-red-500">*</span>
               </label>
@@ -340,7 +313,7 @@ const MasterCreatePage = () => {
                 type="text"
                 value={form.contact1}
                 onChange={handleChange}
-                className={`w-36 px-3 py-2 rounded-lg border ${errs_label.contact1 ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium`}
+                className={`flex-1 w-full px-3 py-1 rounded-lg border ${errs_label.contact1 ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
                 maxLength={10}
                 pattern="\d{10}"
                 required
@@ -353,7 +326,7 @@ const MasterCreatePage = () => {
                 <>
                   <label
                     htmlFor="contact2"
-                    className="w-26 text-lg font-medium text-gray-700"
+                    className="w-26 text-md font-medium text-gray-700"
                   >
                     Contact 2
                   </label>
@@ -363,7 +336,7 @@ const MasterCreatePage = () => {
                     type="text"
                     value={form.contact2}
                     onChange={handleChange}
-                    className={`w-36 px-3 py-2 rounded-lg border ${errs_label.contact2 ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium`}
+                    className={`flex-1 w-full px-3 py-1 rounded-lg border ${errs_label.contact2 ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
                     maxLength={10}
                     pattern="\d{10}"
                     autoComplete="tel"
@@ -387,7 +360,7 @@ const MasterCreatePage = () => {
           <div className="flex items-center gap-3 w-full">
             <label
               htmlFor="gst"
-              className="w-25 text-lg font-medium text-gray-700"
+              className="w-25 text-md font-medium text-gray-700"
             >
               GST
             </label>
@@ -397,7 +370,7 @@ const MasterCreatePage = () => {
               type="text"
               value={form.gst}
               onChange={handleChange}
-              className={`flex-1 px-3 py-2 rounded-lg border ${errs_label.gst ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium`}
+              className={`flex-1 px-3 py-1 rounded-lg border ${errs_label.gst ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
               maxLength={15}
               pattern="[A-Z0-9]{15}"
               autoComplete="off"
@@ -408,7 +381,7 @@ const MasterCreatePage = () => {
           <div className="flex items-center gap-3 w-full">
             <label
               htmlFor="remark"
-              className="w-25 text-lg font-medium text-gray-700"
+              className="w-25 text-md font-medium text-gray-700"
             >
               Remark
             </label>
@@ -417,7 +390,7 @@ const MasterCreatePage = () => {
               name="remark"
               value={form.remark}
               onChange={handleChange}
-              className={`flex-1 px-3 py-2 rounded-lg border ${errs_label.remark ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium`}
+              className={`flex-1 px-3 py-1 rounded-lg border ${errs_label.remark ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
               maxLength={50}
               rows={2}
               autoComplete="off"
@@ -428,7 +401,7 @@ const MasterCreatePage = () => {
         <div className="flex justify-center mt-6">
           <button
             type="submit"
-            className="py-2 px-8 rounded-lg bg-blue-600 text-white font-bold text-base shadow hover:bg-blue-900 transition-colors duration-200 w-fit disabled:opacity-60"
+            className="py-1.5 px-6 rounded-lg bg-blue-600 text-white font-bold text-base shadow hover:bg-blue-900 transition-colors duration-200 w-fit disabled:opacity-60"
             disabled={submitting}
           >
             {submitting ? "Creating..." : "Create Record"}
@@ -443,7 +416,7 @@ const MasterCreatePage = () => {
           onClose={() => setShowToast(false)}
         />
       )}
-      </div>
+    </div>
   );
 };
 

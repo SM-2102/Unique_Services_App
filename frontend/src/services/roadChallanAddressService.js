@@ -16,12 +16,12 @@ async function searchMasterAddress(name) {
   });
   const data = await response.json();
   if (!response.ok) {
-    throw { 
+    throw {
       message: data.message || data.detail || "Failed to search master by name",
-      resolution: data.resolution || ""
+      resolution: data.resolution || "",
     };
   }
   return data;
 }
-  
+
 export { searchMasterAddress };

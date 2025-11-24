@@ -7,8 +7,7 @@ import { searchMasterByCode } from "../services/masterSearchByCodeService";
 import { fetchMasterNames } from "../services/masterNamesService";
 import { FiSearch } from "react-icons/fi";
 import { validateMaster } from "../utils/masterValidation";
-import Breadcrumb from "../components/Breadcrumb";
-import { FaUserFriends, FaEdit } from "react-icons/fa";
+import { searchMasterByName } from "../services/masterSearchByNameService";
 
 const initialForm = {
   code: "",
@@ -57,47 +56,23 @@ const MasterUpdatePage = () => {
     const { name, value } = e.target;
     let newValue = value;
     // Enforce max character limits per field
-    switch (name) {
-      case "name":
-        if (value.length > 40) return;
-        // Capitalize first letter of each word
-        newValue = value
-          .split(" ")
-          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-          .join(" ");
-        // Autocomplete: filter suggestions as user types
-        if (newValue.length > 0) {
-          const filtered = masterNames.filter((n) =>
-            n.toLowerCase().startsWith(newValue.toLowerCase()),
-          );
-          setNameSuggestions(filtered);
-          setShowSuggestions(filtered.length > 0);
-        } else {
-          setShowSuggestions(false);
-        }
-        break;
-      case "address":
-        if (value.length > 40) return;
-        break;
-      case "city":
-        if (value.length > 20) return;
-        break;
-      case "pin":
-        if (value.length > 6) return;
-        break;
-      case "contact1":
-      case "contact2":
-        if (value.length > 10) return;
-        break;
-      case "gst":
-        if (value.length > 15) return;
-        newValue = value.toUpperCase();
-        break;
-      case "remark":
-        if (value.length > 50) return;
-        break;
-      default:
-        break;
+    if (name == "name") {
+      if (value.length > 40) return;
+      // Capitalize first letter of each word
+      newValue = value
+        .split(" ")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
+      // Autocomplete: filter suggestions as user types
+      if (newValue.length > 0) {
+        const filtered = masterNames.filter((n) =>
+          n.toLowerCase().startsWith(newValue.toLowerCase()),
+        );
+        setNameSuggestions(filtered);
+        setShowSuggestions(filtered.length > 0);
+      } else {
+        setShowSuggestions(false);
+      }
     }
     setForm((prev) => ({ ...prev, [name]: newValue }));
     setError((prev) => ({ ...prev, [name]: undefined }));
@@ -106,6 +81,38 @@ const MasterUpdatePage = () => {
   const handleAddContact2 = (e) => {
     e.preventDefault();
     setShowContact2(true);
+  };
+
+  const handleSearch = async (type) => {
+    setError("");
+    setShowToast(false);
+    try {
+      let data;
+      if (type === "code") {
+        data = await searchMasterByCode(form.code);
+      } else {
+        data = await searchMasterByName(form.name);
+      }
+      setForm((prev) => ({
+        code: data.code ?? "",
+        name: data.name ?? "",
+        address: data.address ?? "",
+        city: data.city ?? "",
+        pin: data.pin ?? "",
+        contact1: data.contact1 ?? "",
+        contact2: data.contact2 ?? "",
+        gst: data.gst ?? "",
+        remark: data.remark ?? "",
+      }));
+      setShowContact2(!!data.contact2);
+    } catch (err) {
+      setError({
+        message: err?.message || "Not found",
+        resolution: err?.resolution,
+        type: "error",
+      });
+      setShowToast(true);
+    }
   };
 
   const [errs, errs_label] = validateMaster(form, showContact2);
@@ -149,25 +156,24 @@ const MasterUpdatePage = () => {
   };
 
   return (
-    <div className="flex min-h-[80vh] mt-8 mb-4">
-      {/* Reusable Breadcrumb - left aligned, smaller */}
-      <div className="w-1/3 pl-8">
-        <Breadcrumb
-          items={[ 
-            { label: "Customers", icon: <FaUserFriends className="text-blue-600 mr-1" /> },
-            { label: "Update Record", icon: <FaEdit className="text-green-600 mr-1" /> }
-          ]}
-        />
-      </div>
+    <div className="flex min-h-[80vh] mt-4 justify-center items-center">
       <form
         onSubmit={handleSubmit}
-        className="bg-[#f8fafc] shadow-lg rounded-lg p-8 w-full max-w-150 border border-gray-200"
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+          }
+        }}
+        className="bg-[#f8fafc] shadow-lg rounded-lg p-6 w-full max-w-150 border border-gray-200"
         noValidate
       >
+        <h2 className="text-xl font-semibold text-blue-800 mb-4 pb-2 border-b border-blue-500 justify-center flex items-center gap-2">
+          Update Customer Record
+        </h2>
         <div className="flex flex-col gap-4">
           {/* Code (readonly, small, label beside input) */}
-          <div className="flex items-center gap-3 mb-2 justify-center">
-            <label htmlFor="code" className="text-lg font-medium text-gray-700">
+          <div className="flex items-center gap-3 justify-center">
+            <label htmlFor="code" className="text-md font-medium text-gray-700">
               Master Code
             </label>
             <input
@@ -179,43 +185,20 @@ const MasterUpdatePage = () => {
               disabled={submitting}
               required
               autoComplete="off"
-              className="w-25 text-center px-3 py-2 rounded-lg border border-gray-300 bg-gray-50 text-gray-900 font-medium"
+              className="w-25 text-center px-2 py-1 rounded-lg border border-gray-300 bg-gray-50 text-gray-900 font-medium"
               maxLength={5}
               style={{ minWidth: 0 }}
             />
             <button
               type="button"
               title="Search by code"
-              className="ml-2 p-0 rounded-full bg-gradient-to-tr from-blue-200 to-blue-500 text-white shadow-md hover:scale-105 hover:from-blue-600 hover:to-blue-900 focus:outline-none transition-all duration-200 flex items-center justify-center"
-              disabled={submitting || !form.code}
-              onClick={async () => {
-                try {
-                  const data = await searchMasterByCode(form.code);
-                  setForm((prev) => ({
-                    code: data.code ?? "",
-                    name: data.name ?? "",
-                    address: data.address ?? "",
-                    city: data.city ?? "",
-                    pin: data.pin ?? "",
-                    contact1: data.contact1 ?? "",
-                    contact2: data.contact2 ?? "",
-                    gst: data.gst ?? "",
-                    remark: data.remark ?? "",
-                  }));
-                  setShowContact2(!!data.contact2);
-                } catch (err) {
-                  setError({
-                    message: err.message || "Not found",
-                    resolution: err.resolution,
-                    type: "error",
-                  });
-                  setShowToast(true);
-                }
-              }}
+              className="p-0 rounded-full bg-gradient-to-tr from-blue-200 to-blue-500 text-white shadow-md hover:scale-105 hover:from-blue-600 hover:to-blue-900 focus:outline-none transition-all duration-200 flex items-center justify-center"
+                disabled={submitting || !form.code}
+                onClick={() => handleSearch("code")}
               tabIndex={0}
-              style={{ width: 40, height: 40 }}
+              style={{ width: 32, height: 32 }}
             >
-              <FiSearch size={22} />
+              <FiSearch size={20} />
             </button>
           </div>
           {/* Name (label beside input) */}
@@ -225,7 +208,7 @@ const MasterUpdatePage = () => {
           >
             <label
               htmlFor="name"
-              className="w-25 text-lg font-medium text-gray-700"
+              className="w-25 text-md font-medium text-gray-700"
             >
               Name<span className="text-red-500">*</span>
             </label>
@@ -237,7 +220,7 @@ const MasterUpdatePage = () => {
                   type="text"
                   value={form.name}
                   onChange={handleChange}
-                  className={`w-full px-3 py-2 rounded-lg border ${errs_label.name ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium`}
+                  className={`w-full px-3 py-1 rounded-lg border ${errs_label.name ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
                   minLength={3}
                   maxLength={40}
                   required
@@ -289,41 +272,13 @@ const MasterUpdatePage = () => {
               <button
                 type="button"
                 title="Search by name"
-                className="ml-2 p-2 rounded-full bg-gradient-to-tr from-blue-200 to-blue-500 text-white shadow-md hover:scale-105 hover:from-blue-600 hover:to-blue-900 focus:outline-none transition-all duration-200 flex items-center justify-center"
+                className="p-1 rounded-full bg-gradient-to-tr from-blue-200 to-blue-500 text-white shadow-md hover:scale-105 hover:from-blue-600 hover:to-blue-900 focus:outline-none transition-all duration-200 flex items-center justify-center"
                 disabled={submitting || !form.name}
-                onClick={async () => {
-                  setError("");
-                  setShowToast(false);
-                  try {
-                    const mod = await import(
-                      "../services/masterSearchByNameService"
-                    );
-                    const data = await mod.searchMasterByName(form.name);
-                    setForm((prev) => ({
-                      code: data.code ?? "",
-                      name: data.name ?? "",
-                      address: data.address ?? "",
-                      city: data.city ?? "",
-                      pin: data.pin ?? "",
-                      contact1: data.contact1 ?? "",
-                      contact2: data.contact2 ?? "",
-                      gst: data.gst ?? "",
-                      remark: data.remark ?? "",
-                    }));
-                    setShowContact2(!!data.contact2);
-                  } catch (err) {
-                    setError({
-                      message: err.message || "Not found",
-                      resolution: err.resolution,
-                      type: "error",
-                    });
-                    setShowToast(true);
-                  }
-                }}
+                onClick={() => handleSearch("name")}
                 tabIndex={0}
-                style={{ width: 40, height: 40 }}
+                style={{ width: 32, height: 32 }}
               >
-                <FiSearch size={22} />
+                <FiSearch size={20} />
               </button>
             </div>
           </div>
@@ -331,7 +286,7 @@ const MasterUpdatePage = () => {
           <div className="flex items-center gap-2 w-full">
             <label
               htmlFor="address"
-              className="w-25 text-lg font-medium text-gray-700"
+              className="w-25 text-md font-medium text-gray-700"
             >
               Address<span className="text-red-500">*</span>
             </label>
@@ -340,7 +295,7 @@ const MasterUpdatePage = () => {
               name="address"
               value={form.address}
               onChange={handleChange}
-              className={`flex-1 px-3 py-2 rounded-lg border ${errs_label.address ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium`}
+              className={`flex-1 px-3 py-1 rounded-lg border ${errs_label.address ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
               maxLength={40}
               required
               rows={2}
@@ -349,11 +304,11 @@ const MasterUpdatePage = () => {
             />
           </div>
           {/* City and PIN on same line, equal label/input width */}
-          <div className="flex items-center w-full gap-5">
+          <div className="flex items-center w-full gap-7">
             <div className="flex items-center gap-2">
               <label
                 htmlFor="city"
-                className="w-26 text-lg font-medium text-gray-700"
+                className="w-26 text-md font-medium text-gray-700"
               >
                 City<span className="text-red-500">*</span>
               </label>
@@ -363,7 +318,7 @@ const MasterUpdatePage = () => {
                 type="text"
                 value={form.city}
                 onChange={handleChange}
-                className={`w-36 px-3 py-2 rounded-lg border ${errs_label.city ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium`}
+                className={`flex-1 w-full px-3 py-1 rounded-lg border ${errs_label.city ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
                 maxLength={20}
                 required
                 autoComplete="address-level2"
@@ -373,7 +328,7 @@ const MasterUpdatePage = () => {
             <div className="flex items-center gap-2">
               <label
                 htmlFor="pin"
-                className="w-26 text-lg font-medium text-gray-700"
+                className="w-26 text-md font-medium text-gray-700"
               >
                 Pincode
               </label>
@@ -383,7 +338,7 @@ const MasterUpdatePage = () => {
                 type="text"
                 value={form.pin}
                 onChange={handleChange}
-                className={`w-36 px-3 py-2 rounded-lg border ${errs_label.pin ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium`}
+                className={`flex-1 w-full px-3 py-1 rounded-lg border ${errs_label.pin ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
                 maxLength={6}
                 pattern="\d{6}"
                 autoComplete="postal-code"
@@ -392,11 +347,11 @@ const MasterUpdatePage = () => {
             </div>
           </div>
           {/* Contact 1 and Contact 2/Button on same line, equal label/input width */}
-          <div className="flex items-center w-full gap-5">
+          <div className="flex items-center w-full gap-7">
             <div className="flex items-center w-1/2 gap-2">
               <label
                 htmlFor="contact1"
-                className="w-26 text-lg font-medium text-gray-700"
+                className="w-26 text-md font-medium text-gray-700"
               >
                 Contact 1<span className="text-red-500">*</span>
               </label>
@@ -406,7 +361,7 @@ const MasterUpdatePage = () => {
                 type="text"
                 value={form.contact1}
                 onChange={handleChange}
-                className={`w-36 px-3 py-2 rounded-lg border ${errs_label.contact1 ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium`}
+                className={`flex-1 w-full px-3 py-1 rounded-lg border ${errs_label.contact1 ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
                 maxLength={10}
                 pattern="\d{10}"
                 required
@@ -419,7 +374,7 @@ const MasterUpdatePage = () => {
                 <>
                   <label
                     htmlFor="contact2"
-                    className="w-26 text-lg font-medium text-gray-700"
+                    className="w-26 text-md font-medium text-gray-700"
                   >
                     Contact 2
                   </label>
@@ -429,7 +384,7 @@ const MasterUpdatePage = () => {
                     type="text"
                     value={form.contact2}
                     onChange={handleChange}
-                    className={`w-36 px-3 py-2 rounded-lg border ${errs_label.contact2 ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium`}
+                    className={`flex-1 w-full px-3 py-1 rounded-lg border ${errs_label.contact2 ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
                     maxLength={10}
                     pattern="\d{10}"
                     autoComplete="tel"
@@ -453,7 +408,7 @@ const MasterUpdatePage = () => {
           <div className="flex items-center gap-3 w-full">
             <label
               htmlFor="gst"
-              className="w-25 text-lg font-medium text-gray-700"
+              className="w-25 text-md font-medium text-gray-700"
             >
               GST
             </label>
@@ -463,7 +418,7 @@ const MasterUpdatePage = () => {
               type="text"
               value={form.gst}
               onChange={handleChange}
-              className={`flex-1 px-3 py-2 rounded-lg border ${errs_label.gst ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium`}
+              className={`flex-1 px-3 py-1 rounded-lg border ${errs_label.gst ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
               maxLength={15}
               pattern="[A-Z0-9]{15}"
               autoComplete="off"
@@ -474,7 +429,7 @@ const MasterUpdatePage = () => {
           <div className="flex items-center gap-3 w-full">
             <label
               htmlFor="remark"
-              className="w-25 text-lg font-medium text-gray-700"
+              className="w-25 text-md font-medium text-gray-700"
             >
               Remark
             </label>
@@ -483,7 +438,7 @@ const MasterUpdatePage = () => {
               name="remark"
               value={form.remark}
               onChange={handleChange}
-              className={`flex-1 px-3 py-2 rounded-lg border ${errs_label.remark ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium`}
+              className={`flex-1 px-3 py-1 rounded-lg border ${errs_label.remark ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
               maxLength={50}
               rows={2}
               autoComplete="off"
@@ -494,10 +449,10 @@ const MasterUpdatePage = () => {
         <div className="flex justify-center mt-6">
           <button
             type="submit"
-            className="py-2 px-8 rounded-lg bg-blue-600 text-white font-bold text-base shadow hover:bg-blue-900 transition-colors duration-200 w-fit disabled:opacity-60"
+            className="py-1.5 px-6 rounded-lg bg-blue-600 text-white font-bold text-base shadow hover:bg-blue-900 transition-colors duration-200 w-fit disabled:opacity-60"
             disabled={submitting}
           >
-            {submitting ? "Creating..." : "Update Record"}
+            {submitting ? "Updating..." : "Update Record"}
           </button>
         </div>
       </form>

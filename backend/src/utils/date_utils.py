@@ -1,5 +1,6 @@
-from datetime import datetime, date
+from datetime import date, datetime
 from typing import Optional, Union
+
 
 def parse_date(date_input: Optional[Union[str, datetime, date]]) -> Optional[date]:
     """

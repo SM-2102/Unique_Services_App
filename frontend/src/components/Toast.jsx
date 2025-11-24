@@ -109,7 +109,7 @@ const Toast = ({
 
   return (
     <div
-      className={`fixed top-6 left-1/2 transform -translate-x-1/2 z-50 min-w-[260px] max-w-xs px-4 py-3 rounded-lg shadow-lg flex items-start border-2 ${style.bg} ${style.border} animate-fade-in`}
+      className={`fixed top-14 left-1/2 transform -translate-x-1/2 z-50 min-w-[260px] max-w-xs px-4 py-3 rounded-lg shadow-lg flex items-start border-2 ${style.bg} ${style.border} animate-fade-in`}
       style={{ pointerEvents: "none" }}
     >
       <div className="flex-1">

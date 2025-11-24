@@ -12,9 +12,9 @@ async function fetchNextChallanNumber() {
   });
   const data = await response.json();
   if (!response.ok) {
-    throw { 
-      message: data.message, 
-      resolution: data.resolution 
+    throw {
+      message: data.message,
+      resolution: data.resolution,
     };
   }
   return data;

@@ -2,9 +2,9 @@ import React from "react";
 
 const Footer = () => {
   return (
-    <footer className="fixed bottom-0 right-0 w-full backdrop-blur-sm bg-[#fff]">
-      <div className="text-xs md:text-sm font-medium text-blue-700 text-right pr-4 py-1">
-        Copyright ©2025. All rights reserved.
+    <footer className="fixed bottom-0 right-0">
+      <div className="backdrop-blur-md bg-blue-900/15 text-xs md:text-sm font-medium text-blue-900 px-3 py-1 rounded-md shadow">
+        Copyright ©2025 Sukanya Manna
       </div>
     </footer>
   );

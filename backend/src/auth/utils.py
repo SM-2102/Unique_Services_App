@@ -1,11 +1,11 @@
 import uuid
 from datetime import datetime, timedelta
-from exceptions import InvalidToken
 
 import jwt
 from passlib.context import CryptContext
 
 from config import Config
+from exceptions import InvalidToken
 
 password_context = CryptContext(schemes=["bcrypt"])
 

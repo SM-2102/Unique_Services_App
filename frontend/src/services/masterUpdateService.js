@@ -19,9 +19,9 @@ async function updateMaster(code, masterData) {
   });
   const data = await response.json();
   if (!response.ok) {
-    throw { 
+    throw {
       message: data.message || data.detail || "Failed to update master",
-      resolution: data.resolution || ""
+      resolution: data.resolution || "",
     };
   }
   return data;

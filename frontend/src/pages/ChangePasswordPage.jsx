@@ -95,6 +95,11 @@ const ChangePasswordPage = () => {
         </Typography>
         <form
           onSubmit={handleSubmit}
+          onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+          }
+        }}
           noValidate
           className="w-full flex flex-col gap-3"
         >

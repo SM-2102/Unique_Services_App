@@ -2,7 +2,6 @@ import API_ENDPOINTS from "../config/api";
 import { authFetch } from "./authFetchService";
 
 /**
- * Create a new master (protected route)
  * @param {object} roadChallanData
  * @returns {Promise<void>} Throws on error
  */
@@ -16,12 +15,11 @@ async function createRoadChallan(roadChallanData) {
   });
   const data = await response.json();
   if (!response.ok) {
-    throw { 
-      message: data.message, 
-      resolution: data.resolution 
+    throw {
+      message: data.message,
+      resolution: data.resolution,
     };
   }
 }
 
 export { createRoadChallan };
-

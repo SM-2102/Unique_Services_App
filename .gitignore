@@ -5,6 +5,8 @@ frontend/build/
 #Database
 database/
 
+backups/
+
 # Byte-compiled / optimized / DLL files
 backend/__pycache__/
 backend/*/__pycache__/

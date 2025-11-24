@@ -15,7 +15,6 @@ class Market(SQLModel, table=True):
     )
     receive_date: date = Field(sa_column=Column(pg.DATE, nullable=False))
     division: str = Field(sa_column=Column(pg.VARCHAR(15), nullable=False))
-    # 'FANS','PUMP','LIGHT','SDA','IWH','SWH','COOLER','OTHERS'
     invoice_number: str = Field(sa_column=Column(pg.VARCHAR(10), nullable=False))
     invoice_date: date = Field(sa_column=Column(pg.DATE, nullable=False))
     challan_number: str = Field(sa_column=Column(pg.VARCHAR(10), nullable=True))

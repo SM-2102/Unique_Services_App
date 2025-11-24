@@ -16,9 +16,9 @@ async function searchMasterByCode(code) {
   });
   const data = await response.json();
   if (!response.ok) {
-    throw { 
+    throw {
       message: data.message || data.detail || "Failed to search master by code",
-      resolution: data.resolution || ""
+      resolution: data.resolution || "",
     };
   }
   return data;

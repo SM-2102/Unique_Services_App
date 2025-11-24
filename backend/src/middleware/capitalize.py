@@ -35,7 +35,7 @@ class CapitalizeJSONMiddleware(BaseHTTPMiddleware):
                     capitalized_data = capitalize_values(original_data)
                     request._body = json.dumps(capitalized_data).encode("utf-8")
                 except json.JSONDecodeError:
-                    pass 
+                    pass
 
         response = await call_next(request)
         return response

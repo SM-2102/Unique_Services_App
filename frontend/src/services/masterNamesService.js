@@ -12,8 +12,7 @@ async function fetchMasterNames() {
       "Content-Type": "application/json",
     },
   });
-  if (!response.ok) 
-    throw new Error("Failed to fetch master names");
+  if (!response.ok) throw new Error("Failed to fetch master names");
   return response.json();
 }
 

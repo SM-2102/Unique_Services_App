@@ -2,13 +2,13 @@ from typing import List
 
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse, StreamingResponse
-
-from .schemas import ChallanNextCodeMaxChallanDate, ChallanNumber, CreateChallan
-from .service import ChallanService
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from auth.dependencies import AccessTokenBearer
 from db.db import get_session
+
+from .schemas import ChallanNextCodeMaxChallanDate, ChallanNumber, CreateChallan
+from .service import ChallanService
 
 challan_router = APIRouter()
 challan_service = ChallanService()
@@ -16,8 +16,8 @@ access_token_bearer = AccessTokenBearer()
 
 
 """
-Create new Challan 
-Name will come - find its code
+Create new Challan after checking master name
+
 """
 
 
@@ -28,14 +28,21 @@ async def create_challan(
     token=Depends(access_token_bearer),
 ):
     new_challan = await challan_service.create_challan(session, challan, token)
-    return JSONResponse(content={"message": f"Challan Created : {new_challan.challan_number}"})
+    return JSONResponse(
+        content={"message": f"Challan Created : {new_challan.challan_number}"}
+    )
 
 
 """
 Get the next available challan code and max challan date
 """
 
-@challan_router.get("/next_code_with_challan_date", response_model=ChallanNextCodeMaxChallanDate, status_code=status.HTTP_200_OK)
+
+@challan_router.get(
+    "/next_code_with_challan_date",
+    response_model=ChallanNextCodeMaxChallanDate,
+    status_code=status.HTTP_200_OK,
+)
 async def next_challan_number(
     session: AsyncSession = Depends(get_session), _=Depends(access_token_bearer)
 ):
@@ -57,25 +64,24 @@ async def last_challan_number(
     return JSONResponse(content={"last_challan_number": last_challan_number})
 
 
-
 """
 Print challan details by code.
 """
 
 
-@challan_router.post(
-    "/print", status_code=status.HTTP_200_OK
-)
+@challan_router.post("/print", status_code=status.HTTP_200_OK)
 async def print_challan(
     data: ChallanNumber,
     session: AsyncSession = Depends(get_session),
     token=Depends(access_token_bearer),
 ):
-    challan_pdf = await challan_service.print_challan(data.challan_number, token, session)
+    challan_pdf = await challan_service.print_challan(
+        data.challan_number, token, session
+    )
     return StreamingResponse(
         challan_pdf,
         media_type="application/pdf",
         headers={
-            "Content-Disposition": f'attachment; filename=\"{data.challan_number}.pdf\"'
-        }
+            "Content-Disposition": f'attachment; filename="{data.challan_number}.pdf"'
+        },
     )

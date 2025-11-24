@@ -27,6 +27,13 @@ const API_ENDPOINTS = {
   CHALLAN_NEXT_NUMBER: `${BASE_API_URL}challan/next_code_with_challan_date`,
   CHALLAN_LAST_NUMBER: `${BASE_API_URL}challan/last_challan_number`,
   CHALLAN_PRINT: `${BASE_API_URL}challan/print`,
+
+  MARKET_NEXT_NUMBER: `${BASE_API_URL}market/next_mcode`,
+  MARKET_CREATE: `${BASE_API_URL}market/create`,
+  MARKET_UPDATE: `${BASE_API_URL}market/update/`, //append mcode
+  MARKET_ENQUIRY: `${BASE_API_URL}market/enquiry/`, //append final_status, division, name
+  MARKET_PENDING: `${BASE_API_URL}market/list_pending`,
+  MARKET_SEARCH_CODE: `${BASE_API_URL}market/by_mcode`,
 };
 
 export default API_ENDPOINTS;

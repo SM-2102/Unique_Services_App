@@ -46,8 +46,8 @@ const MenuDashboardPage = () => {
             bgColor={bgColor}
             className="min-h-[300px] max-w-full w-full"
           >
-            {key === "customer" && (
-              loading ? (
+            {key === "customer" &&
+              (loading ? (
                 <div className="w-full flex justify-center items-center">
                   <SpinnerLoading text="Loading Customer Data ..." />
                 </div>
@@ -57,10 +57,9 @@ const MenuDashboardPage = () => {
                 </div>
               ) : (
                 <CustomerChart data={data} />
-              )
-            )}
-            {key === "challan" && (
-              loading ? (
+              ))}
+            {key === "challan" &&
+              (loading ? (
                 <div className="w-full flex justify-center items-center">
                   <SpinnerLoading text="Loading Challan Data ..." />
                 </div>
@@ -70,10 +69,9 @@ const MenuDashboardPage = () => {
                 </div>
               ) : (
                 <ChallanChart data={data} />
-              )
-            )}
-            {key === "retail" && (
-              loading ? (
+              ))}
+            {key === "retail" &&
+              (loading ? (
                 <div className="w-full flex justify-center items-center">
                   <SpinnerLoading text="Loading Retail Data ..." />
                 </div>
@@ -90,10 +88,9 @@ const MenuDashboardPage = () => {
                     <RetailSettledPieChart data={data} />
                   </div>
                 </div>
-              )
-            )}
-            {key === "market" && (
-              loading ? (
+              ))}
+            {key === "market" &&
+              (loading ? (
                 <div className="w-full flex justify-center items-center">
                   <SpinnerLoading text="Loading Market Data ..." />
                 </div>
@@ -105,10 +102,9 @@ const MenuDashboardPage = () => {
                 <div className="mt-2">
                   <MarketStatusChart data={data} />
                 </div>
-              )
-            )}
-            {key === "warranty" && (
-              loading ? (
+              ))}
+            {key === "warranty" &&
+              (loading ? (
                 <div className="w-full flex justify-center items-center">
                   <SpinnerLoading text="Loading Warranty Data ..." />
                 </div>
@@ -125,10 +121,9 @@ const MenuDashboardPage = () => {
                     <WarrantySRFDeliveryTimelineChart data={data} />
                   </div>
                 </div>
-              )
-            )}
-            {key === "out_of_warranty" && (
-              loading ? (
+              ))}
+            {key === "out_of_warranty" &&
+              (loading ? (
                 <div className="w-full flex justify-center items-center">
                   <SpinnerLoading text="Loading Out of Warranty Data ..." />
                 </div>
@@ -145,8 +140,7 @@ const MenuDashboardPage = () => {
                     <OutOfWarrantyStatusChart data={data} />
                   </div>
                 </div>
-              )
-            )}
+              ))}
           </MenuCard>
         ))}
       </div>

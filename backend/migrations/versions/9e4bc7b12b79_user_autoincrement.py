@@ -1,8 +1,8 @@
-"""Service Charge
+"""User autoincrement
 
-Revision ID: 885917deb754
-Revises: 
-Create Date: 2025-11-16 22:58:42.110272
+Revision ID: 9e4bc7b12b79
+Revises: 756ed6644a69
+Create Date: 2025-11-24 01:22:40.074324
 
 """
 from typing import Sequence, Union
@@ -13,8 +13,8 @@ import sqlmodel
 
 
 # revision identifiers, used by Alembic.
-revision: str = '885917deb754'
-down_revision: Union[str, Sequence[str], None] = None
+revision: str = '9e4bc7b12b79'
+down_revision: Union[str, Sequence[str], None] = '756ed6644a69'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 

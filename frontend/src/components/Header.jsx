@@ -47,15 +47,13 @@ const Header = () => {
             className="text-white text-2xl sm:text-4xl font-semibold tracking-wide leading-tight mt-1"
             style={{ fontFamily: "Times New Roman, Times, serif" }}
           >
-            {/* Unique Services */}
-            XYZ Solutions Pvt. Ltd.
+            Unique Services
           </span>
           <span
             className="text-blue-50 text-sm sm:text-lg font-medium mb-1"
             style={{ fontFamily: "Montserrat, sans-serif" }}
           >
-            Your Trusted Partner for Quality Solutions
-            {/* 12, Sakharitola Street, Kolkata - 700014 */}
+            12, Sakharitola Street, Kolkata - 700014
           </span>
         </div>
       </div>

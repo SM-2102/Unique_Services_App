@@ -2,17 +2,16 @@ import API_ENDPOINTS from "../config/api";
 import { authFetch } from "./authFetchService";
 
 /**
- * Create a new user (protected route)
- * @param {{username: string, password: string, role: string, phone_number: string}} userData
+ * @param {object} marketData
  * @returns {Promise<void>} Throws on error
  */
-async function createUser(userData) {
-  const response = await authFetch(API_ENDPOINTS.CREATE_USER, {
+async function createMarket(marketData) {
+  const response = await authFetch(API_ENDPOINTS.MARKET_CREATE, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(userData),
+    body: JSON.stringify(marketData),
   });
   const data = await response.json();
   if (!response.ok) {
@@ -23,4 +22,4 @@ async function createUser(userData) {
   }
 }
 
-export { createUser };
+export { createMarket };

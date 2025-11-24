@@ -61,8 +61,12 @@ class IncorrectCodeFormat(BaseException):
 class CannotChangeMasterName(BaseException):
     """Cannot change the master name once set"""
 
+
 class RoadChallanNotFound(BaseException):
     """Road Challan Not Found"""
+
+class MarketNotFound(BaseException):
+    """Market Not Found"""
 
 
 def create_exception_handler(
@@ -102,7 +106,7 @@ def register_exceptions(app: FastAPI):
     app.add_exception_handler(
         UserAlreadyExists,
         create_exception_handler(
-            status_code=status.HTTP_403_FORBIDDEN,
+            status_code=status.HTTP_409_CONFLICT,
             initial_detail={
                 "message": "User Already Exists",
                 "resolution": "Please choose a different username",
@@ -189,7 +193,7 @@ def register_exceptions(app: FastAPI):
             status_code=status.HTTP_404_NOT_FOUND,
             initial_detail={
                 "message": "User Not Found",
-                "resolution": "Please check the username provided",
+                "resolution": "Please check the username",
                 "error_code": "user_not_found",
             },
         ),
@@ -225,8 +229,20 @@ def register_exceptions(app: FastAPI):
             status_code=status.HTTP_404_NOT_FOUND,
             initial_detail={
                 "message": "Road Challan Not Found",
-                "resolution": "Please check the challan number provided",
+                "resolution": "Please check the challan number",
                 "error_code": "road_challan_not_found",
+            },
+        ),
+    )
+
+    app.add_exception_handler(
+        MarketNotFound,
+        create_exception_handler(
+            status_code=status.HTTP_404_NOT_FOUND,
+            initial_detail={
+                "message": "Market Not Found",
+                "resolution": "Please check the market code",
+                "error_code": "market_not_found",
             },
         ),
     )

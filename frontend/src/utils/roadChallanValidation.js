@@ -1,6 +1,7 @@
 /**
  * Validate change password form fields
- * @param {object} form - { name, address, city, pin, contact1, contact2, gst }
+ * @param {object} form
+ * @param {object} items
  * @returns {object} errors object
  */
 
@@ -24,12 +25,12 @@ function validateChallan(form, items) {
     const item = items[i];
     if (item.desc && (!item.qty || !item.unit)) {
       if (!item.qty) {
-        errs.push(`Quantity ${i+1} is required`);
-        errs_label[`qty${i+1}`] = true;
+        errs.push(`Quantity ${i + 1} is required`);
+        errs_label[`qty${i + 1}`] = true;
       }
       if (!item.unit) {
-        errs.push(`Unit ${i+1} is required`);
-        errs_label[`unit${i+1}`] = true;
+        errs.push(`Unit ${i + 1} is required`);
+        errs_label[`unit${i + 1}`] = true;
       }
     }
   }

@@ -35,7 +35,7 @@ async def login(user: UserLogin, session: AsyncSession = Depends(get_session)):
     refresh_token = create_user_token(
         user_data={"username": valid_user.username, "role": valid_user.role},
         expiry=timedelta(days=REFRESH_TOKEN_EXPIRY_DAYS),
-        refresh=True
+        refresh=True,
     )
     response = JSONResponse(
         content={
@@ -49,7 +49,7 @@ async def login(user: UserLogin, session: AsyncSession = Depends(get_session)):
         httponly=True,
         secure=False,  # Set to True in production (requires HTTPS)
         samesite="lax",  # Or 'strict' or 'none' as needed
-        max_age=3600 * 3, # 3 hours
+        max_age=3600 * 3,  # 3 hours
         path="/",
     )
     # Optionally, set the refresh token as a cookie too
@@ -57,7 +57,7 @@ async def login(user: UserLogin, session: AsyncSession = Depends(get_session)):
         key="refresh_token",
         value=refresh_token,
         httponly=True,
-        secure=False, # Set to True in production
+        secure=False,  # Set to True in production
         samesite="lax",
         max_age=3600 * 24 * REFRESH_TOKEN_EXPIRY_DAYS,
         path="/",
@@ -124,7 +124,7 @@ async def refresh_token(token_data=Depends(refresh_token_bearer)):
             httponly=True,
             secure=False,  # Set to True in production
             samesite="lax",
-            max_age=3600 * 3, # 3 hours
+            max_age=3600 * 3,  # 3 hours
             path="/",
         )
         return response

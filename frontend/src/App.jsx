@@ -16,6 +16,8 @@ import MasterCreatePage from "./pages/MasterCreatePage.jsx";
 import MasterUpdatePage from "./pages/MasterUpdatePage.jsx";
 import RoadChallanPrintPage from "./pages/RoadChallanPrintPage.jsx";
 import RoadChallanCreatePage from "./pages/RoadChallanCreatePage.jsx";
+import MarketCreatePage from "./pages/MarketCreatePage.jsx";
+import MarketUpdatePage from "./pages/MarketUpdatePage.jsx";
 
 function AppRoutesWithNav() {
   return (
@@ -108,7 +110,7 @@ function AppRoutesWithNav() {
             path="/challan-print"
             element={
               <PrivateRoute>
-                < RoadChallanPrintPage />
+                <RoadChallanPrintPage />
               </PrivateRoute>
             }
           />
@@ -236,7 +238,7 @@ function AppRoutesWithNav() {
             path="/market-create"
             element={
               <PrivateRoute>
-                <PageNotAvailable />
+                <MarketCreatePage />
               </PrivateRoute>
             }
           />
@@ -244,7 +246,7 @@ function AppRoutesWithNav() {
             path="/market-update"
             element={
               <PrivateRoute>
-                <PageNotAvailable />
+                <MarketUpdatePage />
               </PrivateRoute>
             }
           />

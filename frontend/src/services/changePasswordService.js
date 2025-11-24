@@ -16,9 +16,9 @@ async function changePassword(username, old_password, new_password) {
   });
   const data = await response.json();
   if (!response.ok) {
-    throw { 
-      message: data.message, 
-      resolution: data.resolution 
+    throw {
+      message: data.message,
+      resolution: data.resolution,
     };
   }
   return data;

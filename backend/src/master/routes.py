@@ -54,9 +54,7 @@ List all master names.
 """
 
 
-@master_router.get(
-    "/list_names", response_model=List, status_code=status.HTTP_200_OK
-)
+@master_router.get("/list_names", response_model=List, status_code=status.HTTP_200_OK)
 async def list_master_names(
     session: AsyncSession = Depends(get_session), _=Depends(access_token_bearer)
 ):
@@ -120,6 +118,8 @@ async def update_master(
 """
 Get master address, city, pin by name
 """
+
+
 @master_router.post(
     "/fetch_address", response_model=MasterAddress, status_code=status.HTTP_200_OK
 )

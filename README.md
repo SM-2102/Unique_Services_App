@@ -5,8 +5,8 @@
 
 ## To Do List
 
-- Road Challan
-- Backup
+- Market Enquiry Page
+- Filtering
   
 ---
 
@@ -28,12 +28,17 @@
 - [x] **PageNotAvailable** – Maintenance/feature unavailable page
 
 ### Master Module
-- [ ] **MasterCreate** - Create Master record
-- [ ] **MasterUpdate** - Update Master record
+- [x] **MasterCreatePage** - Create Master record
+- [x] **MasterUpdatePage** - Update Master record
 
 ### Road Challan Module
-- [ ] **RoadChallanCreate** - Create Road Challan record
-- [ ] **RoadChallanPrint** - Print Road Challan record
+- [x] **RoadChallanCreatePage** - Create Road Challan record
+- [x] **RoadChallanPrintPage** - Print Road Challan record
+
+### Market Module
+- [x] **MarketCreatePage** - Create Market record
+- [x] **MarketUpdatePage** - Update Market record
+- [ ] **MarketEnquiryPage** - Market Enquiry
 
 ---
 
@@ -56,20 +61,28 @@
 - [x] **/menu/dashboard**
 
 ### Master Module
-- [ ] **/master/create**
-- [ ] **/master/next_code**
-- [ ] **/master/check_available**
-- [ ] **/master/list_names** 
-- [ ] **/master/code** 
-- [ ] **/master/name**
-- [ ] **/master/patch/{code}**
-- [ ] **/master/fetch_address** - (Challan)
+- [x] **/master/create**
+- [x] **/master/next_code**
+- [x] **/master/check_available**
+- [x] **/master/list_names** 
+- [x] **/master/by_code** 
+- [x] **/master/by_name**
+- [x] **/master/update/{code}**
+- [x] **/master/fetch_address**
 
 ### Challan Module
-- [ ] **/road_challan/next_code**
-- [ ] **/road_challan/create**
-- [ ] **/road_challan/last_challan_code**
-- [ ] **/road_challan/print**
+- [x] **/road_challan/next_code**
+- [x] **/road_challan/create**
+- [x] **/road_challan/last_challan_code**
+- [x] **/road_challan/print**
+
+### Market Module
+- [x] **/market/next_code** 
+- [x] **/market/pending**
+- [x] **/market/create**
+- [x] **/market/by_code** 
+- [x] **/market/update/{code}**
+- [ ] **/market/enquiry**
 
 ---
 
@@ -78,13 +91,13 @@
 - [x] **Authorization**
 - [ ] **Database Schema** - needs refinement - Settlement
 - [x] **Initial Deployment**
-- [ ] **Backup**
+- [x] **Backup**
 - [x] **Login & Menu**
 - [x] **User**
-- [ ] **Master**
+- [x] **Master**
 - [ ] **Retail**
 - [ ] **Market**
-- [ ] **Challan**
+- [x] **Challan**
 - [ ] **Warranty**
 - [ ] **Out of Warranty**
 - [ ] **Final Deployment**

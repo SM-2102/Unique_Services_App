@@ -10,7 +10,7 @@ from middleware.strip import StripJSONMiddleware
 def register_middleware(app: FastAPI):
 
     app.add_middleware(CapitalizeJSONMiddleware)
-    
+
     app.add_middleware(StripJSONMiddleware)
 
     app.add_middleware(

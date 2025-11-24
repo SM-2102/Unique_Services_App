@@ -9,8 +9,8 @@ async function logout() {
   try {
     const response = await authFetch(API_ENDPOINTS.LOGOUT, {
       method: "POST",
-      headers: { 
-        "Content-Type": "application/json" 
+      headers: {
+        "Content-Type": "application/json",
       },
     });
     if (response.ok) {

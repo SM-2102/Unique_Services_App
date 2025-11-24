@@ -3,14 +3,14 @@ Standalone database backup script.
 Exports all tables from the database to CSV files.
 Excludes 'alembic_version' and 'blockedjti' tables."""
 
-import os
 import csv
+import os
+import shutil
 from datetime import datetime
 from pathlib import Path
-import shutil
+
 import psycopg2
 from config_backup import Config_backup
-
 
 # Get database URL from environment
 DATABASE_URL = Config_backup.DATABASE_URL_CONNECT
@@ -20,7 +20,7 @@ if not DATABASE_URL:
 
 # Parse the database URL (format: postgresql+asyncpg://user:pass@host:port/dbname)
 # Convert asyncpg to psycopg2 format
-db_url = DATABASE_URL.replace('postgresql+asyncpg://', 'postgresql://')
+db_url = DATABASE_URL.replace("postgresql+asyncpg://", "postgresql://")
 
 # Get backup folder from config_backup
 BACKUP_FOLDER = Config_backup.BACKUP_FOLDER
@@ -28,41 +28,45 @@ BACKUP_FOLDER = Config_backup.BACKUP_FOLDER
 
 def create_backup_directory():
     """Create a backup directory with timestamp in 'dd-mm-yyyy_hh-mm' format inside BACKUP_FOLDER."""
-    timestamp = datetime.now().strftime('%d-%m-%Y_%H-%M')
-    backup_dir = Path(f'{BACKUP_FOLDER}/backups/backup_{timestamp}')
+    timestamp = datetime.now().strftime("%d-%m-%Y_%H-%M")
+    backup_dir = Path(f"{BACKUP_FOLDER}/backups/backup_{timestamp}")
     backup_dir.mkdir(parents=True, exist_ok=True)
     return backup_dir, timestamp
 
 
 def get_all_tables(cursor):
     """Get all table names from the database, excluding certain tables."""
-    exclude_tables = {'alembic_version', 'blockedjti'}
-    cursor.execute("""
+    exclude_tables = {"alembic_version", "blockedjti"}
+    cursor.execute(
+        """
         SELECT table_name 
         FROM information_schema.tables 
         WHERE table_schema = 'public' 
         AND table_type = 'BASE TABLE'
         ORDER BY table_name;
-    """)
+    """
+    )
     return [row[0] for row in cursor.fetchall() if row[0] not in exclude_tables]
+
 
 def trim_blockedjti(cursor):
     """If blockedjti has more than 300 rows, delete the oldest 200 rows by id."""
-    cursor.execute('SELECT COUNT(*) FROM blockedjti')
+    cursor.execute("SELECT COUNT(*) FROM blockedjti")
     count = cursor.fetchone()[0]
     if count > 300:
-        cursor.execute('SELECT jti FROM blockedjti ORDER BY expires_at ASC LIMIT 200')
+        cursor.execute("SELECT jti FROM blockedjti ORDER BY expires_at ASC LIMIT 200")
         jtis = [row[0] for row in cursor.fetchall()]
         if jtis:
-            cursor.execute('DELETE FROM blockedjti WHERE jti = ANY(%s)', (jtis,))
+            cursor.execute("DELETE FROM blockedjti WHERE jti = ANY(%s)", (jtis,))
             print(f"[INFO] Trimmed blockedjti: deleted oldest 200 rows")
             print("────────────────────────────────────────────────────────────\n")
         else:
-            print("[INFO] blockedjti has >300 rows but could not determine jtis to delete.")
+            print(
+                "[INFO] blockedjti has >300 rows but could not determine jtis to delete."
+            )
     else:
         print(f"[INFO] BlockedJTI has {count} rows. No trimming needed.")
         print("────────────────────────────────────────────────────────────\n")
-
 
 
 def export_table_to_csv(cursor, table_name, backup_dir):
@@ -71,8 +75,8 @@ def export_table_to_csv(cursor, table_name, backup_dir):
         cursor.execute(f'SELECT * FROM "{table_name}"')
         column_names = [desc[0] for desc in cursor.description]
         rows = cursor.fetchall()
-        csv_file = backup_dir / f'{table_name}.csv'
-        with open(csv_file, 'w', newline='', encoding='utf-8') as f:
+        csv_file = backup_dir / f"{table_name}.csv"
+        with open(csv_file, "w", newline="", encoding="utf-8") as f:
             writer = csv.writer(f)
             writer.writerow(column_names)
             writer.writerows(rows)
@@ -90,7 +94,6 @@ def backup_database():
     print("[START] Connecting to database ...")
     print(f"[INFO] Datbase URL: {db_url.split('@')[1] if '@' in db_url else 'Unknown'}")
     print("────────────────────────────────────────────────────────────")
-
 
     connection = None
     backup_dir = None
@@ -125,16 +128,16 @@ def backup_database():
                 failed += 1
 
         # Prepare zip file path
-        zip_name = f'{BACKUP_FOLDER}/backups/backup_{timestamp}.zip'
+        zip_name = f"{BACKUP_FOLDER}/backups/backup_{timestamp}.zip"
         if os.path.exists(zip_name):
             os.remove(zip_name)
 
         # Zip the backup directory
-        zip_path = shutil.make_archive(str(backup_dir), 'zip', root_dir=backup_dir)
+        zip_path = shutil.make_archive(str(backup_dir), "zip", root_dir=backup_dir)
 
         # Move/rename the zip to the correct name if needed
-        if not zip_path.endswith('.zip'):
-            zip_path = zip_path + '.zip'
+        if not zip_path.endswith(".zip"):
+            zip_path = zip_path + ".zip"
         if zip_path != zip_name:
             shutil.move(zip_path, zip_name)
             zip_path = zip_name
@@ -148,7 +151,9 @@ def backup_database():
         print(f"[RESULT] Tables backed up:   {successful}")
         print(f"[RESULT] Tables failed:      {failed}")
         print("────────────────────────────────────────────────────────────")
-        print(f"[COMPLETE] Backup finished at {datetime.now().strftime('%d-%m-%Y %H:%M:%S')}")
+        print(
+            f"[COMPLETE] Backup finished at {datetime.now().strftime('%d-%m-%Y %H:%M:%S')}"
+        )
         print("────────────────────────────────────────────────────────────")
 
     except psycopg2.Error as e:
@@ -160,5 +165,5 @@ def backup_database():
             connection.close()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     backup_database()

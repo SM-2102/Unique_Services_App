@@ -37,8 +37,6 @@ class MasterCode(BaseModel):
 class MasterName(BaseModel):
     name: str
 
+
 class MasterAddress(BaseModel):
     full_address: str
-
-
-

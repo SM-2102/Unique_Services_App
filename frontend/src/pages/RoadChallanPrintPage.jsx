@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { Container, Paper, Typography, InputBase, IconButton, Modal, Box } from "@mui/material";
+import {
+  Container,
+  Paper,
+  Typography,
+  InputBase,
+  IconButton,
+  Modal,
+  Box,
+} from "@mui/material";
 import { AiOutlinePrinter } from "react-icons/ai";
 import Toast from "../components/Toast";
 
 import { fetchLastChallanNumber } from "../services/roadChallanLastCodeService";
 import { printRoadChallan } from "../services/printRoadChallanService";
 
-
-
 const RoadChallanPrintPage = () => {
-
   const [challanNumber, setChallanNumber] = useState("");
   const [showToast, setShowToast] = useState(false);
   const [error, setError] = useState("");
@@ -21,11 +26,11 @@ const RoadChallanPrintPage = () => {
         const data = await fetchLastChallanNumber();
         setChallanNumber(data.last_challan_number || "");
       } catch (err) {
-        setError({ 
-            message: err.message, 
-            resolution: err.resolution,
-            type: "error",
-         });
+        setError({
+          message: err.message,
+          resolution: err.resolution,
+          type: "error",
+        });
         setShowToast(true);
       }
     }
@@ -50,22 +55,13 @@ const RoadChallanPrintPage = () => {
           background: "#f8fafc",
           maxWidth: 380,
           mx: "auto",
-          minHeight: 0,
+          minHeight: 125,
         }}
       >
-        <Typography
-          variant="h5"
-          fontWeight={700}
-          mb={2}
-          align="center"
-          color="primary.dark"
-        >
-          Road Challan Print
-        </Typography>
-        <form
-          noValidate
-          className="w-full flex flex-col gap-3"
-        >
+        <h2 className="text-xl font-semibold text-blue-800 mb-4 pb-2 border-b border-blue-500 justify-center flex items-center gap-2">
+          Print Road Challan
+        </h2>
+        <form noValidate className="w-full flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <label
               htmlFor="challanNumber"
@@ -83,8 +79,14 @@ const RoadChallanPrintPage = () => {
               }}
               inputProps={{ maxLength: 6 }}
               placeholder="Enter number"
-              className="flex-1 px-3 py-2 rounded-lg border border-gray-300 bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium"
-              sx={{ flex: 1, background: '#f1f5f9', borderRadius: 2, px: 1.5, border: '1px solid #d1d5db' }}
+              className="flex-1 w-full px-3 py-1 rounded-lg border border-gray-300 bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small"
+              sx={{
+                flex: 1,
+                background: "#f1f5f9",
+                borderRadius: 2,
+                px: 1.5,
+                border: "1px solid #d1d5db",
+              }}
               autoComplete="off"
               disabled={!!pdfUrl}
             />
@@ -97,9 +99,11 @@ const RoadChallanPrintPage = () => {
                 setShowToast(false);
                 setError("");
                 if (!challanNumber) {
-                  setError({ message: "Challan number is required", 
-                            resolution: "Enter a Challan Number", 
-                            type: "warning" });
+                  setError({
+                    message: "Challan number is required",
+                    resolution: "Enter a Challan Number",
+                    type: "warning",
+                  });
                   setShowToast(true);
                   return;
                 }
@@ -112,17 +116,17 @@ const RoadChallanPrintPage = () => {
                   if (newTab) {
                     newTab.document.write(
                       `<html><head><title>Challan Preview</title></head><body style='margin:0'>` +
-                      `<iframe id='challan-pdf-frame' src='${url}' width='100%' height='100%' style='border:none;min-height:100vh;'></iframe>` +
-                      `<div style='position:fixed;top:10px;right:10px;z-index:1000;display:flex;gap:10px;'>` +
-                      `<a href='${url}' download='${challanNumber}.pdf' style='padding:10px 18px;background:#2563eb;color:#fff;border-radius:6px;text-decoration:none;font-weight:600;font-size:16px;'>Download PDF</a>` +
-                      `<button onclick="(function(){
+                        `<iframe id='challan-pdf-frame' src='${url}' width='100%' height='100%' style='border:none;min-height:100vh;'></iframe>` +
+                        `<div style='position:fixed;top:10px;right:10px;z-index:1000;display:flex;gap:10px;'>` +
+                        `<a href='${url}' download='${challanNumber}.pdf' style='padding:10px 18px;background:#2563eb;color:#fff;border-radius:6px;text-decoration:none;font-weight:600;font-size:16px;'>Download PDF</a>` +
+                        `<button onclick="(function(){
                         var frame = document.getElementById('challan-pdf-frame');
                         if(frame && frame.contentWindow){
                           frame.contentWindow.focus();
                           frame.contentWindow.print();
                         }
                       })()" style='padding:10px 18px;background:#059669;color:#fff;border-radius:6px;border:none;cursor:pointer;font-weight:600;font-size:16px;'>Print</button>` +
-                      `</div></body></html>`
+                        `</div></body></html>`,
                     );
                   } else {
                     setError({
@@ -155,6 +159,6 @@ const RoadChallanPrintPage = () => {
       </Paper>
     </Container>
   );
-}
+};
 
 export default RoadChallanPrintPage;

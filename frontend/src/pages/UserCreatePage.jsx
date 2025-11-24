@@ -68,14 +68,14 @@ const CreateUserPage = () => {
   };
 
   return (
-    <Container maxWidth="xs" sx={{ mt: 8 }}>
+    <Container maxWidth="sm" sx={{ mt: 8 }}>
       <Paper
         elevation={4}
         sx={{
           p: 2.5,
           borderRadius: 3,
           background: "#f8fafc",
-          maxWidth: 340,
+          maxWidth: 360,
           mx: "auto",
           minHeight: 0,
         }}
@@ -91,6 +91,11 @@ const CreateUserPage = () => {
         </Typography>
         <form
           onSubmit={handleSubmit}
+          onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+          }
+        }}
           noValidate
           className="w-full flex flex-col gap-3"
         >

@@ -15,9 +15,9 @@ async function fetchAllUsers() {
   });
   const data = await response.json();
   if (!response.ok) {
-    throw { 
+    throw {
       message: data.message || data.detail || "Failed to fetch users",
-      resolution: data.resolution || ""
+      resolution: data.resolution || "",
     };
   }
   return data;

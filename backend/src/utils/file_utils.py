@@ -1,15 +1,18 @@
 import os
 import re
 
+
 def safe_join(base_dir, user_filename):
     """
     Safely join a base directory and a user-supplied filename, preventing path traversal and injection.
     Only allows filenames with alphanumeric, underscore, hyphen, dot, and space.
     """
-    if not re.match(r'^[\w\-. ]+$', user_filename):
+    if not re.match(r"^[\w\-. ]+$", user_filename):
         raise ValueError("Invalid filename")
     full_path = os.path.normpath(os.path.join(base_dir, user_filename))
-    if not os.path.commonpath([os.path.abspath(base_dir), os.path.abspath(full_path)]) == os.path.abspath(base_dir):
+    if not os.path.commonpath(
+        [os.path.abspath(base_dir), os.path.abspath(full_path)]
+    ) == os.path.abspath(base_dir):
         raise ValueError("Path traversal detected")
     return full_path
 

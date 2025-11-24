@@ -3,6 +3,7 @@ import json
 from fastapi import Request
 from starlette.middleware.base import BaseHTTPMiddleware
 
+
 # Utility to recursively strip leading/trailing spaces from all string values in a dict/list
 def strip_outer_whitespace(data):
     if isinstance(data, dict):
@@ -13,7 +14,7 @@ def strip_outer_whitespace(data):
         return data.strip()
     else:
         return data
-    
+
 
 class StripJSONMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
@@ -35,7 +36,7 @@ class StripJSONMiddleware(BaseHTTPMiddleware):
                     capitalized_data = strip_outer_whitespace(original_data)
                     request._body = json.dumps(capitalized_data).encode("utf-8")
                 except json.JSONDecodeError:
-                    pass 
+                    pass
 
         response = await call_next(request)
         return response
