@@ -60,6 +60,9 @@ const RetailSettledPieChart = ({ data }) => {
       },
       tooltip: {
         callbacks: {
+          title: function (context) {
+            return "";
+          },
           label: function (context) {
             const label = context.label || "";
             const value = context.parsed || 0;
@@ -74,6 +77,10 @@ const RetailSettledPieChart = ({ data }) => {
         padding: 12,
         cornerRadius: 8,
         displayColors: false,
+        bodyFont: {
+          size: 12,
+          weight: "bold",
+        },
       },
       datalabels: {
         display: function (context) {
