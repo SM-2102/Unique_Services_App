@@ -8,7 +8,7 @@ const PendingBar = ({ pendingData = [], onSelect }) => {
     if (onSelect) onSelect(id);
     setOpen(false);
   };
-      // className="fixed top-0 left-0 w-80 max-w-[90vw] h-screen bg-black/10 backdrop-blur-xl z-[1200] shadow-2xl flex flex-col animate-fade-in"
+  // className="fixed top-0 left-0 w-80 max-w-[90vw] h-screen bg-black/10 backdrop-blur-xl z-[1200] shadow-2xl flex flex-col animate-fade-in"
 
   return (
     <>
@@ -38,13 +38,34 @@ const PendingBar = ({ pendingData = [], onSelect }) => {
           {pendingData.length === 0 && (
             <li className="flex flex-col items-center justify-center py-8 text-center">
               <span className="mb-2">
-                <svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="#3b82f6" className="mx-auto">
-                  <circle cx="12" cy="12" r="10" strokeWidth="2" strokeDasharray="4 2" />
-                  <path d="M8 12h8M12 8v8" strokeWidth="2" strokeLinecap="round" />
+                <svg
+                  width="32"
+                  height="32"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="#3b82f6"
+                  className="mx-auto"
+                >
+                  <circle
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    strokeWidth="2"
+                    strokeDasharray="4 2"
+                  />
+                  <path
+                    d="M8 12h8M12 8v8"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
                 </svg>
               </span>
-              <span className="text-base font-semibold text-blue-700">No pending items</span>
-              <span className="text-xs text-gray-500 mt-1">You're all caught up!</span>
+              <span className="text-base font-semibold text-blue-700">
+                No pending items
+              </span>
+              <span className="text-xs text-gray-500 mt-1">
+                You're all caught up!
+              </span>
             </li>
           )}
         </ul>
@@ -52,7 +73,7 @@ const PendingBar = ({ pendingData = [], onSelect }) => {
       {/* Handle (longer, with label) */}
       <div
         onClick={() => setOpen(!open)}
-        className={`fixed top-1/2 -translate-y-1/2 z-[3000] flex items-center gap-2 bg-blue-900 text-white shadow-lg cursor-pointer
+        className={`fixed top-1/5 -translate-y-1/2 z-[3000] flex items-center gap-2 bg-blue-900 text-white shadow-lg cursor-pointer
           px-4 py-3 rounded-l-xl select-none transition-all duration-300 ${open ? "right-70" : "right-0"}`}
         title="Toggle Pending Bar"
       >

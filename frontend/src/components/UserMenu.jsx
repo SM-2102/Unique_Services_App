@@ -74,23 +74,23 @@ const UserMenu = () => {
   };
 
   const handleChangePassword = () => {
-    navigate("/change-password");
+    navigate("/ChangePassword");
   };
 
   const handleCreateUser = () => {
-    navigate("/create-user"); // Update this when the create user page is ready
+    navigate("/CreateUser"); // Update this when the create user page is ready
   };
 
   const handleDeleteUser = () => {
-    navigate("/delete-user"); // Update this when the delete user page is ready
+    navigate("/DeleteUser"); // Update this when the delete user page is ready
   };
 
   const handleShowUsers = () => {
-    navigate("/show-users");
+    navigate("/ShowAllUsers");
   };
 
   const handleShowStandardUsers = () => {
-    navigate("/show-standard-users");
+    navigate("/ShowStandardUsers");
   };
 
   return (

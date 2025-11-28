@@ -3,10 +3,52 @@ import { FaChevronDown, FaChevronUp, FaBars } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { menuConfig } from "../config/menuConfig";
 
-// Convert menuConfig to menuItems for NavBar (submenus = actions)
-const menuItems = menuConfig.map(({ title, actions }) => ({
+// Define desired submenu order for each menu key
+const submenuOrder = {
+  warranty: [
+    "Enquiry",
+    "Create SRF",
+    "Update SRF",
+    "Create CNF Challan",
+    "Print SRF",
+    "Print CNF Challan",
+  ],
+  out_of_warranty: [
+    "Enquiry",
+    "Create SRF",
+    "Update SRF",
+    "Settle SRF",
+    "Create Vendor Challan",
+    "Print Vendor Challan",
+    "Print Estimate",
+    "Settle Vendor",
+  ],
+  retail: [
+    "Add Record",
+    "Update Record",
+    "Print Receipt",
+    "Settle Record - User",
+    "Settle Record - Admin",
+    "Enquiry",
+  ],
+};
+
+// Helper to sort actions by submenuOrder
+function sortActions(key, actions) {
+  const order = submenuOrder[key];
+  if (!order) return actions;
+  return [...actions].sort(
+    (a, b) => order.indexOf(a.label) - order.indexOf(b.label),
+  );
+}
+
+// Convert menuConfig to menuItems for NavBar (submenus = actions, reordered)
+const menuItems = menuConfig.map(({ key, title, actions }) => ({
   title,
-  submenus: actions.map(({ label, path }) => ({ title: label, path })),
+  submenus: sortActions(key, actions).map(({ label, path }) => ({
+    title: label,
+    path,
+  })),
 }));
 
 const NavBar = ({ open, setOpen }) => {

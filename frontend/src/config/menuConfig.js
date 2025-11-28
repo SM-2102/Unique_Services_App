@@ -15,8 +15,8 @@ export const menuConfig = [
     icon: FaUser,
     bgColor: "#ffe4ec",
     actions: [
-      { label: "Add Record", path: "/customer-create" },
-      { label: "Update Record", path: "/customer-update" },
+      { label: "Add Record", path: "/CreateCustomerRecord" },
+      { label: "Update Record", path: "/UpdateCustomerRecord" },
     ],
   },
   {
@@ -30,7 +30,7 @@ export const menuConfig = [
       { label: "Print SRF", path: "/warranty-print_srf" },
       { label: "Print CNF Challan", path: "/warranty-print_cnf" },
       { label: "Update SRF", path: "/warranty-update_srf" },
-      { label: "Enquiry", path: "/warranty-enquiry", showInDashboard: false },
+      { label: "Enquiry", path: "/warranty-enquiry" },
     ],
   },
   {
@@ -47,7 +47,7 @@ export const menuConfig = [
       { label: "Print Vendor Challan", path: "/oow-print_vendor_challan" },
       { label: "Print Estimate", path: "/oow-print_estimate" },
       { label: "Settle Vendor", path: "/oow-settle_vendor" },
-      { label: "Enquiry", path: "/oow-enquiry", showInDashboard: false },
+      { label: "Enquiry", path: "/oow-enquiry" },
     ],
   },
   {
@@ -56,9 +56,9 @@ export const menuConfig = [
     icon: FaShoppingBag,
     bgColor: "#f0f4f8",
     actions: [
-      { label: "Add Record", path: "/market-create" },
-      { label: "Update Record", path: "/market-update" },
-      { label: "Enquiry", path: "/market-enquiry", showInDashboard: false },
+      { label: "Add Record", path: "/CreateMarketRecord" },
+      { label: "Update Record", path: "/UpdateMarketRecord" },
+      { label: "Enquiry", path: "/MarketRecordEnquiry" },
     ],
   },
   {
@@ -67,8 +67,8 @@ export const menuConfig = [
     icon: FaReceipt,
     bgColor: "#faf6c0ff",
     actions: [
-      { label: "Create Challan", path: "/challan-create" },
-      { label: "Print Challan", path: "/challan-print" },
+      { label: "Create Challan", path: "/CreateRoadChallan" },
+      { label: "Print Challan", path: "/PrintRoadChallan" },
     ],
   },
   {
@@ -77,11 +77,12 @@ export const menuConfig = [
     icon: FaStore,
     bgColor: "#e7d7f8ff",
     actions: [
-      { label: "Add Record", path: "/retail-create" },
-      { label: "Update Record", path: "/retail-update" },
-      { label: "Settle Record", path: "/retail-settle" },
-      { label: "Print Receipt", path: "/retail-print_receipt" },
-      { label: "Enquiry", path: "/retail-enquiry", showInDashboard: false },
+      { label: "Add Record", path: "/CreateRetailRecord" },
+      { label: "Settle Record - User", path: "/ProposeToSettleRetailRecord" },
+      { label: "Update Record", path: "/UpdateRetailRecord" },
+      { label: "Settle Record - Admin", path: "/FinalSettlementRetailRecord" },
+      { label: "Print Receipt", path: "/PrintRetailReceipt" },
+      { label: "Enquiry", path: "/RetailRecordEnquiry" },
     ],
   },
 ];
