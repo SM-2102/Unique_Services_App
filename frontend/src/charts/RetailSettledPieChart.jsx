@@ -20,12 +20,12 @@ const RetailSettledPieChart = ({ data }) => {
     {
       label: "Not Received",
       value: chartData.not_received || 0,
-      color: "#ef4444", // red
+      color: "#d50505ff", // red
     },
     {
       label: "Not Settled",
       value: chartData.received_not_settled || 0,
-      color: "#f59e0b", // yellow
+      color: "#f5e20bff", // yellow
     },
     {
       label: "To Settle",

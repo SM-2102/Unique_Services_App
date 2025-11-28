@@ -17,7 +17,7 @@ import { fetchRetailFinalSettlement } from "../services/retailFinalSettlementSer
 import { updateRetailFinalSettlement } from "../services/retailUpdateFinalSettlement";
 
 const columns = [
-  { key: "rcode", label: "Retail Code" },
+  { key: "rcode", label: "Receipt Number" },
   { key: "name", label: "Customer Name" },
   { key: "rdate", label: "Retail Date" },
   { key: "details", label: "Details" },

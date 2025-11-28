@@ -88,7 +88,7 @@ const CustomerChart = ({ data }) => {
   return (
     <div className="w-full h-full flex flex-col justify-center items-center">
       <div
-        className="flex flex-row flex-wrap items-end group transition-transform duration-200 hover:scale-105 ml-0 w-full max-w-[700px] px-2"
+        className="flex flex-row flex-nowrap items-end group transition-transform duration-200 hover:scale-105 ml-0 w-full max-w-[700px] px-2 whitespace-nowrap"
         style={{ minWidth: 0 }}
         tabIndex={0}
       >

@@ -8,7 +8,7 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { retailEnquiry } from "../services/retailEnquiryService";
 
 const columns = [
-  { key: "rcode", label: "Retail Code" },
+  { key: "rcode", label: "Receipt Number" },
   { key: "rdate", label: "Retail Date" },
   { key: "name", label: "Name" },
   { key: "division", label: "Division" },

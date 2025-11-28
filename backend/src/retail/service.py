@@ -232,7 +232,6 @@ class RetailService:
             .where(
                 (Master.name == name)
                 & (Retail.final_status != "Y")
-                & (Retail.rdate >= one_month_ago)
             )
             .order_by(Retail.rcode)
         )

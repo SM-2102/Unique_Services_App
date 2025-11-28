@@ -40,12 +40,21 @@
 - [x] **MarketEnquiryPage** - Market Enquiry
 
 ### Retail Module
-- [ ] **RetailCreatePage** - Create Retail record
-- [ ] **RetailUpdatePage** - Update Retail record
-- [ ] **RetailEnquiryPage** - Retail Enquiry
-- [ ] **RetailPrintPage** - Retail Print Receipt
-- [ ] **RetailSettleUser** - Proposed For Settlement
-- [ ] **RetailSettleAdmin** - Settled Retail Record
+- [x] **RetailCreatePage** - Create Retail record
+- [x] **RetailUpdatePage** - Update Retail record
+- [x] **RetailEnquiryPage** - Retail Enquiry
+- [x] **RetailPrintPage** - Retail Print Receipt
+- [x] **RetailSettleUser** - Proposed For Settlement
+- [x] **RetailSettleAdmin** - Settled Retail Record
+
+### Warranty Module
+- [ ] **WarrantyCreatePage** - Create Warranty record
+- [ ] **WarrantyUpdatePage** - Update Warranty record
+- [ ] **WarrantySRFPrintPage** - Warranty SRF Print
+- [ ] **WarrantyChallanPage** - Warranty Challan
+- [ ] **WarrantyChallanPrintPage** - Warranty Challan Print
+- [ ] **WarrantyEnquiryPage** - Warranty Enquiry Page
+
 
 ---
 
@@ -93,16 +102,29 @@
 - [x] **/market/list_invoice_number**
 
 ### Retail Module
-- [ ] **/retail/next_code**
-- [ ] **/retail/create**
-- [ ] **/retail/list_of_not_received**
-- [ ] **/retail/update_received**
-- [ ] **/retail/list_of_unsettled**
-- [ ] **/retail/update_unsettled**
-- [ ] **/retail/list_of_final_settlement**
-- [ ] **/retail/update_final_settlement**
-- [ ] **/retail/show_receipt_names**
-- [ ] **/retail/enquiry{params}**
+- [x] **/retail/next_code**
+- [x] **/retail/create**
+- [x] **/retail/list_of_not_received**
+- [x] **/retail/update_received**
+- [x] **/retail/list_of_unsettled**
+- [x] **/retail/update_unsettled**
+- [x] **/retail/list_of_final_settlement**
+- [x] **/retail/update_final_settlement**
+- [x] **/retail/show_receipt_names**
+- [x] **/reetail/print**
+- [x] **/retail/enquiry{params}**
+
+### Warranty Module
+- [ ] **warranty/next_code**
+- [ ] **warranty/
+- [ ] **warranty/
+- [ ] **warranty/
+- [ ] **warranty/
+- [ ] **warranty/
+- [ ] **warranty/
+- [ ] **warranty/
+- [ ] **warranty/
+- [ ] **warranty/
 
 
 ---

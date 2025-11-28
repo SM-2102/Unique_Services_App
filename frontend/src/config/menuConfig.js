@@ -25,12 +25,12 @@ export const menuConfig = [
     icon: FaTools,
     bgColor: "#fff7e6",
     actions: [
-      { label: "Create SRF", path: "/warranty-create_srf" },
-      { label: "Create CNF Challan", path: "/warranty-create_cnf" },
-      { label: "Print SRF", path: "/warranty-print_srf" },
-      { label: "Print CNF Challan", path: "/warranty-print_cnf" },
-      { label: "Update SRF", path: "/warranty-update_srf" },
-      { label: "Enquiry", path: "/warranty-enquiry" },
+      { label: "Create SRF", path: "/CreateWarrantySRF" },
+      { label: "Create CNF Challan", path: "/CreateWarrantyCNFChallan" },
+      { label: "Print SRF", path: "/PrintWarrantySRF" },
+      { label: "Print CNF Challan", path: "/PrintWarrantyCNFChallan" },
+      { label: "Update SRF", path: "/UpdateWarrantySRF" },
+      { label: "Enquiry", path: "/WarrantyEnquiry", showInDashboard: false},
     ],
   },
   {
@@ -47,7 +47,7 @@ export const menuConfig = [
       { label: "Print Vendor Challan", path: "/oow-print_vendor_challan" },
       { label: "Print Estimate", path: "/oow-print_estimate" },
       { label: "Settle Vendor", path: "/oow-settle_vendor" },
-      { label: "Enquiry", path: "/oow-enquiry" },
+      { label: "Enquiry", path: "/oow-enquiry" , showInDashboard: false},
     ],
   },
   {
@@ -58,7 +58,7 @@ export const menuConfig = [
     actions: [
       { label: "Add Record", path: "/CreateMarketRecord" },
       { label: "Update Record", path: "/UpdateMarketRecord" },
-      { label: "Enquiry", path: "/MarketRecordEnquiry" },
+      { label: "Enquiry", path: "/MarketRecordEnquiry", showInDashboard: false},
     ],
   },
   {
@@ -82,7 +82,7 @@ export const menuConfig = [
       { label: "Update Record", path: "/UpdateRetailRecord" },
       { label: "Settle Record - Admin", path: "/FinalSettlementRetailRecord" },
       { label: "Print Receipt", path: "/PrintRetailReceipt" },
-      { label: "Enquiry", path: "/RetailRecordEnquiry" },
+      { label: "Enquiry", path: "/RetailRecordEnquiry" , showInDashboard: false},
     ],
   },
 ];

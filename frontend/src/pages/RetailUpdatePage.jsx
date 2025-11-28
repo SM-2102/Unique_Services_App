@@ -15,7 +15,7 @@ import { fetchRetailNotReceived } from "../services/retailNotReceivedService";
 import Toast from "../components/Toast";
 
 const columns = [
-  { key: "rcode", label: "Retail Code" },
+  { key: "rcode", label: "Receipt Number" },
   { key: "name", label: "Customer Name" },
   { key: "contact", label: "Contact" },
   { key: "details", label: "Details" },

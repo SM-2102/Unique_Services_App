@@ -25,8 +25,8 @@ export default function PrivateRoute({ children, requiredRole }) {
   if (requiredRole) {
     const roles = Array.isArray(requiredRole) ? requiredRole : [requiredRole];
     if (!user || !roles.includes(user.role)) {
-      // Redirect to PageNotAuthorized if user lacks required role
-      return <Navigate to="/PageNotAuthorized" replace />;
+      // Redirect to Menu if user lacks required role
+      return <Navigate to="/MenuDashboard" replace />;
     }
   }
 

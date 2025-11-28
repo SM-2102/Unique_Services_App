@@ -21,7 +21,6 @@ import MarketCreatePage from "./pages/MarketCreatePage.jsx";
 import MarketUpdatePage from "./pages/MarketUpdatePage.jsx";
 import MarketEnquiryPage from "./pages/MarketEnquiryPage.jsx";
 import RetailSettleAdminPage from "./pages/RetailSettleAdminPage.jsx";
-import PageNotAuthorized from "./pages/PageNotAuthorized.jsx";
 import RetailCreatePage from "./pages/RetailCreatePage.jsx";
 import RetailEnquiryPage from "./pages/RetailEnquiryPage.jsx";
 import RetailUpdatePage from "./pages/RetailUpdatePage.jsx";
@@ -40,14 +39,6 @@ function AppRoutesWithNav() {
             element={
               <PrivateRoute>
                 <PageNotFound />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/PageNotAuthorized"
-            element={
-              <PrivateRoute>
-                <PageNotAuthorized />
               </PrivateRoute>
             }
           />

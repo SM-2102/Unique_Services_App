@@ -183,7 +183,7 @@ const RetailCreatePage = () => {
               htmlFor="rcode"
               className="text-md font-medium text-gray-700"
             >
-              Retail Code
+              Receipt Number
             </label>
             <input
               id="rcode"

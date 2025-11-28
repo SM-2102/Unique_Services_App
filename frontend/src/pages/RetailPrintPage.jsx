@@ -244,7 +244,7 @@ const RetailPrintPage = () => {
                   setSelectedRows([]);
                   if (!data || data.length === 0) {
                     setError({
-                      message: "No records found in last 30 days.",
+                      message: "No records found.",
                       resolution: "Try another customer name.",
                       type: "info",
                     });
