@@ -12,7 +12,7 @@ import { AiOutlinePrinter } from "react-icons/ai";
 import Toast from "../components/Toast";
 
 import { fetchLastChallanNumber } from "../services/roadChallanLastCodeService";
-import { printRoadChallan } from "../services/printRoadChallanService";
+import { printRoadChallan } from "../services/roadChallanPrintService";
 
 const RoadChallanPrintPage = () => {
   const [challanNumber, setChallanNumber] = useState("");

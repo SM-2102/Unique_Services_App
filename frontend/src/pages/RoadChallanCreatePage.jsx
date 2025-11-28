@@ -186,7 +186,10 @@ const RoadChallanCreatePage = () => {
     };
     // Map empty string values to null
     const payload = Object.fromEntries(
-      Object.entries(rawPayload).map(([k, v]) => [k, v === "" ? null : v]),
+      Object.entries(rawPayload).map(([k, v]) => [
+        k,
+        v === "" || v === 0 ? null : v,
+      ]),
     );
     try {
       await createRoadChallan(payload);

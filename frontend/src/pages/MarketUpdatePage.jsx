@@ -32,9 +32,8 @@ const MarketUpdatePage = () => {
   const [pendingItems, setPendingItems] = useState([]);
   const [deliveredByList, setDeliveredByList] = useState([]);
   const [deliveredBySuggestions, setDeliveredBySuggestions] = useState([]);
-  const [showDeliveredBySuggestions, setShowDeliveredBySuggestions] = useState(
-    false,
-  );
+  const [showDeliveredBySuggestions, setShowDeliveredBySuggestions] =
+    useState(false);
 
   const handleSearch = async (searchCode) => {
     // If this was called as an event handler (e.g. onClick={handleSearch}),
@@ -86,7 +85,6 @@ const MarketUpdatePage = () => {
         setIsLocked(false);
       }
     } catch (err) {
-      console.log(err);
       setError({
         message: err.message || "Not found",
         resolution: err.resolution,
@@ -361,7 +359,10 @@ const MarketUpdatePage = () => {
                   disabled={isLocked || submitting}
                   autoComplete="off"
                   onFocus={() => {
-                    if (form.delivery_by.length > 0 && deliveredBySuggestions.length > 0)
+                    if (
+                      form.delivery_by.length > 0 &&
+                      deliveredBySuggestions.length > 0
+                    )
                       setShowDeliveredBySuggestions(true);
                   }}
                   onBlur={() =>

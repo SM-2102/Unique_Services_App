@@ -12,6 +12,7 @@ import ShowStandardUsersPage from "./pages/ShowStandardUsersPage.jsx";
 import CreateUserPage from "./pages/UserCreatePage.jsx";
 import PrivateRoute from "./components/PrivateRoute";
 import { AuthProvider } from "./context/AuthContext.jsx";
+import { DashboardDataProvider } from "./context/DashboardDataContext.jsx";
 import MasterCreatePage from "./pages/MasterCreatePage.jsx";
 import MasterUpdatePage from "./pages/MasterUpdatePage.jsx";
 import RoadChallanPrintPage from "./pages/RoadChallanPrintPage.jsx";
@@ -19,6 +20,13 @@ import RoadChallanCreatePage from "./pages/RoadChallanCreatePage.jsx";
 import MarketCreatePage from "./pages/MarketCreatePage.jsx";
 import MarketUpdatePage from "./pages/MarketUpdatePage.jsx";
 import MarketEnquiryPage from "./pages/MarketEnquiryPage.jsx";
+import RetailSettleAdminPage from "./pages/RetailSettleAdminPage.jsx";
+import PageNotAuthorized from "./pages/PageNotAuthorized.jsx";
+import RetailCreatePage from "./pages/RetailCreatePage.jsx";
+import RetailEnquiryPage from "./pages/RetailEnquiryPage.jsx";
+import RetailUpdatePage from "./pages/RetailUpdatePage.jsx";
+import RetailSettleUserPage from "./pages/RetailSettleUserPage.jsx";
+import RetailPrintPage from "./pages/RetailPrintPage.jsx";
 
 function AppRoutesWithNav() {
   return (
@@ -28,70 +36,6 @@ function AppRoutesWithNav() {
         <Routes>
           <Route path="/" element={<LoginPage />} />
           <Route
-            path="/dashboard"
-            element={
-              <PrivateRoute>
-                <MenuDashboardPage />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/create-user"
-            element={
-              <PrivateRoute requiredRole="ADMIN">
-                <CreateUserPage />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/delete-user"
-            element={
-              <PrivateRoute requiredRole="ADMIN">
-                <DeleteUserPage />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/change-password"
-            element={
-              <PrivateRoute>
-                <ChangePasswordPage />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/show-users"
-            element={
-              <PrivateRoute requiredRole="ADMIN">
-                <ShowAllUsersPage />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/show-standard-users"
-            element={
-              <PrivateRoute>
-                <ShowStandardUsersPage />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/customer-create"
-            element={
-              <PrivateRoute>
-                <MasterCreatePage />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/customer-update"
-            element={
-              <PrivateRoute>
-                <MasterUpdatePage />
-              </PrivateRoute>
-            }
-          />
-          <Route
             path="/*"
             element={
               <PrivateRoute>
@@ -100,7 +44,79 @@ function AppRoutesWithNav() {
             }
           />
           <Route
-            path="/challan-create"
+            path="/PageNotAuthorized"
+            element={
+              <PrivateRoute>
+                <PageNotAuthorized />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/MenuDashboard"
+            element={
+              <PrivateRoute>
+                <MenuDashboardPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/CreateUser"
+            element={
+              <PrivateRoute requiredRole="ADMIN">
+                <CreateUserPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/DeleteUser"
+            element={
+              <PrivateRoute requiredRole="ADMIN">
+                <DeleteUserPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/ChangePassword"
+            element={
+              <PrivateRoute>
+                <ChangePasswordPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/ShowAllUsers"
+            element={
+              <PrivateRoute requiredRole="ADMIN">
+                <ShowAllUsersPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/ShowStandardUsers"
+            element={
+              <PrivateRoute>
+                <ShowStandardUsersPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/CreateCustomerRecord"
+            element={
+              <PrivateRoute>
+                <MasterCreatePage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/UpdateCustomerRecord"
+            element={
+              <PrivateRoute>
+                <MasterUpdatePage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/CreateRoadChallan"
             element={
               <PrivateRoute>
                 <RoadChallanCreatePage />
@@ -108,10 +124,82 @@ function AppRoutesWithNav() {
             }
           />
           <Route
-            path="/challan-print"
+            path="/PrintRoadChallan"
             element={
               <PrivateRoute>
                 <RoadChallanPrintPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/CreateMarketRecord"
+            element={
+              <PrivateRoute>
+                <MarketCreatePage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/UpdateMarketRecord"
+            element={
+              <PrivateRoute>
+                <MarketUpdatePage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/MarketRecordEnquiry"
+            element={
+              <PrivateRoute>
+                <MarketEnquiryPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/CreateRetailRecord"
+            element={
+              <PrivateRoute>
+                <RetailCreatePage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/UpdateRetailRecord"
+            element={
+              <PrivateRoute>
+                <RetailUpdatePage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/PrintRetailReceipt"
+            element={
+              <PrivateRoute>
+                <RetailPrintPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/ProposeToSettleRetailRecord"
+            element={
+              <PrivateRoute>
+                <RetailSettleUserPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/FinalSettlementRetailRecord"
+            element={
+              <PrivateRoute requiredRole="ADMIN">
+                <RetailSettleAdminPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/RetailRecordEnquiry"
+            element={
+              <PrivateRoute>
+                <RetailEnquiryPage />
               </PrivateRoute>
             }
           />
@@ -235,30 +323,6 @@ function AppRoutesWithNav() {
               </PrivateRoute>
             }
           />
-          <Route
-            path="/market-create"
-            element={
-              <PrivateRoute>
-                <MarketCreatePage />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/market-update"
-            element={
-              <PrivateRoute>
-                <MarketUpdatePage />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/market-enquiry"
-            element={
-              <PrivateRoute>
-                <MarketEnquiryPage />
-              </PrivateRoute>
-            }
-          />
         </Routes>
       </div>
       <Footer />
@@ -269,9 +333,11 @@ function AppRoutesWithNav() {
 function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <AppRoutesWithNav />
-      </AuthProvider>
+      <DashboardDataProvider>
+        <AuthProvider>
+          <AppRoutesWithNav />
+        </AuthProvider>
+      </DashboardDataProvider>
     </BrowserRouter>
   );
 }

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Toast from "../components/Toast";
 import { useAuth } from "../context/AuthContext";
+import { useDashboardDataContext } from "../context/DashboardDataContext.jsx";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { login } from "../services/loginService";
@@ -15,6 +16,7 @@ function LoginPage() {
   const [showToast, setShowToast] = useState(false);
   const navigate = useNavigate();
   const { checkAuth } = useAuth();
+  const { fetchDashboardData } = useDashboardDataContext();
 
   // Handle login form submit
   const handleSubmit = async (e) => {
@@ -26,7 +28,9 @@ function LoginPage() {
     if (result.success) {
       // Ensure auth state is updated before navigating
       await checkAuth();
-      navigate("/dashboard");
+      // Fetch dashboard data before navigating
+      await fetchDashboardData();
+      navigate("/MenuDashboard");
     } else {
       setError({
         message: result.message || "Login failed",

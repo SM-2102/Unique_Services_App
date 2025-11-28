@@ -3,10 +3,6 @@ import API_ENDPOINTS from "../config/api";
 import { authFetch } from "./authFetchService";
 
 /**
- * Fetch all users (for ShowUsers component)
- * @returns {Promise<Array>} List of users
- */
-/**
  * Fetch market enquiry records with optional filters
  * @param {Object} params - Filter params: final_status, name, division, delivery_date
  * @returns {Promise<Array>} List of market enquiry records
@@ -17,7 +13,9 @@ async function marketEnquiry(params = {}) {
     .filter(([_, v]) => v !== undefined && v !== "")
     .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
     .join("&");
-  const url = query ? `${API_ENDPOINTS.MARKET_ENQUIRY}/?${query}` : API_ENDPOINTS.MARKET_ENQUIRY;
+  const url = query
+    ? `${API_ENDPOINTS.MARKET_ENQUIRY}?${query}`
+    : API_ENDPOINTS.MARKET_ENQUIRY;
   const response = await authFetch(url, {
     method: "GET",
     headers: {

@@ -3,6 +3,7 @@ import { Container, Typography, Paper } from "@mui/material";
 import { createUser } from "../services/createUserService";
 import Toast from "../components/Toast";
 import { validateCreateUser } from "../utils/createUserValidation";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const roles = ["USER", "ADMIN"];
 
@@ -18,6 +19,7 @@ const CreateUserPage = () => {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [showToast, setShowToast] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -124,7 +126,7 @@ const CreateUserPage = () => {
           </div>
 
           {/* Password */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 relative">
             <label
               htmlFor="password"
               className="text-gray-700 text-base font-medium w-28 text-left"
@@ -134,7 +136,7 @@ const CreateUserPage = () => {
             <input
               id="password"
               name="password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               value={form.password}
               onChange={handleChange}
               className="flex-1 px-3 py-2 rounded-lg border border-gray-300 bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-medium"
@@ -144,6 +146,20 @@ const CreateUserPage = () => {
               required
               disabled={submitting}
             />
+            <button
+              type="button"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-blue-600 focus:outline-none"
+              onClick={() => setShowPassword((v) => !v)}
+              tabIndex={-1}
+              aria-label={showPassword ? "Hide password" : "Show password"}
+              disabled={submitting}
+            >
+              {showPassword ? (
+                <FaEyeSlash className="w-5 h-5" />
+              ) : (
+                <FaEye className="w-5 h-5" />
+              )}
+            </button>
           </div>
 
           {/* Phone Number */}
