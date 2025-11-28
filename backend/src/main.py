@@ -9,6 +9,7 @@ from market.routes import market_router
 from master.routes import master_router
 from menu.routes import menu_router
 from middleware.middleware import register_middleware
+from retail.routes import retail_router
 from user.routes import user_router
 
 version = "v1"
@@ -65,3 +66,4 @@ app.include_router(menu_router, prefix="/menu", tags=["Menu"])
 app.include_router(master_router, prefix="/master", tags=["Master"])
 app.include_router(challan_router, prefix="/challan", tags=["Challan"])
 app.include_router(market_router, prefix="/market", tags=["Market"])
+app.include_router(retail_router, prefix="/retail", tags=["Retail"])

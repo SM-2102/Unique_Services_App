@@ -75,9 +75,7 @@ async def print_challan(
     session: AsyncSession = Depends(get_session),
     token=Depends(access_token_bearer),
 ):
-    challan_pdf = await challan_service.print_challan(
-        data.challan_number, token, session
-    )
+    challan_pdf = await challan_service.print_challan(data.challan_number, session)
     return StreamingResponse(
         challan_pdf,
         media_type="application/pdf",

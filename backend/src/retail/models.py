@@ -20,6 +20,7 @@ class Retail(SQLModel, table=True):
     amount: int = Field(sa_column=Column(pg.INTEGER, nullable=False))
     received: str = Field(sa_column=Column(pg.CHAR(1), nullable=False, default="N"))
     settlement_date: date = Field(sa_column=Column(pg.DATE, nullable=True))
+    final_status: str = Field(sa_column=Column(pg.CHAR(1), nullable=False, default="N"))
     created_by: str = Field(
         sa_column=Column(pg.VARCHAR(15), ForeignKey("users.username"), nullable=False)
     )

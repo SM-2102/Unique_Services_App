@@ -102,7 +102,7 @@ async def update_market(
 
 
 """
-Filter by final status and customer name
+Filter market enquiry records
 """
 
 
@@ -115,6 +115,7 @@ async def master_enquiry(
     to_delivery_date: Optional[date] = None,
     delivered_by: Optional[str] = None,
     invoice_date: Optional[date] = None,
+    invoice_number: Optional[str] = None,
     session: AsyncSession = Depends(get_session),
     _=Depends(access_token_bearer),
 ):
@@ -128,10 +129,16 @@ async def master_enquiry(
             to_delivery_date,
             delivered_by,
             invoice_date,
+            invoice_number,
         )
         return enquiry_list
     except:
         return []
+
+
+"""
+List distinct delivered_by names
+"""
 
 
 @market_router.get(
@@ -142,3 +149,18 @@ async def list_delivered_by(
 ):
     names = await market_service.list_delivered_by(session)
     return names
+
+
+"""
+List distinct invoice numbers
+"""
+
+
+@market_router.get(
+    "/list_invoice_number", response_model=List, status_code=status.HTTP_200_OK
+)
+async def list_invoice_number(
+    session: AsyncSession = Depends(get_session), _=Depends(access_token_bearer)
+):
+    numbers = await market_service.list_invoice_number(session)
+    return numbers
