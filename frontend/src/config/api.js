@@ -31,10 +31,23 @@ const API_ENDPOINTS = {
   MARKET_NEXT_NUMBER: `${BASE_API_URL}market/next_mcode`,
   MARKET_CREATE: `${BASE_API_URL}market/create`,
   MARKET_UPDATE: `${BASE_API_URL}market/update/`, //append mcode
-  MARKET_ENQUIRY: `${BASE_API_URL}market/enquiry`, //append final_status, division, name
+  MARKET_ENQUIRY: `${BASE_API_URL}market/enquiry`, //append params
   MARKET_PENDING: `${BASE_API_URL}market/list_pending`,
   MARKET_SEARCH_CODE: `${BASE_API_URL}market/by_mcode`,
   MARKET_DELIVERED_BY: `${BASE_API_URL}market/list_delivered_by`,
+  MARKET_INVOICE_NUMBER: `${BASE_API_URL}market/list_invoice_number`,
+
+  RETAIL_NEXT_RCODE: `${BASE_API_URL}retail/next_rcode`,
+  RETAIL_CREATE: `${BASE_API_URL}retail/create`,
+  RETAIL_ENQUIRY: `${BASE_API_URL}retail/enquiry`, //append params
+  RETAIL_LIST_OF_NOT_RECEIVED: `${BASE_API_URL}retail/list_of_not_received`,
+  RETAIL_UPDATE_RECEIVED: `${BASE_API_URL}retail/update_received`,
+  RETAIL_LIST_OF_UNSETTLED: `${BASE_API_URL}retail/list_of_unsettled`,
+  RETAIL_UPDATE_UNSETTLED: `${BASE_API_URL}retail/update_unsettled`,
+  RETAIL_LIST_OF_FINAL_SETTLEMENT: `${BASE_API_URL}retail/list_of_final_settlement`,
+  RETAIL_UPDATE_FINAL_SETTLEMENT: `${BASE_API_URL}retail/update_final_settlement`,
+  RETAIL_SHOW_RECEIPT_NAMES: `${BASE_API_URL}retail/show_receipt_names`,
+  RETAIL_PRINT: `${BASE_API_URL}retail/print`,
 };
 
 export default API_ENDPOINTS;

@@ -25,6 +25,11 @@ const RetailSettledPieChart = ({ data }) => {
     {
       label: "Not Settled",
       value: chartData.received_not_settled || 0,
+      color: "#f59e0b", // yellow
+    },
+    {
+      label: "To Settle",
+      value: chartData.propose_for_settlement || 0,
       color: "#4c08eaff", // blue
     },
     {
@@ -74,7 +79,7 @@ const RetailSettledPieChart = ({ data }) => {
         display: function (context) {
           // Only show label for the "Settled" part
           return (
-            context.dataIndex === 2 && total > 0 && context.dataset.data[2] > 0
+            context.dataIndex === 3 && total > 0 && context.dataset.data[3] > 0
           );
         },
         formatter: function (value, context) {

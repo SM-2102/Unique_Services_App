@@ -18,12 +18,17 @@ import {
  * @param {string} [title] - Optional title for the table.
  */
 
-const EnquiryTable = ({ data = [], columns = [], title = "Enquiry Table", noDataMessage = null }) => {
+const EnquiryTable = ({
+  data = [],
+  columns = [],
+  title = "Enquiry Table",
+  noDataMessage = null,
+}) => {
   const tableRef = useRef();
 
   const handlePrint = () => {
     const printContents = tableRef.current.innerHTML;
-    const printWindow = window.open('', '', 'height=800,width=1200');
+    const printWindow = window.open("", "", "height=800,width=1200");
     printWindow.document.write(`<html><head><title>${title}</title>`);
     printWindow.document.write(`<style>
       body{font-family:sans-serif;}
@@ -65,7 +70,12 @@ const EnquiryTable = ({ data = [], columns = [], title = "Enquiry Table", noData
       >
         {title}
       </Typography>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        mb={2}
+      >
         <Box display="flex" alignItems="center">
           <button
             onClick={handlePrint}
@@ -79,7 +89,7 @@ const EnquiryTable = ({ data = [], columns = [], title = "Enquiry Table", noData
               fontSize: "15px",
               cursor: "pointer",
               boxShadow: "0 2px 8px rgba(25,118,210,0.08)",
-              marginRight: "16px"
+              marginRight: "16px",
             }}
           >
             Print
@@ -95,40 +105,73 @@ const EnquiryTable = ({ data = [], columns = [], title = "Enquiry Table", noData
               py: 0.5,
               borderRadius: 2,
               boxShadow: "0 1px 4px rgba(25,118,210,0.07)",
-              display: "inline-block"
+              display: "inline-block",
             }}
           >
-            <span style={{ letterSpacing: 0.5 }}>Total Records:</span> <span style={{ color: "#0d47a1", fontWeight: 600 }}>{data.length}</span>
+            <span style={{ letterSpacing: 0.5 }}>Total Records:</span>{" "}
+            <span style={{ color: "#0d47a1", fontWeight: 600 }}>
+              {data.length}
+            </span>
           </Typography>
         </Box>
         <Box>{/* Right side empty for now */}</Box>
       </Box>
       <div ref={tableRef}>
-        <TableContainer component={Paper} sx={{ borderRadius: 3, boxShadow: 2 }}>
+        <TableContainer
+          component={Paper}
+          sx={{ borderRadius: 3, boxShadow: 2 }}
+        >
           <Table size="small">
             <TableHead>
               <TableRow sx={{ background: "#e3eafc" }}>
                 {columns.map((col) => (
-                  <TableCell key={col.key} sx={{ fontWeight: 700, fontSize: 16, textAlign: "center", py: 1 }}>
+                  <TableCell
+                    key={col.key}
+                    sx={{
+                      fontWeight: 700,
+                      fontSize: 16,
+                      textAlign: "center",
+                      py: 1,
+                      ...(col.label.toLowerCase().includes("date") && {
+                        whiteSpace: "nowrap",
+                      }),
+                    }}
+                  >
                     {col.label}
                   </TableCell>
                 ))}
               </TableRow>
             </TableHead>
             <TableBody>
-              {data.length === 0 && noDataMessage ? (
-                noDataMessage
-              ) : (
-                data.map((row, idx) => (
-                  <TableRow key={idx} sx={{ background: idx % 2 === 0 ? "#f4f8ff" : "#fff", height: 32 }}>
-                    {columns.map((col) => (
-                      <TableCell key={col.key} sx={{ fontWeight: 500, textAlign: "center", py: 0.5 }}>
-                        {row[col.key] !== null && row[col.key] !== undefined ? row[col.key] : "-"}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              )}
+              {data.length === 0 && noDataMessage
+                ? noDataMessage
+                : data.map((row, idx) => (
+                    <TableRow
+                      key={idx}
+                      sx={{
+                        background: idx % 2 === 0 ? "#f4f8ff" : "#fff",
+                        height: 32,
+                      }}
+                    >
+                      {columns.map((col) => (
+                        <TableCell
+                          key={col.key}
+                          sx={{
+                            fontWeight: 500,
+                            textAlign: "center",
+                            py: 0.5,
+                            ...(col.label.toLowerCase().includes("date") && {
+                              whiteSpace: "nowrap",
+                            }),
+                          }}
+                        >
+                          {row[col.key] !== null && row[col.key] !== undefined
+                            ? row[col.key]
+                            : "-"}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))}
             </TableBody>
           </Table>
         </TableContainer>

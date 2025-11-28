@@ -45,7 +45,9 @@ const MenuCard = ({
   // Get the enquiry action path if available
   const getEnquiryPath = () => {
     if (actions && actions.length > 0) {
-      const enquiryAction = actions.find(a => a.label.toLowerCase() === "enquiry" && a.path);
+      const enquiryAction = actions.find(
+        (a) => a.label.toLowerCase() === "enquiry" && a.path,
+      );
       return enquiryAction ? enquiryAction.path : null;
     }
     return null;
@@ -115,10 +117,10 @@ const MenuCard = ({
               // Two buttons stacked vertically
               containerClass =
                 "grid grid-cols-1 max-w-[200px] w-full gap-2.5 place-items-center";
-            } else if (dashboardActions.length === 5) {
-              // Special layout: 2x2 grid + 1 centered below
+            } else if (dashboardActions.length === 3) {
+              // Three buttons stacked vertically
               containerClass =
-                "grid grid-cols-2 max-w-[350px] w-full gap-2.5 place-items-center";
+                "grid grid-cols-1 max-w-[350px] w-full gap-2.5 place-items-center";
             } else {
               // Default layout: 2-column grid for 3–4 buttons
               containerClass =
