@@ -20,22 +20,6 @@ from .models import Challan
 master_service = MasterService()
 
 
-# Constants for PDF layout
-CHALLAN_FONT = "Helvetica"
-CHALLAN_FONT_BOLD = "Helvetica-Bold"
-CHALLAN_FONT_SIZE = 13
-CHALLAN_FONT_SIZE_BOLD = 10
-CHALLAN_LINE_SPACING = 10
-CHALLAN_MIN_ROW_HEIGHT = 30
-CHALLAN_ROW_PADDING = 1
-CHALLAN_COLUMNS = [
-    {"x": 28, "width": 22},  # Sl No
-    {"x": 60, "width": 360},  # Spare
-    {"x": 440, "width": 40},  # Quantity
-    {"x": 490, "width": 80},  # Unit
-]
-
-
 class ChallanService:
 
     async def create_challan(
@@ -108,7 +92,7 @@ class ChallanService:
         raise RoadChallanNotFound()
 
     async def print_challan(
-        self, challan_number: ChallanNumber, token: dict, session: AsyncSession
+        self, challan_number: ChallanNumber, session: AsyncSession
     ) -> io.BytesIO:
         """
         Generates a PDF for the given challan number.
@@ -214,8 +198,23 @@ class ChallanService:
         can = canvas.Canvas(packet, pagesize=A4)
         width, height = A4
 
+        # PDF layout constants (integrated)
+        font = "Helvetica"
+        font_bold = "Helvetica-Bold"
+        font_size = 13
+        font_size_bold = 10
+        line_spacing = 10
+        min_row_height = 30
+        row_padding = 1
+        columns = [
+            {"x": 28, "width": 22},  # Sl No
+            {"x": 60, "width": 360},  # Spare
+            {"x": 440, "width": 40},  # Quantity
+            {"x": 490, "width": 80},  # Unit
+        ]
+
         # Header fields
-        can.setFont(CHALLAN_FONT_BOLD, CHALLAN_FONT_SIZE_BOLD)
+        can.setFont(font_bold, font_size_bold)
         can.drawString(178, 696, challan_number)
         can.drawString(368, 696, challan_date)
         can.drawString(240, 658, name)
@@ -228,8 +227,8 @@ class ChallanService:
         can.drawString(500, 570, invoice_date)
         can.drawString(170, 551, remark)
 
-        can.setFont(CHALLAN_FONT_BOLD, CHALLAN_FONT_SIZE)
-        can.drawString(450, 250, str(total))
+        can.setFont(font_bold, font_size)
+        can.drawString(450, 251, str(total))
 
         # Table rows
         start_y = 507
@@ -242,31 +241,27 @@ class ChallanService:
                 str(row["unit"]) if row["unit"] is not None else "",
             ]
             row_lines = [
-                split_text_to_lines(
-                    text, CHALLAN_FONT, CHALLAN_FONT_SIZE, col["width"], stringWidth
-                )
-                for col, text in zip(CHALLAN_COLUMNS, row_data)
+                split_text_to_lines(text, font, font_size, col["width"], stringWidth)
+                for col, text in zip(columns, row_data)
             ]
             max_lines = max(len(lines) for lines in row_lines)
-            row_height = max(max_lines * CHALLAN_LINE_SPACING, CHALLAN_MIN_ROW_HEIGHT)
+            row_height = max(max_lines * line_spacing, min_row_height)
 
             if y - row_height < 100:
                 can.showPage()
-                can.setFont(CHALLAN_FONT, CHALLAN_FONT_SIZE)
+                can.setFont(font, font_size)
                 y = height - 50
 
-            for col, lines in zip(CHALLAN_COLUMNS, row_lines):
-                total_text_height = len(lines) * CHALLAN_LINE_SPACING
+            for col, lines in zip(columns, row_lines):
+                total_text_height = len(lines) * line_spacing
                 vertical_offset = (row_height - total_text_height) / 2
                 for i, ln in enumerate(lines):
                     safe_ln = ln or ""
-                    text_width = stringWidth(
-                        safe_ln or "", CHALLAN_FONT, CHALLAN_FONT_SIZE
-                    )
+                    text_width = stringWidth(safe_ln or "", font, font_size)
                     center_x = col["x"] + col["width"] / 2 - text_width / 2
-                    y_position = y - vertical_offset - (i * CHALLAN_LINE_SPACING)
+                    y_position = y - vertical_offset - (i * line_spacing)
                     can.drawString(center_x, y_position, safe_ln)
-            y -= row_height + CHALLAN_ROW_PADDING
+            y -= row_height + row_padding
 
         can.save()
         packet.seek(0)

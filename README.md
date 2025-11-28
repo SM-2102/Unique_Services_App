@@ -5,15 +5,7 @@
 
 ## To Do List
 
-- Filter - put it more up
-- Create User - password eye
-- Menu Dasboard refresh
-- Store in memory - menu
-- Market - filter - include invoice number
-- Market - backend - fetching of invoice number
-- Menu Dasboard - add enquiry/ admin
-- Disable admin buttons for user
-- Retail add column - Settles Y or N
+
   
 ---
 
@@ -45,7 +37,7 @@
 ### Market Module
 - [x] **MarketCreatePage** - Create Market record
 - [x] **MarketUpdatePage** - Update Market record
-- [ ] **MarketEnquiryPage** - Market Enquiry
+- [x] **MarketEnquiryPage** - Market Enquiry
 
 ### Retail Module
 - [ ] **RetailCreatePage** - Create Retail record
@@ -81,7 +73,7 @@
 - [x] **/master/list_names** 
 - [x] **/master/by_code** 
 - [x] **/master/by_name**
-- [x] **/master/update/{code}**
+- [x] **/master/update{code}**
 - [x] **/master/fetch_address**
 
 ### Challan Module
@@ -95,13 +87,23 @@
 - [x] **/market/pending**
 - [x] **/market/create**
 - [x] **/market/by_code** 
-- [x] **/market/update/{code}**
-- [ ] **/market/enquiry/{params}**
-- [ ] **/market/list_delivered_by**
-- [ ] **/market/list_invoice_number**
+- [x] **/market/update{code}**
+- [x] **/market/enquiry{params}**
+- [x] **/market/list_delivered_by**
+- [x] **/market/list_invoice_number**
 
 ### Retail Module
-- [ ] **/retail/next_code** - X(5)
+- [ ] **/retail/next_code**
+- [ ] **/retail/create**
+- [ ] **/retail/list_of_not_received**
+- [ ] **/retail/update_received**
+- [ ] **/retail/list_of_unsettled**
+- [ ] **/retail/update_unsettled**
+- [ ] **/retail/list_of_final_settlement**
+- [ ] **/retail/update_final_settlement**
+- [ ] **/retail/show_receipt_names**
+- [ ] **/retail/enquiry{params}**
+
 
 ---
 
@@ -115,14 +117,13 @@
 - [x] **User**
 - [x] **Master**
 - [ ] **Retail**
-- [ ] **Market**
+- [x] **Market**
 - [x] **Challan**
 - [ ] **Warranty**
 - [ ] **Out of Warranty**
 - [ ] **Final Deployment**
 
 ---
-
 
 
 

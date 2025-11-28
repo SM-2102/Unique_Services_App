@@ -53,7 +53,7 @@ class MasterService:
         return False
 
     async def list_master_names(self, session: AsyncSession):
-        statement = select(Master.name)
+        statement = select(Master.name).order_by(Master.name)
         result = await session.execute(statement)
         names = result.scalars().all()
         return names

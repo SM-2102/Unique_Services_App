@@ -39,7 +39,6 @@ class MarketService:
                         market_data_dict[date_field]
                     )
             market_data_dict.pop("name", None)
-            print(market_data_dict)
             new_market = Market(**market_data_dict)
             session.add(new_market)
             try:
@@ -123,21 +122,19 @@ class MarketService:
         to_delivery_date: Optional[date] = None,
         delivered_by: Optional[str] = None,
         invoice_date: Optional[date] = None,
+        invoice_number: Optional[str] = None,
     ) -> List[MarketEnquiry]:
         # Check if master name exists
         statement = select(Market, Master.name).join(Master, Master.code == Market.code)
-
         # Apply filters dynamically
         if final_status:
             statement = statement.where(Market.final_status == final_status)
 
         if name:
-            if not await master_service.check_master_name_available(name, session):
-                raise MasterNotFound()
             statement = statement.where(Master.name.ilike(f"%{name}%"))
 
         if division:
-            statement = statement.where(Market.division.ilike(f"%{division}%"))
+            statement = statement.where(Market.division == division)
 
         if from_delivery_date:
             statement = statement.where(Market.delivery_date >= from_delivery_date)
@@ -149,6 +146,11 @@ class MarketService:
 
         if invoice_date:
             statement = statement.where(Market.invoice_date == invoice_date)
+
+        if invoice_number:
+            statement = statement.where(
+                Market.invoice_number.ilike(f"%{invoice_number}%")
+            )
 
         statement = statement.order_by(Market.mcode)
 
@@ -179,3 +181,13 @@ class MarketService:
         result = await session.execute(statement)
         names = result.scalars().all()
         return names
+
+    async def list_invoice_number(self, session: AsyncSession):
+        statement = (
+            select(Market.invoice_number)
+            .distinct()
+            .where(Market.invoice_number.isnot(None))
+        )
+        result = await session.execute(statement)
+        numbers = result.scalars().all()
+        return numbers
