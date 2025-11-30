@@ -110,6 +110,7 @@ const RetailSettleAdminPage = () => {
       elevation={5}
       sx={{
         p: 3,
+        margin: 2,
         borderRadius: 4,
         background: "#f8fafc",
         maxWidth: "100%",
@@ -229,9 +230,17 @@ const RetailSettleAdminPage = () => {
             <TableBody>
               {data.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={columns.length + 1} align="center">
-                    No records found.
-                  </TableCell>
+                  <TableCell
+                                      colSpan={columns.length +1}
+                                      style={{
+                                        textAlign: "center",
+                                        color: "#888",
+                                        fontStyle: "italic",
+                                        padding: "24px 0",
+                                      }}
+                                    >
+                                      No record found
+                                    </TableCell>
                 </TableRow>
               ) : (
                 data.map((row, idx) => (

@@ -6,12 +6,12 @@ import { menuConfig } from "../config/menuConfig";
 // Define desired submenu order for each menu key
 const submenuOrder = {
   warranty: [
-    "Enquiry",
     "Create SRF",
     "Update SRF",
-    "Create CNF Challan",
     "Print SRF",
+    "Create CNF Challan",
     "Print CNF Challan",
+    "Enquiry",
   ],
   out_of_warranty: [
     "Enquiry",

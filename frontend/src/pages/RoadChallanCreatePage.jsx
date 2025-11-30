@@ -234,7 +234,7 @@ const RoadChallanCreatePage = () => {
           <div className="flex items-center gap-3 justify-center">
             <label
               htmlFor="challan_number"
-              className="text-md font-medium text-gray-700"
+              className="text-md font-medium text-blue-800"
             >
               Challan Number
             </label>
@@ -253,7 +253,7 @@ const RoadChallanCreatePage = () => {
           <div className="flex items-center gap-3 mb-2 justify-center">
             <label
               htmlFor="challan_date"
-              className="text-md font-medium text-gray-700"
+              className="text-md font-medium text-gray-700 w-29"
             >
               Challan Date<span className="text-red-500">*</span>
             </label>
@@ -263,11 +263,11 @@ const RoadChallanCreatePage = () => {
               type="date"
               value={form.challan_date}
               onChange={handleChange}
-              className="w-40 text-center px-2 py-1 rounded-lg border border-gray-300 text-gray-900 font-small"
+              className="w-35 text-center px-2 py-1 rounded-lg border border-gray-300 text-gray-900 font-small"
               required
               disabled={submitting}
               min={maxChallanDate}
-              max={new Date().toISOString().split("T")[0]}
+            max={new Date().toLocaleDateString('en-CA')}
             />
           </div>
           {/* Name (label beside input, autocomplete, search) */}
@@ -277,7 +277,7 @@ const RoadChallanCreatePage = () => {
           >
             <label
               htmlFor="name"
-              className="w-21 text-md font-medium text-gray-700"
+              className="w-33 text-md font-medium text-gray-700"
             >
               Name<span className="text-red-500">*</span>
             </label>
@@ -355,7 +355,7 @@ const RoadChallanCreatePage = () => {
           <div className="flex items-center gap-2 w-full">
             <label
               htmlFor="address"
-              className="w-25 text-md font-medium text-gray-700"
+              className="w-42.5 text-md font-medium text-gray-700"
             >
               Address<span className="text-red-500"></span>
             </label>
@@ -504,7 +504,7 @@ const RoadChallanCreatePage = () => {
                 onChange={handleChange}
                 className="w-full px-3 py-1 rounded-lg border border-gray-300 bg-gray-50 text-gray-900"
                 disabled={submitting}
-                max={new Date().toISOString().split("T")[0]}
+              max={new Date().toLocaleDateString('en-CA')}
               />
             </div>
           </div>
@@ -543,7 +543,7 @@ const RoadChallanCreatePage = () => {
                 onChange={handleChange}
                 className="w-full px-3 py-1 rounded-lg border border-gray-300 bg-gray-50 text-gray-900"
                 disabled={submitting}
-                max={new Date().toISOString().split("T")[0]}
+              max={new Date().toLocaleDateString('en-CA')}
               />
             </div>
           </div>
@@ -551,7 +551,7 @@ const RoadChallanCreatePage = () => {
           <div className="flex items-center gap-2 w-full">
             <label
               htmlFor="remark"
-              className="w-25 text-md font-medium text-gray-700"
+              className="w-42.5 text-md font-medium text-gray-700"
             >
               Remark<span className="text-red-500">*</span>
             </label>

@@ -15,7 +15,7 @@ const PendingBar = ({ pendingData = [], onSelect }) => {
       {/* Sliding Panel (keeps out of header/footer via top/bottom offsets) */}
       <div
         className={`fixed right-0 w-70 max-w-[90vw] z-[1200] transition-transform duration-300
-          ${open ? "translate-x-0" : "translate-x-full"} bg-black/10 backdrop-blur-xl shadow-2xl
+          ${open ? "translate-x-0" : "translate-x-full"} bg-black/10 backdrop-blur-sm shadow-2xl
            top-[88px] bottom-[0px] rounded-l-md overflow-hidden flex flex-col animate-fade-in`}
       >
         {/* List (no separate header/footer inside - uses surrounding layout offsets) */}

@@ -9,7 +9,7 @@ const initialForm = {
   rcode: "",
   name: "",
   division: "",
-  rdate: new Date().toISOString().split("T")[0],
+  rdate: new Date().toLocaleDateString('en-CA'),
   details: "",
   amount: "",
   received: "N",
@@ -181,7 +181,7 @@ const RetailCreatePage = () => {
           <div className="flex items-center gap-3 justify-center">
             <label
               htmlFor="rcode"
-              className="text-md font-medium text-gray-700"
+              className="text-md font-medium text-blue-800"
             >
               Receipt Number
             </label>
@@ -315,8 +315,8 @@ const RetailCreatePage = () => {
                 onChange={handleChange}
                 className={`w-full px-3 py-1 rounded-lg border ${errs_label.rdate ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
                 disabled={submitting}
-                max={new Date().toISOString().split("T")[0]}
-                min={new Date().toISOString().split("T")[0]}
+              max={new Date().toLocaleDateString('en-CA')}
+              min={new Date().toLocaleDateString('en-CA')}
               />
             </div>
           </div>

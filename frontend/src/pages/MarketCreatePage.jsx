@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Toast from "../components/Toast";
 import { fetchMasterNames } from "../services/masterNamesService";
 import { fetchNextMarketNumber } from "../services/marketNextCodeService";
-import { validateMarketCreate } from "../utils/marketCreateValidate";
+import { validateMarketCreate } from "../utils/marketCreateValidation";
 import { createMarket } from "../services/marketCreateService";
 
 const initialForm = {
@@ -178,7 +178,7 @@ const MarketCreatePage = () => {
           <div className="flex items-center gap-3 justify-center">
             <label
               htmlFor="receipt_number"
-              className="text-md font-medium text-gray-700"
+              className="text-md font-medium text-blue-800"
             >
               Receipt Number
             </label>
@@ -312,7 +312,7 @@ const MarketCreatePage = () => {
                 onChange={handleChange}
                 className={`w-full px-3 py-1 rounded-lg border ${errs_label.receive_date ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
                 disabled={submitting}
-                max={new Date().toISOString().split("T")[0]}
+              max={new Date().toLocaleDateString('en-CA')}
               />
             </div>
           </div>
@@ -353,7 +353,7 @@ const MarketCreatePage = () => {
                 onChange={handleChange}
                 className={`w-full px-3 py-1 rounded-lg border ${errs_label.invoice_date ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
                 disabled={submitting}
-                max={new Date().toISOString().split("T")[0]}
+              max={new Date().toLocaleDateString('en-CA')}
               />
             </div>
           </div>
@@ -392,7 +392,7 @@ const MarketCreatePage = () => {
                 onChange={handleChange}
                 className={`w-full px-3 py-1 rounded-lg border ${errs_label.challan_date ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
                 disabled={submitting}
-                max={new Date().toISOString().split("T")[0]}
+              max={new Date().toLocaleDateString('en-CA')}
               />
             </div>
           </div>

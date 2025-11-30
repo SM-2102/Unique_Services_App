@@ -362,11 +362,21 @@ const RetailPrintPage = () => {
                           }}
                         />
                       </td>
-                      <td style={{ padding: "0.5rem", fontWeight: 500, textAlign: "center", }}>
+                      <td
+                        style={{
+                          padding: "0.5rem",
+                          fontWeight: 500,
+                          textAlign: "center",
+                        }}
+                      >
                         {row.rcode}
                       </td>
-                      <td style={{ padding: "0.5rem", textAlign: "center" }}>{row.rdate}</td>
-                      <td style={{ padding: "0.5rem", textAlign: "center" }}>{row.details}</td>
+                      <td style={{ padding: "0.5rem", textAlign: "center" }}>
+                        {row.rdate}
+                      </td>
+                      <td style={{ padding: "0.5rem", textAlign: "center" }}>
+                        {row.details}
+                      </td>
                       <td
                         style={{
                           padding: "0.5rem",

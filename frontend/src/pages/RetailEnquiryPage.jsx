@@ -46,6 +46,7 @@ const Filter = ({
   setToRetailDate,
   onSearch,
   masterNames,
+  onClear
 }) => {
   const [nameSuggestions, setNameSuggestions] = useState([]);
   const [showNameSuggestions, setShowNameSuggestions] = useState(false);
@@ -191,7 +192,7 @@ const Filter = ({
                   width: "100%",
                 }}
               >
-                <option value="">All</option>
+                <option value=""></option>
                 {divisionOptions.map((opt) => (
                   <option key={opt} value={opt}>
                     {opt}
@@ -296,7 +297,7 @@ const Filter = ({
                   width: "100%",
                 }}
               >
-                <option value="">All</option>
+                <option value=""></option>
                 <option value="Y">Received</option>
                 <option value="N">Not Received</option>
               </select>
@@ -332,29 +333,30 @@ const Filter = ({
                   width: "100%",
                 }}
               >
-                <option value="">All</option>
+                <option value=""></option>
                 <option value="Y">Yes</option>
                 <option value="N">No</option>
               </select>
             </div>
           </div>
-          {/* Centered Search Button */}
+          {/* Centered Search & Clear Buttons */}
           <div
             style={{
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
               marginTop: 16,
+              gap: 16,
             }}
           >
             <button
               onClick={onSearch}
               style={{
-                padding: "8px 32px",
+                padding: "8px 16px",
                 background: "linear-gradient(90deg, #1976d2 60%, #1565c0 100%)",
                 color: "#fff",
                 border: "none",
-                borderRadius: 20,
+                borderRadius: 10,
                 fontWeight: "bold",
                 fontSize: 15,
                 boxShadow: "0 2px 8px rgba(25,118,210,0.08)",
@@ -364,6 +366,25 @@ const Filter = ({
               }}
             >
               Search
+            </button>
+            <button
+              onClick={onClear}
+              style={{
+                padding: "8px 16px",
+                background: "linear-gradient(90deg, #1976d2 60%, #1565c0 100%)",
+                color: "#fff",
+                border: "none",
+                borderRadius: 10,
+                fontWeight: "bold",
+                fontSize: 15,
+                boxShadow: "0 2px 8px rgba(25,118,210,0.08)",
+                cursor: "pointer",
+                letterSpacing: 1,
+                marginLeft: 8,
+                transition: "background 0.2s, box-shadow 0.2s",
+              }}
+            >
+              Clear
             </button>
           </div>
         </div>
@@ -403,6 +424,17 @@ const RetailEnquiryPage = () => {
   const [searched, setSearched] = useState(false);
   const [masterNames, setMasterNames] = useState([]);
 
+  const handleClear = () => {
+          setFinalStatus("");
+          setName("");
+          setDivision("");
+          setFromRetailDate("");
+          setToRetailDate("");
+          setReceived("");
+          setSearched(false);
+          setData([]);
+          setError(null);
+        };
   // Fetch master names for autocomplete on mount
   useEffect(() => {
     let mounted = true;
@@ -464,6 +496,8 @@ const RetailEnquiryPage = () => {
         setToRetailDate={setToRetailDate}
         onSearch={handleSearch}
         masterNames={masterNames}
+                onClear={handleClear}
+
       />
       {/* Results or placeholder */}
       {error ? (
@@ -490,7 +524,7 @@ const RetailEnquiryPage = () => {
                       padding: "24px 0",
                     }}
                   >
-                    No record found
+                    No records found
                   </td>
                 </tr>
               ) : null

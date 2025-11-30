@@ -30,7 +30,7 @@ export const menuConfig = [
       { label: "Print SRF", path: "/PrintWarrantySRF" },
       { label: "Print CNF Challan", path: "/PrintWarrantyCNFChallan" },
       { label: "Update SRF", path: "/UpdateWarrantySRF" },
-      { label: "Enquiry", path: "/WarrantyEnquiry", showInDashboard: false},
+      { label: "Enquiry", path: "/WarrantyEnquiry", showInDashboard: false },
     ],
   },
   {
@@ -47,7 +47,7 @@ export const menuConfig = [
       { label: "Print Vendor Challan", path: "/oow-print_vendor_challan" },
       { label: "Print Estimate", path: "/oow-print_estimate" },
       { label: "Settle Vendor", path: "/oow-settle_vendor" },
-      { label: "Enquiry", path: "/oow-enquiry" , showInDashboard: false},
+      { label: "Enquiry", path: "/oow-enquiry", showInDashboard: false },
     ],
   },
   {
@@ -58,7 +58,11 @@ export const menuConfig = [
     actions: [
       { label: "Add Record", path: "/CreateMarketRecord" },
       { label: "Update Record", path: "/UpdateMarketRecord" },
-      { label: "Enquiry", path: "/MarketRecordEnquiry", showInDashboard: false},
+      {
+        label: "Enquiry",
+        path: "/MarketRecordEnquiry",
+        showInDashboard: false,
+      },
     ],
   },
   {
@@ -82,7 +86,11 @@ export const menuConfig = [
       { label: "Update Record", path: "/UpdateRetailRecord" },
       { label: "Settle Record - Admin", path: "/FinalSettlementRetailRecord" },
       { label: "Print Receipt", path: "/PrintRetailReceipt" },
-      { label: "Enquiry", path: "/RetailRecordEnquiry" , showInDashboard: false},
+      {
+        label: "Enquiry",
+        path: "/RetailRecordEnquiry",
+        showInDashboard: false,
+      },
     ],
   },
 ];

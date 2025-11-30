@@ -155,7 +155,7 @@ const MasterCreatePage = () => {
         <div className="flex flex-col gap-4">
           {/* Code (readonly, small, label beside input) */}
           <div className="flex items-center gap-3 justify-center">
-            <label htmlFor="code" className="text-md font-medium text-gray-700">
+            <label htmlFor="code" className="text-md font-medium text-blue-800">
               Master Code
             </label>
             <input

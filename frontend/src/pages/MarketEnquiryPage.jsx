@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 // Inline Filter component with filter fields
 import { Container } from "@mui/material";
-import { marketEnquiry as fetchMarketEnquiry } from "../services/marketEnquiryService";
+import { marketEnquiry } from "../services/marketEnquiryService";
 import { fetchMasterNames } from "../services/masterNamesService";
 import { fetchMarketDeliveredBy } from "../services/marketDeliveredByService";
 import { fetchMarketInvoiceNumber } from "../services/marketInvoiceNumberService";
@@ -53,6 +53,7 @@ const Filter = ({
   onSearch,
   masterNames,
   deliveredByOptions,
+  onClear,
 }) => {
   const [nameSuggestions, setNameSuggestions] = useState([]);
   const [showNameSuggestions, setShowNameSuggestions] = useState(false);
@@ -263,7 +264,7 @@ const Filter = ({
                   width: "100%",
                 }}
               >
-                <option value="">All</option>
+                <option value=""></option>
                 {divisionOptions.map((opt) => (
                   <option key={opt} value={opt}>
                     {opt}
@@ -429,12 +430,12 @@ const Filter = ({
                   color: "#1976d2",
                   letterSpacing: 0.5,
                   fontSize: 13,
-                  width: 80,
+                  width: 95,
                 }}
               >
                 Invoice No.
               </label>
-              <div style={{ position: "relative", width: "120px" }}>
+              <div style={{ position: "relative"}}>
                 <input
                   type="text"
                   id="invoiceNo"
@@ -514,7 +515,7 @@ const Filter = ({
                   color: "#1976d2",
                   letterSpacing: 0.5,
                   fontSize: 13,
-                  width: 110,
+                  width: 150,
                 }}
               >
                 Invoice Date
@@ -568,29 +569,30 @@ const Filter = ({
                   width: "100%",
                 }}
               >
-                <option value="">All</option>
+                <option value=""></option>
                 <option value="Y">Completed</option>
                 <option value="N">Pending</option>
               </select>
             </div>
           </div>
-          {/* Centered Search Button */}
+           {/* Centered Search & Clear Buttons */}
           <div
             style={{
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
               marginTop: 16,
+              gap: 16,
             }}
           >
             <button
               onClick={onSearch}
               style={{
-                padding: "8px 32px",
+                padding: "8px 16px",
                 background: "linear-gradient(90deg, #1976d2 60%, #1565c0 100%)",
                 color: "#fff",
                 border: "none",
-                borderRadius: 20,
+                borderRadius: 10,
                 fontWeight: "bold",
                 fontSize: 15,
                 boxShadow: "0 2px 8px rgba(25,118,210,0.08)",
@@ -600,6 +602,25 @@ const Filter = ({
               }}
             >
               Search
+            </button>
+            <button
+              onClick={onClear}
+              style={{
+                padding: "8px 16px",
+                background: "linear-gradient(90deg, #1976d2 60%, #1565c0 100%)",
+                color: "#fff",
+                border: "none",
+                borderRadius: 10,
+                fontWeight: "bold",
+                fontSize: 15,
+                boxShadow: "0 2px 8px rgba(25,118,210,0.08)",
+                cursor: "pointer",
+                letterSpacing: 1,
+                marginLeft: 8,
+                transition: "background 0.2s, box-shadow 0.2s",
+              }}
+            >
+              Clear
             </button>
           </div>
         </div>
@@ -639,7 +660,19 @@ const MarketEnquiryPage = () => {
   const [searched, setSearched] = useState(false);
   const [masterNames, setMasterNames] = useState([]);
   const [deliveredByOptions, setDeliveredByOptions] = useState([]);
-
+  const handleClear = () => {
+          setFinalStatus("");
+          setName("");
+          setDivision("");
+          setFromDeliveryDate("");
+          setToDeliveryDate("");
+          setDeliveredBy("");
+          setInvoiceDate("");
+          setInvoiceNo("");
+          setSearched(false);
+          setData([]);
+          setError(null);
+        };
   // Fetch master names for autocomplete on mount
   useEffect(() => {
     let mounted = true;
@@ -677,7 +710,7 @@ const MarketEnquiryPage = () => {
     setSearched(true);
     setFilterOpen(false);
     try {
-      // Update fetchMarketEnquiry to accept params
+      // Update marketEnquiry to accept params
       const params = {};
       if (finalStatus) params.final_status = finalStatus;
       if (name) params.name = name;
@@ -687,7 +720,7 @@ const MarketEnquiryPage = () => {
       if (deliveredBy) params.delivered_by = deliveredBy;
       if (invoiceDate) params.invoice_date = invoiceDate;
       if (invoiceNo) params.invoice_number = invoiceNo;
-      const res = await fetchMarketEnquiry(params);
+      const res = await marketEnquiry(params);
       setData(res);
     } catch (err) {
       setError(err.message || "Failed to fetch data");
@@ -721,6 +754,8 @@ const MarketEnquiryPage = () => {
         onSearch={handleSearch}
         masterNames={masterNames}
         deliveredByOptions={deliveredByOptions}
+                onClear={handleClear}
+
       />
       {/* Results or placeholder */}
       {error ? (
