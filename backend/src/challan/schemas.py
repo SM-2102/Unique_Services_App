@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field
 
 class CreateChallan(BaseModel):
     name: str = Field(..., min_length=3, max_length=40)
-    challan_date: str
+    challan_date: date
     desc1: str = Field(..., max_length=30)
     qty1: int = Field(..., ge=1)
     unit1: str = Field(..., max_length=8)
@@ -33,9 +33,9 @@ class CreateChallan(BaseModel):
     qty8: Optional[int] = Field(None, ge=1)
     unit8: Optional[str] = Field(None, max_length=8)
     order_number: Optional[str] = Field(None, max_length=15)
-    order_date: Optional[str] = None
+    order_date: Optional[date] = None
     invoice_number: Optional[str] = Field(None, max_length=15)
-    invoice_date: Optional[str] = None
+    invoice_date: Optional[date] = None
     remark: str = Field(..., min_length=1, max_length=50)
 
 

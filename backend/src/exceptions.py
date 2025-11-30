@@ -70,6 +70,14 @@ class MarketNotFound(BaseException):
     """Market Not Found"""
 
 
+class ServiceCenterNotFound(BaseException):
+    """Service Center Not Found"""
+
+
+class WarrantyNotFound(BaseException):
+    """Warranty Not Found"""
+
+
 def create_exception_handler(
     status_code: int, initial_detail: Any
 ) -> Callable[[Request, Exception], JSONResponse]:
@@ -244,6 +252,30 @@ def register_exceptions(app: FastAPI):
                 "message": "Market Not Found",
                 "resolution": "Please check the market code",
                 "error_code": "market_not_found",
+            },
+        ),
+    )
+
+    app.add_exception_handler(
+        ServiceCenterNotFound,
+        create_exception_handler(
+            status_code=status.HTTP_404_NOT_FOUND,
+            initial_detail={
+                "message": "Service Center Not Found",
+                "resolution": "Please select OTHERS option",
+                "error_code": "service_center_not_found",
+            },
+        ),
+    )
+
+    app.add_exception_handler(
+        WarrantyNotFound,
+        create_exception_handler(
+            status_code=status.HTTP_404_NOT_FOUND,
+            initial_detail={
+                "message": "Warranty Not Found",
+                "resolution": "Please check the SRF number",
+                "error_code": "warranty_not_found",
             },
         ),
     )

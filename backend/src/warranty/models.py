@@ -16,9 +16,7 @@ class Warranty(SQLModel, table=True):
     )
     srf_date: date = Field(sa_column=Column(pg.DATE, nullable=False))
     head: str = Field(sa_column=Column(pg.VARCHAR(15), nullable=False))
-    # REPLACE or REPAIR
     division: str = Field(sa_column=Column(pg.VARCHAR(15), nullable=False))
-    # FANS, PUMP, LIGHT, SDA, IWH, SWH, COOLER, OTHERS
     model: str = Field(sa_column=Column(pg.VARCHAR(30), nullable=False))
     serial_number: str = Field(sa_column=Column(pg.VARCHAR(20), nullable=False))
     problem: str = Field(sa_column=Column(pg.VARCHAR(30), nullable=False))
@@ -27,11 +25,10 @@ class Warranty(SQLModel, table=True):
     sticker_number: str = Field(sa_column=Column(pg.VARCHAR(15), nullable=True))
     asc_name: str = Field(
         sa_column=Column(
-            pg.VARCHAR(30), ForeignKey("service_centre.asc_name"), nullable=True
+            pg.VARCHAR(30), nullable=True
         )
     )
     challan_number: str = Field(sa_column=Column(pg.VARCHAR(6), nullable=True))
-    # U00001, U00002
     challan_date: date = Field(sa_column=Column(pg.DATE, nullable=True))
     challan: str = Field(sa_column=Column(pg.CHAR(1), nullable=False, default="N"))
     courier: str = Field(sa_column=Column(pg.VARCHAR(15), nullable=True))

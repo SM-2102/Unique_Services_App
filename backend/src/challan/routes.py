@@ -73,7 +73,7 @@ Print challan details by code.
 async def print_challan(
     data: ChallanNumber,
     session: AsyncSession = Depends(get_session),
-    token=Depends(access_token_bearer),
+    _=Depends(access_token_bearer),
 ):
     challan_pdf = await challan_service.print_challan(data.challan_number, session)
     return StreamingResponse(

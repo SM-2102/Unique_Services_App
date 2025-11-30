@@ -11,366 +11,621 @@ from sqlalchemy import case, func, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
-from exceptions import MasterNotFound
-from master.models import Master
+from service_center.service import ServiceCenterService
 from master.service import MasterService
 from warranty.models import Warranty
+from master.models import Master
+from warranty.schemas import (
+    WarrantyCreate,
+    WarrantyEnquiry,
+    WarrantyPending,
+    WarrantyUpdateResponse,
+    WarrantySrfNumber,
+    WarrantyUpdate,
+    WarrantyCNFChallanDetails,
+    WarrantyCNFCreate,
+)
+from exceptions import IncorrectCodeFormat, WarrantyNotFound
 
 from utils.date_utils import format_date_ddmmyyyy, parse_date
 from utils.file_utils import safe_join, split_text_to_lines
 
 master_service = MasterService()
+service_center_service = ServiceCenterService()
 
 class WarrantyService:
 
-    # async def create_warranty(
-    #     self, session: AsyncSession, warranty: WarrantyCreate, token: dict
-    # ):
-    #     for _ in range(3):  # Retry up to 3 times in case of IntegrityError
-    #         master = await master_service.get_master_by_name(warranty.name, session)
-    #         warranty_data_dict = warranty.model_dump()
-    #         warranty_data_dict["rcode"] = await self.warranty_next_code(session)
-    #         warranty_data_dict["created_by"] = token["user"]["username"]
-    #         warranty_data_dict["code"] = master.code
-    #         # Convert date fields to date objects
-    #         for date_field in ["rdate"]:
-    #             if date_field in warranty_data_dict:
-    #                 warranty_data_dict[date_field] = parse_date(
-    #                     warranty_data_dict[date_field]
-    #                 )
-    #         warranty_data_dict.pop("name", None)
-    #         new_warranty = Warranty(**warranty_data_dict)
-    #         session.add(new_warranty)
-    #         try:
-    #             await session.commit()
-    #             return new_warranty
-    #         except IntegrityError as e:
-    #             await session.rollback()
+    async def get_next_base_number(self, session: AsyncSession) -> int:
+        statement = select(Warranty.srf_number)
+        result = await session.execute(statement)
+        srf_numbers = [row[0] for row in result.fetchall() if row[0] and row[0].startswith("R") and "/" in row[0]]
+        base_numbers = []
+        for srf in srf_numbers:
+            base, _ = srf.split("/")
+            try:
+                base_num = int(base[1:])
+                base_numbers.append(base_num)
+            except ValueError:
+                continue
+        if base_numbers:
+            return max(base_numbers) + 1
+        else:
+            return 1
+
+
+    async def create_warranty(
+        self, session: AsyncSession, warranty: WarrantyCreate, token: dict
+    ):
+        parts = warranty.srf_number.split("/")
+        if len(parts) != 2 or not parts[1].isdigit():
+            raise IncorrectCodeFormat()
+        sub_number = int(parts[1])
+        if sub_number < 1 or sub_number > 8:
+            raise IncorrectCodeFormat()
+
+        # If frontend requests a new base, generate next base number
+        base_part = parts[0]
+        if base_part == "NEW":
+            for _ in range(3):  # Retry up to 3 times
+                next_base = await self.get_next_base_number(session)
+                srf_number = f"R{str(next_base).zfill(5)}/1"
+                warranty_data_dict = warranty.model_dump()
+                warranty_data_dict["srf_number"] = srf_number
+                master = await master_service.get_master_by_name(warranty.name, session)
+                if warranty.head == "REPLACE":
+                    await service_center_service.check_service_center_name_available(
+                        warranty.asc_name, session
+                    )
+                warranty_data_dict["created_by"] = token["user"]["username"]
+                warranty_data_dict["code"] = master.code
+                for date_field in ["srf_date"]:
+                    if date_field in warranty_data_dict:
+                        warranty_data_dict[date_field] = parse_date(
+                            warranty_data_dict[date_field]
+                        )
+                warranty_data_dict.pop("name", None)
+                new_warranty = Warranty(**warranty_data_dict)
+                session.add(new_warranty)
+                try:
+                    await session.commit()
+                    return new_warranty
+                except IntegrityError:
+                    await session.rollback()
+        else:
+            # Use the base provided by frontend, just validate sub-number
+            warranty_data_dict = warranty.model_dump()
+            master = await master_service.get_master_by_name(warranty.name, session)
+            if warranty.head == "REPLACE":
+                await service_center_service.check_service_center_name_available(
+                    warranty.asc_name, session
+                )
+            warranty_data_dict["created_by"] = token["user"]["username"]
+            warranty_data_dict["code"] = master.code
+            for date_field in ["srf_date"]:
+                if date_field in warranty_data_dict:
+                    warranty_data_dict[date_field] = parse_date(
+                        warranty_data_dict[date_field]
+                    )
+            warranty_data_dict.pop("name", None)
+            new_warranty = Warranty(**warranty_data_dict)
+            session.add(new_warranty)
+            await session.commit()
+            return new_warranty
+
 
     async def warranty_next_code(self, session: AsyncSession):
-        statement = select(Warranty.srf_number).order_by(Warranty.srf_number.desc()).limit(1)
+        next_base_number = await self.get_next_base_number(session)
+        next_srf_number = "R" + str(next_base_number).zfill(5)
+        return next_srf_number
+
+
+    async def list_warranty_pending(self, session: AsyncSession):
+        statement = (
+            select(Warranty, Master)
+            .join(Master, Warranty.code == Master.code)
+            .where(Warranty.settlement == "N")
+            .order_by(Warranty.srf_number)
+        )
+        result = await session.execute(statement)
+        rows = result.all()
+        return [
+            WarrantyPending(
+                srf_number=row.Warranty.srf_number,
+                name=row.Master.name,
+            )
+            for row in rows
+        ]
+
+    async def get_warranty_by_srf_number(self, srf_number: str, session: AsyncSession):
+        if len(srf_number) != 8:
+            srf_number = "R" + srf_number.zfill(7)
+        if not srf_number.startswith("R"):
+            raise IncorrectCodeFormat()
+        statement = (
+            select(Warranty, Master.name)
+            .join(Master, Warranty.code == Master.code)
+            .where(Warranty.srf_number == srf_number)
+        )
+        result = await session.execute(statement)
+        row = result.first()
+        if row:
+            return WarrantyUpdateResponse(
+                srf_number=row.Warranty.srf_number,
+                name=row.name,
+                srf_date=format_date_ddmmyyyy(row.Warranty.srf_date),
+                model=row.Warranty.model,
+                head=row.Warranty.head,
+                receive_date=row.Warranty.receive_date,
+                repair_date=row.Warranty.repair_date,
+                delivery_date=row.Warranty.delivery_date,
+                challan_number=row.Warranty.challan_number,
+                challan_date=format_date_ddmmyyyy(row.Warranty.challan_date) if row.Warranty.challan_date else None ,
+                division=row.Warranty.division,
+                invoice_number=row.Warranty.invoice_number,
+                invoice_date=row.Warranty.invoice_date,
+                delivered_by=row.Warranty.delivered_by,
+                status=row.Warranty.status,
+                settlement=row.Warranty.settlement,
+                courier=row.Warranty.courier,
+                complaint_number=row.Warranty.complaint_number
+            )
+        else:
+            raise WarrantyNotFound()
+        
+
+    async def update_warranty(
+        self, srf_number: str, warranty: WarrantyUpdate, session: AsyncSession, token: dict
+    ):
+        statement = select(Warranty).where(Warranty.srf_number == srf_number)
+        result = await session.execute(statement)
+        existing_warranty = result.scalars().first()
+        if not existing_warranty:
+            raise WarrantyNotFound()
+        for var, value in vars(warranty).items():
+            if value is not None:
+                setattr(existing_warranty, var, value)
+        existing_warranty.updated_by = token["user"]["username"]
+        session.add(existing_warranty)
+        await session.commit()
+        await session.refresh(existing_warranty)
+        return existing_warranty
+    
+    async def list_delivered_by(self, session: AsyncSession):
+        statement = (
+            select(Warranty.delivered_by).distinct().where(Warranty.delivered_by.isnot(None))
+        )
+        result = await session.execute(statement)
+        names = result.scalars().all()
+        return names
+    
+    async def last_srf_number(self, session: AsyncSession):
+        statement = (
+            select(Warranty.srf_number)
+            .order_by(Warranty.srf_number.desc())
+            .limit(1)
+        )
         result = await session.execute(statement)
         last_srf_number = result.scalar()
-        last_number = last_srf_number[1:] if last_srf_number else "0"
-        next_srf_number = int(last_number) + 1
-        next_srf_number = "X" + str(next_srf_number).zfill(5)
-        return next_srf_number
-    # cursor.execute("SELECT MAX(srf_number) FROM warranty;")
-#         last_code = cursor.fetchone()[0]
+        last_srf_number = last_srf_number.split("/")[0] if last_srf_number else None
+        return last_srf_number
+    
+    async def print_srf(
+        self, srf_number: WarrantySrfNumber, token: dict, session: AsyncSession
+    ) -> io.BytesIO:
+        """
+        Generates a PDF for the given SRF number.
+        """
+        # Query warranty and master data
+        statement = (
+            select(Warranty, Master)
+            .join(Master, Warranty.code == Master.code)
+            .where(Warranty.srf_number.like(f"{srf_number}/%"))
+        )
+        result = await session.execute(statement)
+        rows = result.fetchall()
 
-#         if last_code:
-#             base, _, _ = last_code.partition("/")
-#             next_base_num = int(base[1:]) + 1
-#         else:
-#             next_base_num = 1
+        if not rows:
+            raise WarrantyNotFound()
 
-#         next_code = f"R{str(next_base_num).zfill(5)}/1"
+        # Extract fields for overlay
+        srf_row = rows[0]
+        warranty = srf_row.Warranty
+        master = srf_row.Master
 
-    # async def list_warranty_not_received(self, session: AsyncSession):
-    #     statement = (
-    #         select(Warranty, Master)
-    #         .join(Master, Warranty.code == Master.code)
-    #         .where(Warranty.received == "N")
-    #         .order_by(Warranty.rcode)
-    #     )
-    #     result = await session.execute(statement)
-    #     rows = result.all()
-    #     return [
-    #         WarrantyNotReceivedResponse(
-    #             rcode=row.Warranty.rcode,
-    #             name=row.Master.name,
-    #             contact=row.Master.contact1,
-    #             details=row.Warranty.details,
-    #             amount=row.Warranty.amount,
-    #             received=row.Warranty.received,
-    #         )
-    #         for row in rows
-    #     ]
+        srf_no = warranty.srf_number[:6]
+        srf_date = warranty.srf_date.strftime("%d-%m-%Y") if warranty.srf_date else ""
+        code = warranty.code
+        master_code = master.code
+        master_details = await master_service.get_master_details(master_code, session)
+        name = master_details["name"]
+        address = master_details["full_address"]
+        contact1 = master_details["contact1"]
+        gst = master_details["gst"] or ""
+        received_by = token["user"]["username"]
 
-    # async def update_received(
-    #     self,
-    #     list_warranty: List[UpdateWarrantyReceived],
-    #     session: AsyncSession,
-    #     token: dict,
-    # ):
-    #     for warranty in list_warranty:
-    #         statement = select(Warranty).where(Warranty.rcode == warranty.rcode)
-    #         result = await session.execute(statement)
-    #         existing_warranty = result.scalar_one_or_none()
-    #         if existing_warranty:
-    #             existing_warranty.received = warranty.received
-    #             existing_warranty.updated_by = token["user"]["username"]
-    #     await session.commit()
+        # Prepare table rows for overlay
+        table_rows = []
+        for row in rows:
+            w = row.Warranty
+            table_rows.append([
+                w.division or '',
+                w.model or '',
+                str(w.serial_number or ''),
+                w.complaint_number or '',
+                w.sticker_number or ''
+            ])
 
-    # async def list_warranty_unsettled(self, session: AsyncSession):
-    #     statement = (
-    #         select(Warranty, Master)
-    #         .join(Master, Warranty.code == Master.code)
-    #         .where(Warranty.settlement_date == None)
-    #         .order_by(Warranty.rcode)
-    #     )
-    #     result = await session.execute(statement)
-    #     rows = result.all()
-    #     return [
-    #         WarrantyUnsettledResponse(
-    #             rcode=row.Warranty.rcode,
-    #             name=row.Master.name,
-    #             details=row.Warranty.details,
-    #             amount=row.Warranty.amount,
-    #             received=row.Warranty.received,
-    #         )
-    #         for row in rows
-    #     ]
+        def generate_overlay(rows, srf_no, srf_date, code, name, address, contact1, gst, received_by):
+            packet = io.BytesIO()
+            can = canvas.Canvas(packet, pagesize=A4)
+            width, height = A4
 
-    # async def update_unsettled(
-    #     self, list_warranty: List[UpdateWarrantyUnsettled], session: AsyncSession
-    # ):
-    #     for warranty in list_warranty:
-    #         statement = select(Warranty).where(Warranty.rcode == warranty.rcode)
-    #         result = await session.execute(statement)
-    #         existing_warranty = result.scalar_one_or_none()
-    #         if existing_warranty:
-    #             existing_warranty.received = warranty.received
-    #             existing_warranty.settlement_date = warranty.settlement_date
-    #     await session.commit()
+            can.setFont("Helvetica-Bold", 10)
+            can.drawString(140, 690, srf_no)
+            can.drawString(485, 690, srf_date)
+            can.drawString(375, 690, code)
+            can.drawString(220, 651, name)
+            can.drawString(220, 626, address)
+            can.drawString(220, 601, contact1)
+            can.drawString(475, 601, gst)
+            can.drawString(375, 187, received_by)
 
-    # async def list_warranty_final_settlement(self, session: AsyncSession):
-    #     statement = (
-    #         select(Warranty, Master)
-    #         .join(Master, Warranty.code == Master.code)
-    #         .where((Warranty.settlement_date != None) & (Warranty.final_status == "N"))
-    #         .order_by(Warranty.rcode)
-    #     )
-    #     result = await session.execute(statement)
-    #     rows = result.all()
-    #     return [
-    #         WarrantyFinalSettlementResponse(
-    #             rcode=row.Warranty.rcode,
-    #             name=row.Master.name,
-    #             rdate=format_date_ddmmyyyy(row.Warranty.rdate),
-    #             details=row.Warranty.details,
-    #             amount=row.Warranty.amount,
-    #         )
-    #         for row in rows
-    #     ]
+            start_y = 541
+            y = start_y
+            line_spacing = 10
+            min_row_height = 20
+            row_padding = 6
+            columns = [
+                {"x": 40, "width": 20},
+                {"x": 70, "width": 50},
+                {"x": 135, "width": 124},
+                {"x": 263, "width": 97},
+                {"x": 365, "width": 105},
+                {"x": 472, "width": 98},
+            ]
 
-    # async def update_final_settlement(
-    #     self, list_warranty: List[UpdateWarrantyFinalSettlement], session: AsyncSession
-    # ):
-    #     for warranty in list_warranty:
-    #         statement = select(Warranty).where(Warranty.rcode == warranty.rcode)
-    #         result = await session.execute(statement)
-    #         existing_warranty = result.scalar_one_or_none()
-    #         if existing_warranty:
-    #             existing_warranty.amount = warranty.amount
-    #             existing_warranty.final_status = warranty.final_status
-    #     await session.commit()
+            can.setFont("Helvetica", 9)
 
-    # async def get_warranty_enquiry(
-    #     self,
-    #     session: AsyncSession,
-    #     name: Optional[str] = None,
-    #     division: Optional[str] = None,
-    #     from_rdate: Optional[date] = None,
-    #     to_rdate: Optional[date] = None,
-    #     received: Optional[str] = None,
-    #     final_status: Optional[str] = None,
-    # ) -> List[WarrantyEnquiry]:
-    #     # Check if master name exists
-    #     statement = select(Warranty, Master.name).join(Master, Master.code == Warranty.code)
+            for idx, row in enumerate(rows, 1):
+                row_data = [str(idx)] + row
+                row_lines = []
+                for col, text in zip(columns, row_data):
+                    words = text.split()
+                    lines = []
+                    line = ""
+                    for word in words:
+                        test_line = line + (" " if line else "") + word
+                        if stringWidth(test_line, "Helvetica", 9) <= col["width"]:
+                            line = test_line
+                        else:
+                            lines.append(line)
+                            line = word
+                    if line:
+                        lines.append(line)
+                    row_lines.append(lines)
 
-    #     # Apply filters dynamically
-    #     if final_status:
-    #         statement = statement.where(Warranty.final_status == final_status)
+                max_lines = max(len(lines) for lines in row_lines)
+                row_height = max(max_lines * line_spacing, min_row_height)
 
-    #     if name:
-    #         statement = statement.where(Master.name.ilike(f"%{name}%"))
+                if y - row_height < 100:
+                    can.showPage()
+                    can.setFont("Helvetica", 9)
+                    y = height - 50
 
-    #     if division:
-    #         statement = statement.where(Warranty.division == division)
+                for col, lines in zip(columns, row_lines):
+                    total_text_height = len(lines) * line_spacing
+                    vertical_offset = (row_height - total_text_height) / 2
 
-    #     if from_rdate:
-    #         statement = statement.where(Warranty.rdate >= from_rdate)
-    #     if to_rdate:
-    #         statement = statement.where(Warranty.rdate <= to_rdate)
+                    for i, ln in enumerate(lines):
+                        text_width = stringWidth(ln, "Helvetica", 9)
+                        center_x = col["x"] + col["width"] / 2 - text_width / 2
+                        y_position = y - vertical_offset - (i * line_spacing)
+                        can.drawString(center_x, y_position, ln)
 
-    #     if received:
-    #         statement = statement.where(Warranty.received == received)
+                y -= row_height + row_padding
 
-    #     statement = statement.order_by(Warranty.rcode)
+            can.save()
+            packet.seek(0)
+            return PdfReader(packet)
 
-    #     result = await session.execute(statement)
-    #     rows = result.all()
-    #     return [
-    #         WarrantyEnquiry(
-    #             rcode=row.Warranty.rcode,
-    #             name=row.name,
-    #             rdate=format_date_ddmmyyyy(row.Warranty.rdate),
-    #             division=row.Warranty.division,
-    #             details=row.Warranty.details,
-    #             amount=row.Warranty.amount,
-    #             received=row.Warranty.received,
-    #             final_status=row.Warranty.final_status,
-    #         )
-    #         for row in rows
-    #     ]
+        # Create overlays
+        overlay_customer = generate_overlay(table_rows, srf_no, srf_date, code, name, address, contact1, gst, received_by)
+        overlay_asc = generate_overlay(table_rows, srf_no, srf_date, code, name, address, contact1, gst, received_by)
 
-    # async def get_warranty_print_details(
-    #     self,
-    #     session: AsyncSession,
-    #     name: str,
-    # ) -> List[WarrantyPrintResponse]:
-    #     master_exists = await master_service.check_master_name_available(name, session)
-    #     if not master_exists:
-    #         raise MasterNotFound()
-    #     one_month_ago = date.today() - timedelta(days=30)
-    #     statement = (
-    #         select(Warranty)
-    #         .join(Master, Master.code == Warranty.code)
-    #         .where(
-    #             (Master.name == name)
-    #             & (Warranty.final_status != "Y")
-    #         )
-    #         .order_by(Warranty.rcode)
-    #     )
+        # Path to the static PDF template (use absolute path for portability, with path injection protection)
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        static_dir = os.path.normpath(os.path.join(base_dir, "..", "static"))
+        template_path = safe_join(static_dir, "warranty_receipt.pdf")
 
-    #     result = await session.execute(statement)
-    #     rows = result.scalars().all()
-    #     return [
-    #         WarrantyPrintResponse(
-    #             rcode=row.rcode,
-    #             rdate=format_date_ddmmyyyy(row.rdate),
-    #             details=row.details,
-    #             amount=row.amount,
-    #         )
-    #         for row in rows
-    #     ]
+        # Read the template PDF
+        try:
+            with open(template_path, "rb") as f:
+                template_bytes = f.read()
+        except FileNotFoundError:
+            raise FileNotFoundError(f"Template PDF not found at {template_path}")
+        template_buffer = io.BytesIO(template_bytes)
+        template_pdf = PdfReader(template_buffer)
 
-    # async def print_warranty(
-    #     self, codes: WarrantyRcode, session: AsyncSession
-    # ) -> io.BytesIO:
-    #     """
-    #     Generates a PDF warranty estimate for the given warranty codes.
-    #     """
-    #     # Query warranty and master info for all codes
-    #     statement = (
-    #         select(Warranty, Master)
-    #         .join(Master, Warranty.code == Master.code)
-    #         .where(Warranty.rcode.in_(codes.rcode))
-    #         .order_by(Warranty.rcode)
-    #     )
-    #     result = await session.execute(statement)
-    #     rows = result.all()
+        # Merge overlays
+        writer = PdfWriter()
+        page1 = template_pdf.pages[0]
+        page1.merge_page(overlay_customer.pages[0])
+        writer.add_page(page1)
 
-    #     # Extract header info from first row
-    #     first_row = rows[0]
-    #     master = first_row.Master
-    #     code = master.code
-    #     master_details = await master_service.get_master_details(code, session)
-    #     name = master_details["name"]
-    #     address = master_details["full_address"]
-    #     contact = master_details["contact1"]
+        if len(template_pdf.pages) > 1:
+            page2 = template_pdf.pages[1]
+            page2.merge_page(overlay_asc.pages[0])
+            writer.add_page(page2)
 
-    #     # Prepare warranty rows for table
-    #     warranty_rows = []
-    #     grand_total = 0.0
-    #     for row in rows:
-    #         warranty = row.Warranty
-    #         rcode = warranty.rcode or ""
-    #         division = warranty.division or ""
-    #         details = warranty.details or ""
-    #         amount = float(warranty.amount) if warranty.amount else 0.0
-    #         rdate = format_date_ddmmyyyy(warranty.rdate) if warranty.rdate else ""
-    #         warranty_rows.append([rcode, rdate, division, details, f"{amount:.2f}"])
-    #         grand_total += amount
-    #     grand_total_str = f"{grand_total:.2f}"
+        output_stream = io.BytesIO()
+        writer.write(output_stream)
+        output_stream.seek(0)
+        return output_stream
+    
 
-    #     def generate_overlay(rows, name, address, contact, code, grand_total):
-    #         packet = io.BytesIO()
-    #         can = canvas.Canvas(packet, pagesize=A4)
-    #         width, height = A4
-    #         # Header
-    #         can.setFont("Helvetica-Bold", 10)
-    #         can.drawString(262, 675, name)
-    #         can.drawString(262, 640, address)
-    #         can.drawString(405, 608, contact)
-    #         can.drawString(190, 608, code)
+    async def next_cnf_challan_code(self, session: AsyncSession):
+        statement = (
+            select(Warranty.challan_number)
+            .where(Warranty.challan_number.isnot(None))
+            .order_by(Warranty.challan_number.desc())
+            .limit(1)
+        )
+        result = await session.execute(statement)
+        last_challan_number = result.scalar()
+        last_number = last_challan_number[1:] if last_challan_number else "0"
+        next_challan_number = int(last_number) + 1
+        next_challan_number = "U" + str(next_challan_number).zfill(5)
+        return next_challan_number
+    
+    async def last_cnf_challan_code(self, session: AsyncSession):
+        statement = (
+            select(Warranty.challan_number)
+            .where(Warranty.challan_number.isnot(None))
+            .order_by(Warranty.challan_number.desc())
+            .limit(1)
+        )
+        result = await session.execute(statement)
+        last_challan_number = result.scalar()
+        return last_challan_number or None
+    
+    async def list_cnf_challan_details(self, session: AsyncSession, division: str):
+        statement = (
+            select(Warranty, Master)
+            .join(Master, Warranty.code == Master.code)
+            .where((Warranty.division == division) & (Warranty.head == "REPLACE") & (Warranty.challan == 'N'))
+            .order_by(Warranty.srf_number)
+        )
+        result = await session.execute(statement)
+        rows = result.all()
+        return [
+            WarrantyCNFChallanDetails(
+                srf_number=row.Warranty.srf_number,
+                name=row.Master.name,
+                model=row.Warranty.model,
+                serial_number=str(row.Warranty.serial_number),
+                challan=row.Warranty.challan
+            )
+            for row in rows
+        ]
 
-    #         text = str(grand_total)
-    #         column_width = 55
-    #         x_start = 500
-    #         text_width = stringWidth(text, "Helvetica-Bold", 10)
-    #         x_position = x_start + (column_width - text_width) / 2
-    #         can.drawString(x_position, 397, text)
+    async def create_cnf_challan(
+        self,
+        list_cnf_challan: List[WarrantyCNFCreate],
+        session: AsyncSession,
+    ):
+        for record in list_cnf_challan:
+            statement = select(Warranty).where(Warranty.srf_number == record.srf_number)
+            result = await session.execute(statement)
+            existing_warranty = result.scalar_one_or_none()
+            if existing_warranty:
+                existing_warranty.challan = record.challan
+                existing_warranty.challan_number = record.challan_number
+                existing_warranty.challan_date = record.challan_date
+                session.add(existing_warranty)
+        await session.commit()
 
-    #         # Table
-    #         y = 562
-    #         line_spacing = 8
-    #         min_row_height = 20
-    #         row_padding = 0.2
-    #         columns = [
-    #             {"x": 50, "width": 60},  # Warranty Code
-    #             {"x": 120, "width": 55},  # Warranty Date
-    #             {"x": 180, "width": 70},  # Division
-    #             {"x": 260, "width": 235},  # Details
-    #             {"x": 500, "width": 55},  # Total Amount
-    #         ]
-    #         can.setFont("Helvetica", 9)
-    #         for idx, row in enumerate(rows, 1):
-    #             row_data = row
-    #             row_lines = []
-    #             for col, text in zip(columns, row_data):
-    #                 words = text.split()
-    #                 lines = []
-    #                 line = ""
-    #                 for word in words:
-    #                     test_line = line + (" " if line else "") + word
-    #                     if stringWidth(test_line, "Helvetica", 9) <= col["width"]:
-    #                         line = test_line
-    #                     else:
-    #                         lines.append(line)
-    #                         line = word
-    #                 if line:
-    #                     lines.append(line)
-    #                 row_lines.append(lines)
-    #             max_lines = max(len(lines) for lines in row_lines)
-    #             row_height = max(max_lines * line_spacing, min_row_height)
-    #             for col, lines in zip(columns, row_lines):
-    #                 total_text_height = len(lines) * line_spacing
-    #                 vertical_offset = (row_height - total_text_height) / 2
-    #                 for i, ln in enumerate(lines):
-    #                     text_width = stringWidth(ln, "Helvetica", 9)
-    #                     center_x = col["x"] + col["width"] / 2 - text_width / 2
-    #                     y_position = y - vertical_offset - (i * line_spacing)
-    #                     can.drawString(center_x, y_position, ln)
-    #             y -= row_height + row_padding
-    #         can.save()
-    #         packet.seek(0)
-    #         return PdfReader(packet)
+    
 
-    #     # Path to the static PDF template (use absolute path for portability, with path injection protection)
-    #     base_dir = os.path.dirname(os.path.abspath(__file__))
-    #     static_dir = os.path.normpath(os.path.join(base_dir, "..", "static"))
-    #     template_path = safe_join(static_dir, "warranty.pdf")
-    #     try:
-    #         with open(template_path, "rb") as f:
-    #             template_bytes = f.read()
-    #     except FileNotFoundError:
-    #         raise FileNotFoundError(f"Template PDF not found at {template_path}")
-    #     template_buffer = io.BytesIO(template_bytes)
-    #     base_pdf = PdfReader(template_buffer)
+    async def print_cnf_challan(
+        self, challan_number: str, token: dict, session: AsyncSession
+    ) -> io.BytesIO:
+        
+        # Query warranty and master data
+        statement = (
+            select(Warranty, Master)
+            .join(Master, Warranty.code == Master.code)
+            .where(Warranty.challan_number == challan_number)
+        )
+        result = await session.execute(statement)
+        rows = result.fetchall()
 
-    #     overlay = generate_overlay(
-    #         warranty_rows, name, address, contact, code, grand_total_str
-    #     )
-    #     output = PdfWriter()
-    #     # Apply overlay on each base page
-    #     for i in range(len(base_pdf.pages)):
-    #         page = base_pdf.pages[i]
-    #         overlay_page = overlay.pages[min(i, len(overlay.pages) - 1)]
-    #         page.merge_page(overlay_page)
-    #         output.add_page(page)
-    #     result = io.BytesIO()
-    #     output.write(result)
-    #     result.seek(0)
-    #     return result
+        if not rows:
+            raise WarrantyNotFound()
+
+        # Common values
+        challan_date = rows[0].Warranty.challan_date.strftime("%d-%m-%Y") if rows[0].Warranty.challan_date else ""
+        division = rows[0].Warranty.division
+
+        def generate_overlay(rows, division, challan_no, challan_date, name_field='name', number_field='sticker_number'):
+            packet = io.BytesIO()
+            can = canvas.Canvas(packet, pagesize=A4)
+            width, height = A4
+
+            can.setFont("Helvetica-Bold", 10)
+            can.drawString(180, 725, challan_no)
+            can.drawString(440, 725, challan_date)
+            can.drawString(100, 635, division)
+
+            start_y = 560
+            y = start_y
+            line_spacing = 10
+            min_row_height = 30
+            row_padding = 1
+            columns = [
+                {"x": 30, "width": 20},    # Sl No
+                {"x": 55, "width": 100},   # Model
+                {"x": 165, "width": 85},   # Serial No
+                {"x": 260, "width": 80},   # Complaint No
+                {"x": 357, "width": 63},   # Sticker No or SRF No
+                {"x": 430, "width": 130},  # Name or ASC
+            ]
+
+            can.setFont("Helvetica", 9)
+
+            for idx, row in enumerate(rows, 1):
+                w = row.Warranty
+                m = row.Master
+                model = w.model or ''
+                slno = str(w.serial_number or '')
+                complaint_no = w.complaint_number or ''
+                number = getattr(w, number_field, '') or ''
+                name = getattr(m, name_field, '') or ''
+
+                row_data = [str(idx), model, slno, complaint_no, number, name]
+
+                row_lines = []
+                for col, text in zip(columns, row_data):
+                    words = str(text).split()
+                    lines = []
+                    line = ""
+                    for word in words:
+                        test_line = line + (" " if line else "") + word
+                        if stringWidth(test_line, "Helvetica", 9) <= col["width"]:
+                            line = test_line
+                        else:
+                            lines.append(line)
+                            line = word
+                    if line:
+                        lines.append(line)
+                    row_lines.append(lines)
+
+                max_lines = max(len(lines) for lines in row_lines)
+                row_height = max(max_lines * line_spacing, min_row_height)
+
+                if y - row_height < 100:
+                    can.showPage()
+                    can.setFont("Helvetica", 9)
+                    y = height - 50
+
+                for col, lines in zip(columns, row_lines):
+                    total_text_height = len(lines) * line_spacing
+                    vertical_offset = (row_height - total_text_height) / 2
+
+                    for i, ln in enumerate(lines):
+                        text_width = stringWidth(ln, "Helvetica", 9)
+                        center_x = col["x"] + col["width"] / 2 - text_width / 2
+                        y_position = y - vertical_offset - (i * line_spacing)
+                        can.drawString(center_x, y_position, ln)
+
+                y -= row_height + row_padding
+
+            can.save()
+            packet.seek(0)
+            return PdfReader(packet)
+
+        # Create overlays
+        overlay_customer = generate_overlay(rows, division, challan_number, challan_date, 'name', 'srf_number')
+        overlay_asc = generate_overlay(rows, division, challan_number, challan_date, 'asc_name', 'sticker_number')
+
+        # Path to the static PDF template (use absolute path for portability, with path injection protection)
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        static_dir = os.path.normpath(os.path.join(base_dir, "..", "static"))
+        template_path = safe_join(static_dir, "cnf_challan.pdf")
+
+
+        # Read the template PDF
+        try:
+            with open(template_path, "rb") as f:
+                template_bytes = f.read()
+        except FileNotFoundError:
+            raise FileNotFoundError(f"Template PDF not found at {template_path}")
+        template_buffer = io.BytesIO(template_bytes)
+        template_pdf = PdfReader(template_buffer)
+
+        # Merge overlays
+        writer = PdfWriter()
+        page1 = template_pdf.pages[0]
+        page1.merge_page(overlay_customer.pages[0])
+        writer.add_page(page1)
+
+        if len(template_pdf.pages) > 1:
+            page2 = template_pdf.pages[1]
+            page2.merge_page(overlay_asc.pages[0])
+            writer.add_page(page2)
+
+        output_stream = io.BytesIO()
+        writer.write(output_stream)
+        output_stream.seek(0)
+        return output_stream
+    
+
+    async def enquiry_warranty(self, session: AsyncSession,
+            final_status: Optional[str] = None,
+            name: Optional[str] = None,
+            division: Optional[str] = None,
+            from_srf_date: Optional[date] = None,
+            to_srf_date: Optional[date] = None,
+            delivered_by: Optional[str] = None,
+            delivered: Optional[str] = None,
+            cnf_status: Optional[str] = None,
+            repaired: Optional[str] = None,
+            head: Optional[str] = None,
+            ):
+        
+
+        statement = select(Warranty, Master).join(Master, Warranty.code == Master.code)
+
+        if final_status:
+            statement = statement.where(Warranty.settlement == final_status)
+
+        if name:
+            statement = statement.where(Master.name.ilike(f"%{name}%"))
+        
+        if division:
+            statement = statement.where(Warranty.division == division)
+        
+        if from_srf_date:
+            statement = statement.where(Warranty.srf_date >= from_srf_date)
+
+        if to_srf_date:
+            statement = statement.where(Warranty.srf_date <= to_srf_date)
+        if delivered_by:
+            statement = statement.where(Warranty.delivered_by.ilike(f"%{delivered_by}%"))
+        if delivered:
+            if delivered == "Y":
+                statement = statement.where(Warranty.delivery_date.isnot(None))
+            else:
+                statement = statement.where(Warranty.delivery_date.is_(None))
+        if cnf_status:
+            if cnf_status == "Y":
+                statement = statement.where(Warranty.receive_date.isnot(None) & Warranty.head == "REPLACE")
+            else:
+                statement = statement.where(Warranty.receive_date.is_(None) & Warranty.head == "REPLACE")
+
+        if repaired:
+            if repaired == "Y":
+                statement = statement.where(Warranty.repair_date.isnot(None))
+            else:
+                statement = statement.where(Warranty.repair_date.is_(None))
+        if head:
+            statement = statement.where(Warranty.head == head)
+        statement = statement.order_by(Warranty.srf_number)
+
+        result = await session.execute(statement)
+        rows = result.all()
+       
+
+        return [
+            WarrantyEnquiry(
+                srf_number=row.Warranty.srf_number,
+                srf_date=format_date_ddmmyyyy(row.Warranty.srf_date),
+                name=row.Master.name,
+                model=row.Warranty.model,
+                receive_date=format_date_ddmmyyyy(row.Warranty.receive_date) if row.Warranty.receive_date else "",
+                repair_date=format_date_ddmmyyyy(row.Warranty.repair_date) if row.Warranty.repair_date else "",
+                delivery_date=format_date_ddmmyyyy(row.Warranty.delivery_date) if row.Warranty.delivery_date else "",
+                settlement=row.Warranty.settlement,
+                head=row.Warranty.head,
+            )
+            for row in rows
+        ]

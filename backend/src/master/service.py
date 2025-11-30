@@ -114,4 +114,5 @@ class MasterService:
             "name": master.name,
             "full_address": full_address,
             "contact1": master.contact1,
+            "gst": master.gst,
         }

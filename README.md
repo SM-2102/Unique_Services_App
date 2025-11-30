@@ -6,6 +6,7 @@
 ## To Do List
 
 
+
   
 ---
 
@@ -115,16 +116,23 @@
 - [x] **/retail/enquiry{params}**
 
 ### Warranty Module
-- [ ] **warranty/next_code**
-- [ ] **warranty/
-- [ ] **warranty/
-- [ ] **warranty/
-- [ ] **warranty/
-- [ ] **warranty/
-- [ ] **warranty/
-- [ ] **warranty/
-- [ ] **warranty/
-- [ ] **warranty/
+- [ ] **warranty/next_srf_number**
+- [ ] **warranty/create**
+- [ ] **warranty/list_pending**
+- [ ] **warranty/by_srf_number**
+- [ ] **warranty/update/{srf_number}**
+- [ ] **warranty/list_delivered_by**
+- [ ] **warranty/last_srf_number**
+- [ ] **warranty/srf_print**
+- [ ] **warranty/next_cnf_challan_code**
+- [ ] **warranty/last_cnf_challan_code**
+- [ ] **warranty/list_cnf_challan**
+- [ ] **warranty/create_cnf_challan**
+- [ ] **warranty/cnf_challan_print**
+- [ ] **warranty/enquiry{params}**
+
+### Service Center Module
+- [x] **/service_center/list_names**
 
 
 ---
