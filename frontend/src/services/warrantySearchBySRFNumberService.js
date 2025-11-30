@@ -18,7 +18,9 @@ async function searchWarrantyBySRFNumber(srf_number) {
   if (!response.ok) {
     throw {
       message:
-        data.message || data.detail || "Failed to search warranty by srf_number",
+        data.message ||
+        data.detail ||
+        "Failed to search warranty by srf_number",
       resolution: data.resolution || "",
     };
   }

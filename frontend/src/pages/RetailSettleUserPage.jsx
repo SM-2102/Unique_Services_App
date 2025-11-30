@@ -46,7 +46,7 @@ const RetailSettleUserPage = () => {
     setShowToast(false);
     setUpdating(true);
     // Prepare payload: only selected rows, with settlement_date as today
-    const today = new Date().toLocaleDateString('en-CA').slice(0, 10);
+    const today = new Date().toLocaleDateString("en-CA").slice(0, 10);
     const payload = data
       .filter((row, idx) => selectedRows.includes(idx))
       .map(({ rcode, received }) => ({
@@ -121,7 +121,7 @@ const RetailSettleUserPage = () => {
       elevation={5}
       sx={{
         p: 3,
-                margin: 2,
+        margin: 2,
 
         borderRadius: 4,
         background: "#f8fafc",
@@ -248,16 +248,16 @@ const RetailSettleUserPage = () => {
               {data.length === 0 ? (
                 <TableRow>
                   <TableCell
-                                      colSpan={columns.length +1}
-                                      style={{
-                                        textAlign: "center",
-                                        color: "#888",
-                                        fontStyle: "italic",
-                                        padding: "24px 0",
-                                      }}
-                                    >
-                                      No record found
-                                    </TableCell>
+                    colSpan={columns.length + 1}
+                    style={{
+                      textAlign: "center",
+                      color: "#888",
+                      fontStyle: "italic",
+                      padding: "24px 0",
+                    }}
+                  >
+                    No record found
+                  </TableCell>
                 </TableRow>
               ) : (
                 data.map((row, idx) => (

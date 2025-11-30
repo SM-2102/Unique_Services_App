@@ -267,7 +267,7 @@ const RoadChallanCreatePage = () => {
               required
               disabled={submitting}
               min={maxChallanDate}
-            max={new Date().toLocaleDateString('en-CA')}
+              max={new Date().toLocaleDateString("en-CA")}
             />
           </div>
           {/* Name (label beside input, autocomplete, search) */}
@@ -504,7 +504,7 @@ const RoadChallanCreatePage = () => {
                 onChange={handleChange}
                 className="w-full px-3 py-1 rounded-lg border border-gray-300 bg-gray-50 text-gray-900"
                 disabled={submitting}
-              max={new Date().toLocaleDateString('en-CA')}
+                max={new Date().toLocaleDateString("en-CA")}
               />
             </div>
           </div>
@@ -543,7 +543,7 @@ const RoadChallanCreatePage = () => {
                 onChange={handleChange}
                 className="w-full px-3 py-1 rounded-lg border border-gray-300 bg-gray-50 text-gray-900"
                 disabled={submitting}
-              max={new Date().toLocaleDateString('en-CA')}
+                max={new Date().toLocaleDateString("en-CA")}
               />
             </div>
           </div>

@@ -46,7 +46,7 @@ const Filter = ({
   setToRetailDate,
   onSearch,
   masterNames,
-  onClear
+  onClear,
 }) => {
   const [nameSuggestions, setNameSuggestions] = useState([]);
   const [showNameSuggestions, setShowNameSuggestions] = useState(false);
@@ -425,16 +425,16 @@ const RetailEnquiryPage = () => {
   const [masterNames, setMasterNames] = useState([]);
 
   const handleClear = () => {
-          setFinalStatus("");
-          setName("");
-          setDivision("");
-          setFromRetailDate("");
-          setToRetailDate("");
-          setReceived("");
-          setSearched(false);
-          setData([]);
-          setError(null);
-        };
+    setFinalStatus("");
+    setName("");
+    setDivision("");
+    setFromRetailDate("");
+    setToRetailDate("");
+    setReceived("");
+    setSearched(false);
+    setData([]);
+    setError(null);
+  };
   // Fetch master names for autocomplete on mount
   useEffect(() => {
     let mounted = true;
@@ -496,8 +496,7 @@ const RetailEnquiryPage = () => {
         setToRetailDate={setToRetailDate}
         onSearch={handleSearch}
         masterNames={masterNames}
-                onClear={handleClear}
-
+        onClear={handleClear}
       />
       {/* Results or placeholder */}
       {error ? (

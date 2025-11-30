@@ -83,7 +83,7 @@ const RetailUpdatePage = () => {
       elevation={5}
       sx={{
         p: 3,
-                margin: 2,
+        margin: 2,
 
         borderRadius: 4,
         background: "#f8fafc",

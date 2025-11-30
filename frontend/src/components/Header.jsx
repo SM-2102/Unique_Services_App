@@ -10,8 +10,8 @@ import GoBackIcon from "./GoBackIcon";
 
 const Header = () => {
   const location = useLocation();
-    const isLoginPage = location.pathname === "/";
-    const isMenuPage = location.pathname === "/MenuDashboard";
+  const isLoginPage = location.pathname === "/";
+  const isMenuPage = location.pathname === "/MenuDashboard";
   const [navOpen, setNavOpen] = React.useState(false);
 
   const navigate = useNavigate();
@@ -39,9 +39,7 @@ const Header = () => {
                 >
                   <FaBars className="text-2xl" />
                 </button>
-                {showGoBackIcon && (
-                  <GoBackIcon onClick={() => navigate(-1)} />
-                )}
+                {showGoBackIcon && <GoBackIcon onClick={() => navigate(-1)} />}
               </div>
             )}
           </div>

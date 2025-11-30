@@ -9,7 +9,7 @@ import { fetchASCNames } from "../services/serviceCenterASCNames";
 const initialForm = {
   srf_number: "",
   name: "",
-  srf_date: new Date().toLocaleDateString('en-CA'),
+  srf_date: new Date().toLocaleDateString("en-CA"),
   head: "",
   division: "",
   model: "",
@@ -60,7 +60,6 @@ const WarrantyCreatePage = () => {
   // Popup for add another item
   const [showAddAnother, setShowAddAnother] = useState(false);
 
-
   // For new SRF, always send 'NEW/1' and let backend assign base
   const setNewSrfNumber = () => {
     // Fetch next available SRF number from backend and show to user
@@ -68,12 +67,17 @@ const WarrantyCreatePage = () => {
     setSubNumber(1);
     setForm((prev) => ({ ...initialForm, srf_number: "" }));
     setCodeLoading(true);
-    fetchNextWarrantyCode().then((res) => {
-      if (res && res.next_srf_number) {
-        setBaseNumber(res.next_srf_number);
-        setForm((prev) => ({ ...prev, srf_number: `${res.next_srf_number}/1` }));
-      }
-    }).finally(() => setCodeLoading(false));
+    fetchNextWarrantyCode()
+      .then((res) => {
+        if (res && res.next_srf_number) {
+          setBaseNumber(res.next_srf_number);
+          setForm((prev) => ({
+            ...prev,
+            srf_number: `${res.next_srf_number}/1`,
+          }));
+        }
+      })
+      .finally(() => setCodeLoading(false));
   };
 
   useEffect(() => {
@@ -214,7 +218,11 @@ const WarrantyCreatePage = () => {
       // Continue with same base, increment subNumber
       const nextSub = subNumber + 1;
       setSubNumber(nextSub);
-      setForm((prev) => ({ ...initialForm, srf_number: `${baseNumber}/${nextSub}`, name: initialName }));
+      setForm((prev) => ({
+        ...initialForm,
+        srf_number: `${baseNumber}/${nextSub}`,
+        name: initialName,
+      }));
     } else {
       // For new SRF, always send 'NEW/1' and let backend assign base
       setNewSrfNumber();
@@ -260,7 +268,7 @@ const WarrantyCreatePage = () => {
               id="srf_number"
               name="srf_number"
               type="text"
-              value={form.srf_number || ((codeLoading || submitting) ? "" : "")}
+              value={form.srf_number || (codeLoading || submitting ? "" : "")}
               readOnly
               disabled={codeLoading || submitting}
               autoComplete="off"
@@ -284,8 +292,8 @@ const WarrantyCreatePage = () => {
               className="w-35 text-center px-2 py-1 rounded-lg border border-gray-300 text-gray-900 font-small justify-center focus:outline-none focus:ring-2 focus:ring-blue-400"
               required
               disabled={submitting}
-            max={new Date().toLocaleDateString('en-CA')}
-            min={new Date().toLocaleDateString('en-CA')}
+              max={new Date().toLocaleDateString("en-CA")}
+              min={new Date().toLocaleDateString("en-CA")}
             />
           </div>
           {/* Name (label beside input, autocomplete, search) */}
@@ -465,11 +473,11 @@ const WarrantyCreatePage = () => {
                 type="text"
                 value={form.sticker_number}
                 onChange={handleChange}
-                className={`w-full px-3 py-1 rounded-lg border border-gray-300 ${isRepair ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-gray-50 text-gray-900'} ${errs_label.sticker_number ? "border-red-300" : "border-gray-300"}`}
+                className={`w-full px-3 py-1 rounded-lg border border-gray-300 ${isRepair ? "bg-gray-200 text-gray-400 cursor-not-allowed" : "bg-gray-50 text-gray-900"} ${errs_label.sticker_number ? "border-red-300" : "border-gray-300"}`}
                 maxLength={15}
                 disabled={submitting || isRepair}
-                placeholder={isRepair ? 'Disabled for Repair' : ''}
-                title={isRepair ? 'Sticker Number is disabled for Repair' : ''}
+                placeholder={isRepair ? "Disabled for Repair" : ""}
+                title={isRepair ? "Sticker Number is disabled for Repair" : ""}
               />
             </div>
             <div className="flex items-center w-1/2 gap-2">
@@ -509,13 +517,13 @@ const WarrantyCreatePage = () => {
                 type="text"
                 value={form.asc_name}
                 onChange={handleChange}
-                className={`w-full px-3 py-1 rounded-lg border border-gray-300 ${isRepair ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-gray-50 text-gray-900'} ${errs_label.asc_name ? "border-red-300" : "border-gray-300"}`}
+                className={`w-full px-3 py-1 rounded-lg border border-gray-300 ${isRepair ? "bg-gray-200 text-gray-400 cursor-not-allowed" : "bg-gray-50 text-gray-900"} ${errs_label.asc_name ? "border-red-300" : "border-gray-300"}`}
                 maxLength={30}
                 disabled={submitting || isRepair}
                 autoComplete="off"
                 ref={ascInputRef}
-                placeholder={isRepair ? 'Disabled for Repair' : ''}
-                title={isRepair ? 'ASC Name is disabled for Repair' : ''}
+                placeholder={isRepair ? "Disabled for Repair" : ""}
+                title={isRepair ? "ASC Name is disabled for Repair" : ""}
                 onFocus={() => {
                   if (form.asc_name.length > 0 && ascSuggestions.length > 0)
                     setShowAscSuggestions(true);
@@ -597,9 +605,7 @@ const WarrantyCreatePage = () => {
               maxLength={40}
               disabled={submitting}
             />
-            </div>
-            
-          
+          </div>
         </div>
         <div className="flex justify-center mt-6">
           <button

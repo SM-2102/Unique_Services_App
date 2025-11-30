@@ -24,9 +24,9 @@ const columns = [
 ];
 
 const initialForm = {
-    challan_code: "",
-    challan_date: new Date().toLocaleDateString('en-CA'),
-    division: "",
+  challan_code: "",
+  challan_date: new Date().toLocaleDateString("en-CA"),
+  division: "",
 };
 
 const divisionOptions = [
@@ -50,50 +50,50 @@ const WarrantyCreateCNFPage = () => {
   const [form, setForm] = useState(initialForm);
   const [selectedDivision, setSelectedDivision] = useState("");
   const [searching, setSearching] = useState(false);
-    // Handler for Create Challan button
-    const handleCreateChallan = async () => {
-      setUpdating(true);
-      // Prepare payload: only rows with challan === "Y"
-      const payload = data
-        .filter(row => row.challan === "Y")
-        .map(row => ({
-          srf_number: row.srf_number,
-          challan_number: form.challan_code,
-          challan_date: form.challan_date,
-          challan: row.challan,
-        }));
-      if (payload.length === 0) {
-        setError({
-          message: "No records selected for challan creation.",
-          type: "warning",
-          resolution: "Please select at least one record.",
-        });
-        setShowToast(true);
-        setUpdating(false);
-        return;
-      }
-      try {
-        await createWarrantyCNFChallan(payload);
-        setError({
-          message: "Challan created successfully!",
-          type: "success",
-          resolution: "Challan Number: " + form.challan_code,
-        });
-        setShowToast(true);
-        setTimeout(() => {
-          window.location.reload();
-        }, 1500);
-      } catch (err) {
-        setError({
-          message: err.message || "Challan creation failed",
-          type: "error",
-          resolution: "Please try again later.",
-        });
-        setShowToast(true);
-      } finally {
-        setUpdating(false);
-      }
-    };
+  // Handler for Create Challan button
+  const handleCreateChallan = async () => {
+    setUpdating(true);
+    // Prepare payload: only rows with challan === "Y"
+    const payload = data
+      .filter((row) => row.challan === "Y")
+      .map((row) => ({
+        srf_number: row.srf_number,
+        challan_number: form.challan_code,
+        challan_date: form.challan_date,
+        challan: row.challan,
+      }));
+    if (payload.length === 0) {
+      setError({
+        message: "No records selected for challan creation.",
+        type: "warning",
+        resolution: "Please select at least one record.",
+      });
+      setShowToast(true);
+      setUpdating(false);
+      return;
+    }
+    try {
+      await createWarrantyCNFChallan(payload);
+      setError({
+        message: "Challan created successfully!",
+        type: "success",
+        resolution: "Challan Number: " + form.challan_code,
+      });
+      setShowToast(true);
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
+    } catch (err) {
+      setError({
+        message: err.message || "Challan creation failed",
+        type: "error",
+        resolution: "Please try again later.",
+      });
+      setShowToast(true);
+    } finally {
+      setUpdating(false);
+    }
+  };
   // Fetch next Challan Code on mount
   useEffect(() => {
     let mounted = true;
@@ -124,20 +124,21 @@ const WarrantyCreateCNFPage = () => {
 
   // Handler for Search button
   const handleSearch = async () => {
-    if (!selectedDivision)
-        {
-        setError({
-          message: "Division is required",
-          type: "warning",
-          resolution: "Please select a division before searching.",
-        });
-        setShowToast(true);
-        return;
-        }
+    if (!selectedDivision) {
+      setError({
+        message: "Division is required",
+        type: "warning",
+        resolution: "Please select a division before searching.",
+      });
+      setShowToast(true);
+      return;
+    }
     setSearching(true);
     setError("");
     try {
-      const result = await fetchWarrantyCNFChallanList({ division: selectedDivision });
+      const result = await fetchWarrantyCNFChallanList({
+        division: selectedDivision,
+      });
       setData(Array.isArray(result) ? result : []);
     } catch (err) {
       setError({
@@ -178,7 +179,6 @@ const WarrantyCreateCNFPage = () => {
       setUpdating(false);
     }
   };
-
 
   // Handler for editing challan
   const handleReceivedChange = (idx, value) => {
@@ -221,13 +221,13 @@ const WarrantyCreateCNFPage = () => {
         </h2>
 
         {/* Form Section - reference WarrantyCreatePage styling */}
-        <form
-          style={{ marginBottom: 24 }}
-          autoComplete="off"
-        >
+        <form style={{ marginBottom: 24 }} autoComplete="off">
           {/* Challan Code Row */}
           <div className="flex items-center gap-3 justify-center mb-3">
-            <label htmlFor="challan_code" className="text-md font-medium text-blue-800">
+            <label
+              htmlFor="challan_code"
+              className="text-md font-medium text-blue-800"
+            >
               Challan Code
             </label>
             <input
@@ -244,7 +244,10 @@ const WarrantyCreateCNFPage = () => {
           </div>
           {/* SRF Date and Division Row */}
           <div className="flex items-center justify-center mb-2 mt-3 gap-2">
-            <label htmlFor="division" className="text-md font-medium text-gray-700 w-25">
+            <label
+              htmlFor="division"
+              className="text-md font-medium text-gray-700 w-25"
+            >
               Division<span className="text-red-500">*</span>
             </label>
             <select
@@ -383,7 +386,12 @@ const WarrantyCreateCNFPage = () => {
             </Table>
           </TableContainer>
         </div>
-        <Box display="flex" justifyContent="space-between" alignItems="center" mt={2}>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          mt={2}
+        >
           <Typography
             variant="subtitle1"
             sx={{
@@ -400,13 +408,13 @@ const WarrantyCreateCNFPage = () => {
           >
             <span style={{ letterSpacing: 0.5 }}>Selected Records:</span>{" "}
             <span style={{ color: "#0d47a1", fontWeight: 600 }}>
-              {data.filter(row => row.challan === "Y").length}
+              {data.filter((row) => row.challan === "Y").length}
             </span>
           </Typography>
           <button
-              type="button"
-              onClick={handleCreateChallan}
-              disabled={updating || data.length === 0}
+            type="button"
+            onClick={handleCreateChallan}
+            disabled={updating || data.length === 0}
             style={{
               background: "#1976d2",
               color: "#fff",
@@ -422,7 +430,7 @@ const WarrantyCreateCNFPage = () => {
             }}
             aria-label="Creating Challan Record"
           >
-              {updating ? "Creating..." : "Create Challan"}
+            {updating ? "Creating..." : "Create Challan"}
           </button>
         </Box>
         {showToast && (

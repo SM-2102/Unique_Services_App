@@ -435,7 +435,7 @@ const Filter = ({
               >
                 Invoice No.
               </label>
-              <div style={{ position: "relative"}}>
+              <div style={{ position: "relative" }}>
                 <input
                   type="text"
                   id="invoiceNo"
@@ -575,7 +575,7 @@ const Filter = ({
               </select>
             </div>
           </div>
-           {/* Centered Search & Clear Buttons */}
+          {/* Centered Search & Clear Buttons */}
           <div
             style={{
               display: "flex",
@@ -661,18 +661,18 @@ const MarketEnquiryPage = () => {
   const [masterNames, setMasterNames] = useState([]);
   const [deliveredByOptions, setDeliveredByOptions] = useState([]);
   const handleClear = () => {
-          setFinalStatus("");
-          setName("");
-          setDivision("");
-          setFromDeliveryDate("");
-          setToDeliveryDate("");
-          setDeliveredBy("");
-          setInvoiceDate("");
-          setInvoiceNo("");
-          setSearched(false);
-          setData([]);
-          setError(null);
-        };
+    setFinalStatus("");
+    setName("");
+    setDivision("");
+    setFromDeliveryDate("");
+    setToDeliveryDate("");
+    setDeliveredBy("");
+    setInvoiceDate("");
+    setInvoiceNo("");
+    setSearched(false);
+    setData([]);
+    setError(null);
+  };
   // Fetch master names for autocomplete on mount
   useEffect(() => {
     let mounted = true;
@@ -754,8 +754,7 @@ const MarketEnquiryPage = () => {
         onSearch={handleSearch}
         masterNames={masterNames}
         deliveredByOptions={deliveredByOptions}
-                onClear={handleClear}
-
+        onClear={handleClear}
       />
       {/* Results or placeholder */}
       {error ? (

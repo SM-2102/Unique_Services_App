@@ -229,10 +229,7 @@ class RetailService:
         statement = (
             select(Retail)
             .join(Master, Master.code == Retail.code)
-            .where(
-                (Master.name == name)
-                & (Retail.final_status != "Y")
-            )
+            .where((Master.name == name) & (Retail.final_status != "Y"))
             .order_by(Retail.rcode)
         )
 

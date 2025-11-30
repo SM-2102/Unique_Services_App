@@ -2,11 +2,10 @@ from sqlalchemy import func, select, union_all
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
-from exceptions import (
-    ServiceCenterNotFound,
-)
+from exceptions import ServiceCenterNotFound
 
 from .models import Service_Centre
+
 
 class ServiceCenterService:
 
@@ -25,5 +24,3 @@ class ServiceCenterService:
         result = await session.execute(statement)
         names = result.scalars().all()
         return names
-
-   

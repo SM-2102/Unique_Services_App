@@ -18,7 +18,6 @@ const columns = [
   { key: "delivery_date", label: "Delivery Date" },
 ];
 
-
 const divisionOptions = [
   "FANS",
   "PUMP",
@@ -30,10 +29,7 @@ const divisionOptions = [
   "OTHERS",
 ];
 
-const headOptions = [
-  "REPLACE",
-  "REPAIR",
-];
+const headOptions = ["REPLACE", "REPAIR"];
 
 const Filter = ({
   open = false,
@@ -82,7 +78,6 @@ const Filter = ({
       setShowNameSuggestions(false);
     }
   }, [name, masterNames]);
-
 
   return (
     <>
@@ -319,7 +314,7 @@ const Filter = ({
               </select>
             </div>
           </div>
-        
+
           <div style={{ marginBottom: 10 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
               <label
@@ -356,7 +351,7 @@ const Filter = ({
               </select>
             </div>
           </div>
-                  <div style={{ marginBottom: 10 }}>
+          <div style={{ marginBottom: 10 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
               <label
                 htmlFor="cnfStatus"
@@ -428,8 +423,8 @@ const Filter = ({
               </select>
             </div>
           </div>
-  
-                    <div style={{ marginBottom: 10 }}>
+
+          <div style={{ marginBottom: 10 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
               <label
                 htmlFor="finalStatus"
@@ -465,7 +460,7 @@ const Filter = ({
               </select>
             </div>
           </div>
-          
+
           {/* Centered Search & Clear Buttons */}
           <div
             style={{
@@ -532,7 +527,6 @@ const Filter = ({
     </>
   );
 };
-   
 
 const WarrantyEnquiryPage = () => {
   // Filter states for master_enquiry params
@@ -542,10 +536,10 @@ const WarrantyEnquiryPage = () => {
   const getDefaultFromSRFDate = () => {
     const today = new Date();
     today.setMonth(today.getMonth() - 2);
-    return today.toLocaleDateString('en-CA');
+    return today.toLocaleDateString("en-CA");
   };
   const getDefaultToSRFDate = () => {
-    return new Date().toLocaleDateString('en-CA');
+    return new Date().toLocaleDateString("en-CA");
   };
   const [fromSRFDate, setFromSRFDate] = useState(getDefaultFromSRFDate());
   const [toSRFDate, setToSRFDate] = useState(getDefaultToSRFDate());
@@ -560,19 +554,19 @@ const WarrantyEnquiryPage = () => {
   const [searched, setSearched] = useState(false);
   const [masterNames, setMasterNames] = useState([]);
   const handleClear = () => {
-          setFinalStatus("");
-          setName("");
-          setDivision("");
-          setFromSRFDate(getDefaultFromSRFDate());
-          setToSRFDate(getDefaultToSRFDate());
-          setDeliveredBy("");
-          setCnfStatus("");
-          setRepaired("");
-          setHead("");
-          setSearched(false);
-          setData([]);
-          setError(null);
-        };
+    setFinalStatus("");
+    setName("");
+    setDivision("");
+    setFromSRFDate(getDefaultFromSRFDate());
+    setToSRFDate(getDefaultToSRFDate());
+    setDeliveredBy("");
+    setCnfStatus("");
+    setRepaired("");
+    setHead("");
+    setSearched(false);
+    setData([]);
+    setError(null);
+  };
 
   // Fetch master names for autocomplete on mount
   useEffect(() => {

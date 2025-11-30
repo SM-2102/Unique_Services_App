@@ -15,11 +15,12 @@ async function fetchWarrantyCNFChallanList(params) {
     },
     body: JSON.stringify(params),
   });
-  
+
   const data = await response.json();
   if (!response.ok) {
     throw {
-      message: data.message || data.detail || "Failed to fetch CNF challan records.",
+      message:
+        data.message || data.detail || "Failed to fetch CNF challan records.",
       resolution: data.resolution || "",
     };
   }

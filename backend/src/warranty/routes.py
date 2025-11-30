@@ -7,21 +7,20 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 from auth.dependencies import AccessTokenBearer
 from db.db import get_session
+from exceptions import WarrantyNotFound
 from warranty.schemas import (
+    WarrantyCNFChallanCode,
+    WarrantyCNFChallanDetails,
+    WarrantyCNFCreate,
+    WarrantyCNFRequest,
     WarrantyCreate,
     WarrantyEnquiry,
     WarrantyPending,
-    WarrantyUpdateResponse,
     WarrantySrfNumber,
     WarrantyUpdate,
-    WarrantyCNFChallanDetails,
-    WarrantyCNFRequest,
-    WarrantyCNFCreate,
-    WarrantyCNFChallanCode,
+    WarrantyUpdateResponse,
 )
-
 from warranty.service import WarrantyService
-from exceptions import WarrantyNotFound
 
 warranty_router = APIRouter()
 warranty_service = WarrantyService()
@@ -39,7 +38,13 @@ async def create_warranty(
     token=Depends(access_token_bearer),
 ):
     new_warranty = await warranty_service.create_warranty(session, warranty, token)
-    return JSONResponse(content={"srf_number": new_warranty.srf_number, "message": f"SRF Number : {new_warranty.srf_number}"})
+    return JSONResponse(
+        content={
+            "srf_number": new_warranty.srf_number,
+            "message": f"SRF Number : {new_warranty.srf_number}",
+        }
+    )
+
 
 """
 Get the next available warranty code.
@@ -52,7 +57,6 @@ async def warranty_next_code(
 ):
     warranty_base = await warranty_service.warranty_next_code(session)
     return JSONResponse(content={"next_srf_number": warranty_base})
-
 
 
 """
@@ -78,14 +82,18 @@ Get warranty details by srf_number.
 
 
 @warranty_router.post(
-    "/by_srf_number", response_model=WarrantyUpdateResponse, status_code=status.HTTP_200_OK
+    "/by_srf_number",
+    response_model=WarrantyUpdateResponse,
+    status_code=status.HTTP_200_OK,
 )
 async def get_warranty_by_srf_number(
     data: WarrantySrfNumber,
     session: AsyncSession = Depends(get_session),
     _=Depends(access_token_bearer),
 ):
-    warranty = await warranty_service.get_warranty_by_srf_number(data.srf_number, session)
+    warranty = await warranty_service.get_warranty_by_srf_number(
+        data.srf_number, session
+    )
     return warranty
 
 
@@ -94,7 +102,9 @@ Update warranty details by srf_number.
 """
 
 
-@warranty_router.patch("/update/{srf_number:path}", status_code=status.HTTP_202_ACCEPTED)
+@warranty_router.patch(
+    "/update/{srf_number:path}", status_code=status.HTTP_202_ACCEPTED
+)
 async def update_warranty(
     srf_number: str,
     warranty: WarrantyUpdate,
@@ -102,16 +112,23 @@ async def update_warranty(
     token=Depends(access_token_bearer),
 ):
     print(warranty)
-    existing_warranty = await warranty_service.get_warranty_by_srf_number(srf_number, session)
+    existing_warranty = await warranty_service.get_warranty_by_srf_number(
+        srf_number, session
+    )
     if not existing_warranty:
         raise WarrantyNotFound()
-    new_warranty = await warranty_service.update_warranty(srf_number, warranty, session, token)
-    return JSONResponse(content={"message": f"Warranty Updated : {new_warranty.srf_number}"})
+    new_warranty = await warranty_service.update_warranty(
+        srf_number, warranty, session, token
+    )
+    return JSONResponse(
+        content={"message": f"Warranty Updated : {new_warranty.srf_number}"}
+    )
 
 
 """
 List distinct delivered_by names
 """
+
 
 @warranty_router.get(
     "/list_delivered_by", response_model=List, status_code=status.HTTP_200_OK
@@ -157,7 +174,6 @@ async def print_srf(
     )
 
 
-
 """
 Get the next available challan code
 """
@@ -187,6 +203,8 @@ async def last_cnf_challan_code(
 """
 List CNF Challan Details
 """
+
+
 @warranty_router.post(
     "/list_cnf_challan_details",
     response_model=List[WarrantyCNFChallanDetails],
@@ -194,14 +212,17 @@ List CNF Challan Details
 )
 async def list_cnf_challan_details(
     data: WarrantyCNFRequest,
-    session: AsyncSession = Depends(get_session), _=Depends(access_token_bearer),
+    session: AsyncSession = Depends(get_session),
+    _=Depends(access_token_bearer),
 ):
     cnf_list = await warranty_service.list_cnf_challan_details(session, data.division)
     return cnf_list
 
+
 """
 Update retail records - List of Records
 """
+
 
 @warranty_router.patch("/create_cnf_challan", status_code=status.HTTP_202_ACCEPTED)
 async def create_cnf_challan(
@@ -224,7 +245,9 @@ async def print_cnf_challan(
     session: AsyncSession = Depends(get_session),
     token=Depends(access_token_bearer),
 ):
-    cnf_pdf = await warranty_service.print_cnf_challan(data.challan_number, token, session)
+    cnf_pdf = await warranty_service.print_cnf_challan(
+        data.challan_number, token, session
+    )
     return StreamingResponse(
         cnf_pdf,
         media_type="application/pdf",
@@ -233,12 +256,16 @@ async def print_cnf_challan(
         },
     )
 
+
 """
 Warranty enquiry using query parameters.
 
  """
 
-@warranty_router.get("/enquiry", response_model=List[WarrantyEnquiry], status_code=status.HTTP_200_OK)
+
+@warranty_router.get(
+    "/enquiry", response_model=List[WarrantyEnquiry], status_code=status.HTTP_200_OK
+)
 async def enquiry_warranty(
     final_status: Optional[str] = None,
     name: Optional[str] = None,

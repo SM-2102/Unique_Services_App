@@ -17,7 +17,8 @@ async function createWarrantyCNFChallan(warrantyData) {
   const data = await response.json();
   if (!response.ok) {
     throw {
-      message: data.message || data.detail || "Failed to update warranty record",
+      message:
+        data.message || data.detail || "Failed to update warranty record",
       resolution: data.resolution || "",
     };
   }

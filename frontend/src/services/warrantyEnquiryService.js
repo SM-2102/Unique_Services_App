@@ -25,7 +25,8 @@ async function warrantyEnquiry(params = {}) {
   const data = await response.json();
   if (!response.ok) {
     throw {
-      message: data.message || data.detail || "Failed to fetch warranty records",
+      message:
+        data.message || data.detail || "Failed to fetch warranty records",
       resolution: data.resolution || "",
     };
   }

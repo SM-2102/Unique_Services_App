@@ -13,12 +13,12 @@ const initialForm = {
   srf_number: "",
   name: "",
   division: "",
-  model:"",
-  head:"",
-  srf_date:"",
+  model: "",
+  head: "",
+  srf_date: "",
   challan_number: "",
   challan_date: "",
-  repair_date:"",
+  repair_date: "",
   receive_date: "",
   invoice_number: "",
   invoice_date: "",
@@ -42,13 +42,13 @@ const WarrantyUpdatePage = () => {
   const [showDeliveredBySuggestions, setShowDeliveredBySuggestions] =
     useState(false);
 
-    // Field disabling logic based on head value
-    const isRepairDateDisabled = form.head === "REPLACE";
-    const isRepair = form.head === "REPAIR";
-    const isReceiveDateDisabled = isRepair;
-    const isInvoiceNumberDisabled = isRepair;
-    const isInvoiceDateDisabled = isRepair;
-    const isCourierNumberDisabled = isRepair;
+  // Field disabling logic based on head value
+  const isRepairDateDisabled = form.head === "REPLACE";
+  const isRepair = form.head === "REPAIR";
+  const isReceiveDateDisabled = isRepair;
+  const isInvoiceNumberDisabled = isRepair;
+  const isInvoiceDateDisabled = isRepair;
+  const isCourierNumberDisabled = isRepair;
 
   const handleSearch = async (searchCode) => {
     // If this was called as an event handler (e.g. onClick={handleSearch}),
@@ -122,7 +122,7 @@ const WarrantyUpdatePage = () => {
         const response = await fetchWarrantyPending();
         // Map srf_number to id for PendingBar compatibility
         const mapped = Array.isArray(response)
-          ? response.map(item => ({ ...item, id: item.srf_number }))
+          ? response.map((item) => ({ ...item, id: item.srf_number }))
           : [];
         setPendingItems(mapped);
       } catch (error) {
@@ -302,12 +302,12 @@ const WarrantyUpdatePage = () => {
               </label>
 
               <input
-                  id="division"
-                  name="division"
-                  type="text"
-                  value={form.division}
-                  readOnly
-                  disabled={isLocked || submitting || isReceiveDateDisabled}
+                id="division"
+                name="division"
+                type="text"
+                value={form.division}
+                readOnly
+                disabled={isLocked || submitting || isReceiveDateDisabled}
                 className={`w-full px-3 py-1 rounded-lg border ${
                   errs_label.division ? "border-red-300" : "border-gray-300"
                 } bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small cursor-not-allowed`}
@@ -364,53 +364,61 @@ const WarrantyUpdatePage = () => {
                 name="repair_date"
                 type="date"
                 value={form.repair_date}
-                className={`w-full px-3 py-1 rounded-lg border ${errs_label.repair_date ? "border-red-300" : "border-gray-300"} ${isRepairDateDisabled ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-gray-50 text-gray-900'} focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
+                className={`w-full px-3 py-1 rounded-lg border ${errs_label.repair_date ? "border-red-300" : "border-gray-300"} ${isRepairDateDisabled ? "bg-gray-200 text-gray-400 cursor-not-allowed" : "bg-gray-50 text-gray-900"} focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
                 onChange={handleChange}
                 disabled={isLocked || submitting || isRepairDateDisabled}
-                placeholder={isRepairDateDisabled ? 'Disabled for REPLACE' : ''}
-                title={isRepairDateDisabled ? 'Repair Date is disabled for REPLACE' : ''}
+                placeholder={isRepairDateDisabled ? "Disabled for REPLACE" : ""}
+                title={
+                  isRepairDateDisabled
+                    ? "Repair Date is disabled for REPLACE"
+                    : ""
+                }
               />
             </div>
           </div>
-                  {/* Head & Receive Date - label beside input, w-1/2 each */}
-            <div className="flex items-center w-full gap-3">
-              <div className="flex items-center w-1/2 gap-2">
-                <label
-                  htmlFor="head"
-                  className="w-65 text-md font-medium text-gray-700"
-                >
-                  Head
-                </label>
-                <input
-                  id="head"
-                  name="head"
-                  type="text"
-                  value={form.head}
-                  readOnly
-                  className={`w-full px-3 py-1 rounded-lg border ${errs_label.head ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small cursor-not-allowed`}
-                  disabled={isLocked || submitting}
-                />
-              </div>
-              <div className="flex items-center w-1/2 gap-2">
-                <label
-                  htmlFor="receive_date"
-                  className="w-55 text-md font-medium text-gray-700 ml-3 "
-                >
-                  Receive Date
-                </label>
-                <input
-                  id="receive_date"
-                  name="receive_date"
-                  type="date"
-                  value={form.receive_date}
-                  onChange={handleChange}
-                  className={`w-full px-3 py-1 rounded-lg border ${errs_label.receive_date ? "border-red-300" : "border-gray-300"} ${isReceiveDateDisabled ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-gray-50 text-gray-900'} focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
-                  disabled={isLocked || submitting || isReceiveDateDisabled}
-                  placeholder={isReceiveDateDisabled ? 'Disabled for Repair' : ''}
-                  title={isReceiveDateDisabled ? 'Receive Date is disabled for Repair' : ''}
-                />
-              </div>
+          {/* Head & Receive Date - label beside input, w-1/2 each */}
+          <div className="flex items-center w-full gap-3">
+            <div className="flex items-center w-1/2 gap-2">
+              <label
+                htmlFor="head"
+                className="w-65 text-md font-medium text-gray-700"
+              >
+                Head
+              </label>
+              <input
+                id="head"
+                name="head"
+                type="text"
+                value={form.head}
+                readOnly
+                className={`w-full px-3 py-1 rounded-lg border ${errs_label.head ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small cursor-not-allowed`}
+                disabled={isLocked || submitting}
+              />
             </div>
+            <div className="flex items-center w-1/2 gap-2">
+              <label
+                htmlFor="receive_date"
+                className="w-55 text-md font-medium text-gray-700 ml-3 "
+              >
+                Receive Date
+              </label>
+              <input
+                id="receive_date"
+                name="receive_date"
+                type="date"
+                value={form.receive_date}
+                onChange={handleChange}
+                className={`w-full px-3 py-1 rounded-lg border ${errs_label.receive_date ? "border-red-300" : "border-gray-300"} ${isReceiveDateDisabled ? "bg-gray-200 text-gray-400 cursor-not-allowed" : "bg-gray-50 text-gray-900"} focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
+                disabled={isLocked || submitting || isReceiveDateDisabled}
+                placeholder={isReceiveDateDisabled ? "Disabled for Repair" : ""}
+                title={
+                  isReceiveDateDisabled
+                    ? "Receive Date is disabled for Repair"
+                    : ""
+                }
+              />
+            </div>
+          </div>
           {/* Challan Number & Challan Date - label beside input, w-1/2 each */}
           <div className="flex items-center w-full gap-6">
             <div className="flex items-center w-1/2 gap-2">
@@ -463,10 +471,16 @@ const WarrantyUpdatePage = () => {
                 type="text"
                 onChange={handleChange}
                 value={form.invoice_number}
-                className={`w-full px-3 py-1 rounded-lg border ${errs_label.invoice_number ? "border-red-300" : "border-gray-300"} ${isInvoiceNumberDisabled ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-gray-50 text-gray-900'} focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
+                className={`w-full px-3 py-1 rounded-lg border ${errs_label.invoice_number ? "border-red-300" : "border-gray-300"} ${isInvoiceNumberDisabled ? "bg-gray-200 text-gray-400 cursor-not-allowed" : "bg-gray-50 text-gray-900"} focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
                 disabled={isLocked || submitting || isInvoiceNumberDisabled}
-                placeholder={isInvoiceNumberDisabled ? 'Disabled for Repair' : ''}
-                title={isInvoiceNumberDisabled ? 'Invoice Number is disabled for Repair' : ''}
+                placeholder={
+                  isInvoiceNumberDisabled ? "Disabled for Repair" : ""
+                }
+                title={
+                  isInvoiceNumberDisabled
+                    ? "Invoice Number is disabled for Repair"
+                    : ""
+                }
               />
             </div>
             <div className="flex items-center w-1/2 gap-2">
@@ -482,10 +496,14 @@ const WarrantyUpdatePage = () => {
                 type="date"
                 value={form.invoice_date}
                 onChange={handleChange}
-                className={`w-full px-3 py-1 rounded-lg border ${errs_label.invoice_date ? "border-red-300" : "border-gray-300"} ${isInvoiceDateDisabled ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-gray-50 text-gray-900'} focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
+                className={`w-full px-3 py-1 rounded-lg border ${errs_label.invoice_date ? "border-red-300" : "border-gray-300"} ${isInvoiceDateDisabled ? "bg-gray-200 text-gray-400 cursor-not-allowed" : "bg-gray-50 text-gray-900"} focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
                 disabled={isLocked || submitting || isInvoiceDateDisabled}
-                placeholder={isInvoiceDateDisabled ? 'Disabled for Repair' : ''}
-                title={isInvoiceDateDisabled ? 'Invoice Date is disabled for Repair' : ''}
+                placeholder={isInvoiceDateDisabled ? "Disabled for Repair" : ""}
+                title={
+                  isInvoiceDateDisabled
+                    ? "Invoice Date is disabled for Repair"
+                    : ""
+                }
               />
             </div>
           </div>
@@ -523,74 +541,75 @@ const WarrantyUpdatePage = () => {
                 onChange={handleChange}
                 className={`w-full px-3 py-1 rounded-lg border ${errs_label.delivery_date ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
                 disabled={isLocked || submitting}
-max={new Date().toLocaleDateString('en-CA')}              />
+                max={new Date().toLocaleDateString("en-CA")}
+              />
             </div>
           </div>
 
           {/* Delivered By - moved to new line */}
           <div className="flex items-center w-full gap-3">
-              <label
-                htmlFor="delivered_by"
-                className="w-41.5 text-md font-medium text-gray-700"
-              >
-                Delivered By
-              </label>
-              <div className="w-full relative">
-                <input
-                  id="delivered_by"
-                  name="delivered_by"
-                  type="text"
-                  value={form.delivered_by}
-                  onChange={handleChange}
-                  className={`w-full px-3 py-1 rounded-lg ${errs_label.delivered_by ? "border-red-300" : "border-gray-300"} border border-gray-300 bg-gray-50 text-gray-900`}
-                  maxLength={20}
-                  disabled={isLocked || submitting}
-                  autoComplete="off"
-                  onFocus={() => {
-                    if (
-                      form.delivered_by.length > 0 &&
-                      deliveredBySuggestions.length > 0
-                    )
-                      setShowDeliveredBySuggestions(true);
+            <label
+              htmlFor="delivered_by"
+              className="w-41.5 text-md font-medium text-gray-700"
+            >
+              Delivered By
+            </label>
+            <div className="w-full relative">
+              <input
+                id="delivered_by"
+                name="delivered_by"
+                type="text"
+                value={form.delivered_by}
+                onChange={handleChange}
+                className={`w-full px-3 py-1 rounded-lg ${errs_label.delivered_by ? "border-red-300" : "border-gray-300"} border border-gray-300 bg-gray-50 text-gray-900`}
+                maxLength={20}
+                disabled={isLocked || submitting}
+                autoComplete="off"
+                onFocus={() => {
+                  if (
+                    form.delivered_by.length > 0 &&
+                    deliveredBySuggestions.length > 0
+                  )
+                    setShowDeliveredBySuggestions(true);
+                }}
+                onBlur={() =>
+                  setTimeout(() => setShowDeliveredBySuggestions(false), 150)
+                }
+              />
+              {showDeliveredBySuggestions && (
+                <ul
+                  style={{
+                    position: "absolute",
+                    top: "100%",
+                    left: 0,
+                    zIndex: 10,
+                    background: "#fff",
+                    border: "1px solid #d1d5db",
+                    borderRadius: "0.5rem",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+                    width: "100%",
+                    maxHeight: 180,
+                    overflowY: "auto",
+                    margin: 0,
+                    padding: 0,
+                    listStyle: "none",
                   }}
-                  onBlur={() =>
-                    setTimeout(() => setShowDeliveredBySuggestions(false), 150)
-                  }
-                />
-                {showDeliveredBySuggestions && (
-                  <ul
-                    style={{
-                      position: "absolute",
-                      top: "100%",
-                      left: 0,
-                      zIndex: 10,
-                      background: "#fff",
-                      border: "1px solid #d1d5db",
-                      borderRadius: "0.5rem",
-                      boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-                      width: "100%",
-                      maxHeight: 180,
-                      overflowY: "auto",
-                      margin: 0,
-                      padding: 0,
-                      listStyle: "none",
-                    }}
-                  >
-                    {deliveredBySuggestions.map((n) => (
-                      <li
-                        key={n}
-                        style={{ padding: "0.5rem 1rem", cursor: "pointer" }}
-                        onMouseDown={() => {
-                          setForm((prev) => ({ ...prev, delivered_by: n }));
-                          setShowDeliveredBySuggestions(false);
-                        }}
-                      >
-                        {n}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
+                >
+                  {deliveredBySuggestions.map((n) => (
+                    <li
+                      key={n}
+                      style={{ padding: "0.5rem 1rem", cursor: "pointer" }}
+                      onMouseDown={() => {
+                        setForm((prev) => ({ ...prev, delivered_by: n }));
+                        setShowDeliveredBySuggestions(false);
+                      }}
+                    >
+                      {n}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
           {/* Remark - mapped to status*/}
           <div
@@ -633,10 +652,16 @@ max={new Date().toLocaleDateString('en-CA')}              />
                 type="text"
                 value={form.courier}
                 onChange={handleChange}
-                className={`w-full px-3 py-1 rounded-lg border ${errs_label.courier ? "border-red-300" : "border-gray-300"} ${isCourierNumberDisabled ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-gray-50 text-gray-900'} focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
+                className={`w-full px-3 py-1 rounded-lg border ${errs_label.courier ? "border-red-300" : "border-gray-300"} ${isCourierNumberDisabled ? "bg-gray-200 text-gray-400 cursor-not-allowed" : "bg-gray-50 text-gray-900"} focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
                 disabled={isLocked || submitting || isCourierNumberDisabled}
-                placeholder={isCourierNumberDisabled ? 'Disabled for Repair' : ''}
-                title={isCourierNumberDisabled ? 'Courier Number is disabled for Repair' : ''}
+                placeholder={
+                  isCourierNumberDisabled ? "Disabled for Repair" : ""
+                }
+                title={
+                  isCourierNumberDisabled
+                    ? "Courier Number is disabled for Repair"
+                    : ""
+                }
               />
             </div>
             <div className="flex items-center w-1/2 gap-2">

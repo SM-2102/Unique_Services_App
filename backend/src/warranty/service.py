@@ -11,34 +11,38 @@ from sqlalchemy import case, func, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
-from service_center.service import ServiceCenterService
-from master.service import MasterService
-from warranty.models import Warranty
+from exceptions import IncorrectCodeFormat, WarrantyNotFound
 from master.models import Master
+from master.service import MasterService
+from service_center.service import ServiceCenterService
+from utils.date_utils import format_date_ddmmyyyy, parse_date
+from utils.file_utils import safe_join, split_text_to_lines
+from warranty.models import Warranty
 from warranty.schemas import (
+    WarrantyCNFChallanDetails,
+    WarrantyCNFCreate,
     WarrantyCreate,
     WarrantyEnquiry,
     WarrantyPending,
-    WarrantyUpdateResponse,
     WarrantySrfNumber,
     WarrantyUpdate,
-    WarrantyCNFChallanDetails,
-    WarrantyCNFCreate,
+    WarrantyUpdateResponse,
 )
-from exceptions import IncorrectCodeFormat, WarrantyNotFound
-
-from utils.date_utils import format_date_ddmmyyyy, parse_date
-from utils.file_utils import safe_join, split_text_to_lines
 
 master_service = MasterService()
 service_center_service = ServiceCenterService()
+
 
 class WarrantyService:
 
     async def get_next_base_number(self, session: AsyncSession) -> int:
         statement = select(Warranty.srf_number)
         result = await session.execute(statement)
-        srf_numbers = [row[0] for row in result.fetchall() if row[0] and row[0].startswith("R") and "/" in row[0]]
+        srf_numbers = [
+            row[0]
+            for row in result.fetchall()
+            if row[0] and row[0].startswith("R") and "/" in row[0]
+        ]
         base_numbers = []
         for srf in srf_numbers:
             base, _ = srf.split("/")
@@ -51,7 +55,6 @@ class WarrantyService:
             return max(base_numbers) + 1
         else:
             return 1
-
 
     async def create_warranty(
         self, session: AsyncSession, warranty: WarrantyCreate, token: dict
@@ -112,12 +115,10 @@ class WarrantyService:
             await session.commit()
             return new_warranty
 
-
     async def warranty_next_code(self, session: AsyncSession):
         next_base_number = await self.get_next_base_number(session)
         next_srf_number = "R" + str(next_base_number).zfill(5)
         return next_srf_number
-
 
     async def list_warranty_pending(self, session: AsyncSession):
         statement = (
@@ -159,7 +160,11 @@ class WarrantyService:
                 repair_date=row.Warranty.repair_date,
                 delivery_date=row.Warranty.delivery_date,
                 challan_number=row.Warranty.challan_number,
-                challan_date=format_date_ddmmyyyy(row.Warranty.challan_date) if row.Warranty.challan_date else None ,
+                challan_date=(
+                    format_date_ddmmyyyy(row.Warranty.challan_date)
+                    if row.Warranty.challan_date
+                    else None
+                ),
                 division=row.Warranty.division,
                 invoice_number=row.Warranty.invoice_number,
                 invoice_date=row.Warranty.invoice_date,
@@ -167,14 +172,17 @@ class WarrantyService:
                 status=row.Warranty.status,
                 settlement=row.Warranty.settlement,
                 courier=row.Warranty.courier,
-                complaint_number=row.Warranty.complaint_number
+                complaint_number=row.Warranty.complaint_number,
             )
         else:
             raise WarrantyNotFound()
-        
 
     async def update_warranty(
-        self, srf_number: str, warranty: WarrantyUpdate, session: AsyncSession, token: dict
+        self,
+        srf_number: str,
+        warranty: WarrantyUpdate,
+        session: AsyncSession,
+        token: dict,
     ):
         statement = select(Warranty).where(Warranty.srf_number == srf_number)
         result = await session.execute(statement)
@@ -189,26 +197,26 @@ class WarrantyService:
         await session.commit()
         await session.refresh(existing_warranty)
         return existing_warranty
-    
+
     async def list_delivered_by(self, session: AsyncSession):
         statement = (
-            select(Warranty.delivered_by).distinct().where(Warranty.delivered_by.isnot(None))
+            select(Warranty.delivered_by)
+            .distinct()
+            .where(Warranty.delivered_by.isnot(None))
         )
         result = await session.execute(statement)
         names = result.scalars().all()
         return names
-    
+
     async def last_srf_number(self, session: AsyncSession):
         statement = (
-            select(Warranty.srf_number)
-            .order_by(Warranty.srf_number.desc())
-            .limit(1)
+            select(Warranty.srf_number).order_by(Warranty.srf_number.desc()).limit(1)
         )
         result = await session.execute(statement)
         last_srf_number = result.scalar()
         last_srf_number = last_srf_number.split("/")[0] if last_srf_number else None
         return last_srf_number
-    
+
     async def print_srf(
         self, srf_number: WarrantySrfNumber, token: dict, session: AsyncSession
     ) -> io.BytesIO:
@@ -247,15 +255,19 @@ class WarrantyService:
         table_rows = []
         for row in rows:
             w = row.Warranty
-            table_rows.append([
-                w.division or '',
-                w.model or '',
-                str(w.serial_number or ''),
-                w.complaint_number or '',
-                w.sticker_number or ''
-            ])
+            table_rows.append(
+                [
+                    w.division or "",
+                    w.model or "",
+                    str(w.serial_number or ""),
+                    w.complaint_number or "",
+                    w.sticker_number or "",
+                ]
+            )
 
-        def generate_overlay(rows, srf_no, srf_date, code, name, address, contact1, gst, received_by):
+        def generate_overlay(
+            rows, srf_no, srf_date, code, name, address, contact1, gst, received_by
+        ):
             packet = io.BytesIO()
             can = canvas.Canvas(packet, pagesize=A4)
             width, height = A4
@@ -329,8 +341,28 @@ class WarrantyService:
             return PdfReader(packet)
 
         # Create overlays
-        overlay_customer = generate_overlay(table_rows, srf_no, srf_date, code, name, address, contact1, gst, received_by)
-        overlay_asc = generate_overlay(table_rows, srf_no, srf_date, code, name, address, contact1, gst, received_by)
+        overlay_customer = generate_overlay(
+            table_rows,
+            srf_no,
+            srf_date,
+            code,
+            name,
+            address,
+            contact1,
+            gst,
+            received_by,
+        )
+        overlay_asc = generate_overlay(
+            table_rows,
+            srf_no,
+            srf_date,
+            code,
+            name,
+            address,
+            contact1,
+            gst,
+            received_by,
+        )
 
         # Path to the static PDF template (use absolute path for portability, with path injection protection)
         base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -361,7 +393,6 @@ class WarrantyService:
         writer.write(output_stream)
         output_stream.seek(0)
         return output_stream
-    
 
     async def next_cnf_challan_code(self, session: AsyncSession):
         statement = (
@@ -376,7 +407,7 @@ class WarrantyService:
         next_challan_number = int(last_number) + 1
         next_challan_number = "U" + str(next_challan_number).zfill(5)
         return next_challan_number
-    
+
     async def last_cnf_challan_code(self, session: AsyncSession):
         statement = (
             select(Warranty.challan_number)
@@ -387,12 +418,16 @@ class WarrantyService:
         result = await session.execute(statement)
         last_challan_number = result.scalar()
         return last_challan_number or None
-    
+
     async def list_cnf_challan_details(self, session: AsyncSession, division: str):
         statement = (
             select(Warranty, Master)
             .join(Master, Warranty.code == Master.code)
-            .where((Warranty.division == division) & (Warranty.head == "REPLACE") & (Warranty.challan == 'N'))
+            .where(
+                (Warranty.division == division)
+                & (Warranty.head == "REPLACE")
+                & (Warranty.challan == "N")
+            )
             .order_by(Warranty.srf_number)
         )
         result = await session.execute(statement)
@@ -403,7 +438,7 @@ class WarrantyService:
                 name=row.Master.name,
                 model=row.Warranty.model,
                 serial_number=str(row.Warranty.serial_number),
-                challan=row.Warranty.challan
+                challan=row.Warranty.challan,
             )
             for row in rows
         ]
@@ -424,12 +459,10 @@ class WarrantyService:
                 session.add(existing_warranty)
         await session.commit()
 
-    
-
     async def print_cnf_challan(
         self, challan_number: str, token: dict, session: AsyncSession
     ) -> io.BytesIO:
-        
+
         # Query warranty and master data
         statement = (
             select(Warranty, Master)
@@ -443,10 +476,21 @@ class WarrantyService:
             raise WarrantyNotFound()
 
         # Common values
-        challan_date = rows[0].Warranty.challan_date.strftime("%d-%m-%Y") if rows[0].Warranty.challan_date else ""
+        challan_date = (
+            rows[0].Warranty.challan_date.strftime("%d-%m-%Y")
+            if rows[0].Warranty.challan_date
+            else ""
+        )
         division = rows[0].Warranty.division
 
-        def generate_overlay(rows, division, challan_no, challan_date, name_field='name', number_field='sticker_number'):
+        def generate_overlay(
+            rows,
+            division,
+            challan_no,
+            challan_date,
+            name_field="name",
+            number_field="sticker_number",
+        ):
             packet = io.BytesIO()
             can = canvas.Canvas(packet, pagesize=A4)
             width, height = A4
@@ -462,11 +506,11 @@ class WarrantyService:
             min_row_height = 30
             row_padding = 1
             columns = [
-                {"x": 30, "width": 20},    # Sl No
-                {"x": 55, "width": 100},   # Model
-                {"x": 165, "width": 85},   # Serial No
-                {"x": 260, "width": 80},   # Complaint No
-                {"x": 357, "width": 63},   # Sticker No or SRF No
+                {"x": 30, "width": 20},  # Sl No
+                {"x": 55, "width": 100},  # Model
+                {"x": 165, "width": 85},  # Serial No
+                {"x": 260, "width": 80},  # Complaint No
+                {"x": 357, "width": 63},  # Sticker No or SRF No
                 {"x": 430, "width": 130},  # Name or ASC
             ]
 
@@ -475,11 +519,11 @@ class WarrantyService:
             for idx, row in enumerate(rows, 1):
                 w = row.Warranty
                 m = row.Master
-                model = w.model or ''
-                slno = str(w.serial_number or '')
-                complaint_no = w.complaint_number or ''
-                number = getattr(w, number_field, '') or ''
-                name = getattr(m, name_field, '') or ''
+                model = w.model or ""
+                slno = str(w.serial_number or "")
+                complaint_no = w.complaint_number or ""
+                number = getattr(w, number_field, "") or ""
+                name = getattr(m, name_field, "") or ""
 
                 row_data = [str(idx), model, slno, complaint_no, number, name]
 
@@ -524,14 +568,17 @@ class WarrantyService:
             return PdfReader(packet)
 
         # Create overlays
-        overlay_customer = generate_overlay(rows, division, challan_number, challan_date, 'name', 'srf_number')
-        overlay_asc = generate_overlay(rows, division, challan_number, challan_date, 'asc_name', 'sticker_number')
+        overlay_customer = generate_overlay(
+            rows, division, challan_number, challan_date, "name", "srf_number"
+        )
+        overlay_asc = generate_overlay(
+            rows, division, challan_number, challan_date, "asc_name", "sticker_number"
+        )
 
         # Path to the static PDF template (use absolute path for portability, with path injection protection)
         base_dir = os.path.dirname(os.path.abspath(__file__))
         static_dir = os.path.normpath(os.path.join(base_dir, "..", "static"))
         template_path = safe_join(static_dir, "cnf_challan.pdf")
-
 
         # Read the template PDF
         try:
@@ -557,21 +604,21 @@ class WarrantyService:
         writer.write(output_stream)
         output_stream.seek(0)
         return output_stream
-    
 
-    async def enquiry_warranty(self, session: AsyncSession,
-            final_status: Optional[str] = None,
-            name: Optional[str] = None,
-            division: Optional[str] = None,
-            from_srf_date: Optional[date] = None,
-            to_srf_date: Optional[date] = None,
-            delivered_by: Optional[str] = None,
-            delivered: Optional[str] = None,
-            cnf_status: Optional[str] = None,
-            repaired: Optional[str] = None,
-            head: Optional[str] = None,
-            ):
-        
+    async def enquiry_warranty(
+        self,
+        session: AsyncSession,
+        final_status: Optional[str] = None,
+        name: Optional[str] = None,
+        division: Optional[str] = None,
+        from_srf_date: Optional[date] = None,
+        to_srf_date: Optional[date] = None,
+        delivered_by: Optional[str] = None,
+        delivered: Optional[str] = None,
+        cnf_status: Optional[str] = None,
+        repaired: Optional[str] = None,
+        head: Optional[str] = None,
+    ):
 
         statement = select(Warranty, Master).join(Master, Warranty.code == Master.code)
 
@@ -580,17 +627,19 @@ class WarrantyService:
 
         if name:
             statement = statement.where(Master.name.ilike(f"%{name}%"))
-        
+
         if division:
             statement = statement.where(Warranty.division == division)
-        
+
         if from_srf_date:
             statement = statement.where(Warranty.srf_date >= from_srf_date)
 
         if to_srf_date:
             statement = statement.where(Warranty.srf_date <= to_srf_date)
         if delivered_by:
-            statement = statement.where(Warranty.delivered_by.ilike(f"%{delivered_by}%"))
+            statement = statement.where(
+                Warranty.delivered_by.ilike(f"%{delivered_by}%")
+            )
         if delivered:
             if delivered == "Y":
                 statement = statement.where(Warranty.delivery_date.isnot(None))
@@ -598,9 +647,13 @@ class WarrantyService:
                 statement = statement.where(Warranty.delivery_date.is_(None))
         if cnf_status:
             if cnf_status == "Y":
-                statement = statement.where(Warranty.receive_date.isnot(None) & Warranty.head == "REPLACE")
+                statement = statement.where(
+                    Warranty.receive_date.isnot(None) & Warranty.head == "REPLACE"
+                )
             else:
-                statement = statement.where(Warranty.receive_date.is_(None) & Warranty.head == "REPLACE")
+                statement = statement.where(
+                    Warranty.receive_date.is_(None) & Warranty.head == "REPLACE"
+                )
 
         if repaired:
             if repaired == "Y":
@@ -613,7 +666,6 @@ class WarrantyService:
 
         result = await session.execute(statement)
         rows = result.all()
-       
 
         return [
             WarrantyEnquiry(
@@ -621,9 +673,21 @@ class WarrantyService:
                 srf_date=format_date_ddmmyyyy(row.Warranty.srf_date),
                 name=row.Master.name,
                 model=row.Warranty.model,
-                receive_date=format_date_ddmmyyyy(row.Warranty.receive_date) if row.Warranty.receive_date else "",
-                repair_date=format_date_ddmmyyyy(row.Warranty.repair_date) if row.Warranty.repair_date else "",
-                delivery_date=format_date_ddmmyyyy(row.Warranty.delivery_date) if row.Warranty.delivery_date else "",
+                receive_date=(
+                    format_date_ddmmyyyy(row.Warranty.receive_date)
+                    if row.Warranty.receive_date
+                    else ""
+                ),
+                repair_date=(
+                    format_date_ddmmyyyy(row.Warranty.repair_date)
+                    if row.Warranty.repair_date
+                    else ""
+                ),
+                delivery_date=(
+                    format_date_ddmmyyyy(row.Warranty.delivery_date)
+                    if row.Warranty.delivery_date
+                    else ""
+                ),
                 settlement=row.Warranty.settlement,
                 head=row.Warranty.head,
             )

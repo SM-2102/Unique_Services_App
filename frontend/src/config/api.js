@@ -64,8 +64,6 @@ const API_ENDPOINTS = {
   WARRANTY_CNF_PRINT: `${BASE_API_URL}warranty/cnf_challan_print`,
   WARRANTY_ENQUIRY: `${BASE_API_URL}warranty/enquiry`, //append params
 
-
-
   SERVICE_CENTER_LIST_NAMES: `${BASE_API_URL}service_center/list_names`,
 };
 

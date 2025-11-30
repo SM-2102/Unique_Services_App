@@ -231,16 +231,16 @@ const RetailSettleAdminPage = () => {
               {data.length === 0 ? (
                 <TableRow>
                   <TableCell
-                                      colSpan={columns.length +1}
-                                      style={{
-                                        textAlign: "center",
-                                        color: "#888",
-                                        fontStyle: "italic",
-                                        padding: "24px 0",
-                                      }}
-                                    >
-                                      No record found
-                                    </TableCell>
+                    colSpan={columns.length + 1}
+                    style={{
+                      textAlign: "center",
+                      color: "#888",
+                      fontStyle: "italic",
+                      padding: "24px 0",
+                    }}
+                  >
+                    No record found
+                  </TableCell>
                 </TableRow>
               ) : (
                 data.map((row, idx) => (

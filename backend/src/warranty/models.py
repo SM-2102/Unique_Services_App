@@ -23,11 +23,7 @@ class Warranty(SQLModel, table=True):
     remark: str = Field(sa_column=Column(pg.VARCHAR(40), nullable=True))
     complaint_number: str = Field(sa_column=Column(pg.VARCHAR(20), nullable=True))
     sticker_number: str = Field(sa_column=Column(pg.VARCHAR(15), nullable=True))
-    asc_name: str = Field(
-        sa_column=Column(
-            pg.VARCHAR(30), nullable=True
-        )
-    )
+    asc_name: str = Field(sa_column=Column(pg.VARCHAR(30), nullable=True))
     challan_number: str = Field(sa_column=Column(pg.VARCHAR(6), nullable=True))
     challan_date: date = Field(sa_column=Column(pg.DATE, nullable=True))
     challan: str = Field(sa_column=Column(pg.CHAR(1), nullable=False, default="N"))

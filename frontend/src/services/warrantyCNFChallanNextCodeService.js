@@ -6,10 +6,13 @@ import API_ENDPOINTS from "../config/api";
  * Returns { next_cnf_challan_code : string }
  */
 async function fetchNextWarrantyCNFChallanCode() {
-  const response = await authFetch(API_ENDPOINTS.WARRANTY_NEXT_CNF_CHALLAN_CODE, {
-    method: "GET",
-    headers: { "Content-Type": "application/json" },
-  });
+  const response = await authFetch(
+    API_ENDPOINTS.WARRANTY_NEXT_CNF_CHALLAN_CODE,
+    {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    },
+  );
   const data = await response.json();
   if (!response.ok) {
     throw {

@@ -10,9 +10,9 @@ from master.routes import master_router
 from menu.routes import menu_router
 from middleware.middleware import register_middleware
 from retail.routes import retail_router
+from service_center.routes import service_center_router
 from user.routes import user_router
 from warranty.routes import warranty_router
-from service_center.routes import service_center_router
 
 version = "v1"
 
@@ -70,4 +70,6 @@ app.include_router(challan_router, prefix="/challan", tags=["Challan"])
 app.include_router(market_router, prefix="/market", tags=["Market"])
 app.include_router(retail_router, prefix="/retail", tags=["Retail"])
 app.include_router(warranty_router, prefix="/warranty", tags=["Warranty"])
-app.include_router(service_center_router, prefix="/service_center", tags=["Service Center"])
+app.include_router(
+    service_center_router, prefix="/service_center", tags=["Service Center"]
+)
