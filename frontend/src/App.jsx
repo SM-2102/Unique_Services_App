@@ -26,6 +26,12 @@ import RetailEnquiryPage from "./pages/RetailEnquiryPage.jsx";
 import RetailUpdatePage from "./pages/RetailUpdatePage.jsx";
 import RetailSettleUserPage from "./pages/RetailSettleUserPage.jsx";
 import RetailPrintPage from "./pages/RetailPrintPage.jsx";
+import WarrantyCreatePage from "./pages/WarrantyCreatePage.jsx";
+import WarrantySRFPrintPage from "./pages/WarrantySRFPrintPage.jsx";
+import WarrantyCreateCNFPage from "./pages/WarrantyCreateCNFPage.jsx";
+import WarrantyCNFPrintPage from "./pages/WarrantyCNFPrintPage.jsx";
+import WarrantyUpdatePage from "./pages/WarrantyUpdatePage.jsx";
+import WarrantyEnquiryPage from "./pages/WarrantyEnquiryPage.jsx";
 
 function AppRoutesWithNav() {
   return (
@@ -195,50 +201,50 @@ function AppRoutesWithNav() {
             }
           />
           <Route
-            path="/warranty-create_srf"
+            path="/CreateWarrantySRF"
             element={
               <PrivateRoute>
-                <PageNotAvailable />
+                <WarrantyCreatePage />
               </PrivateRoute>
             }
           />
           <Route
-            path="/warranty-create_cnf"
+            path="/CreateWarrantyCNFChallan"
             element={
               <PrivateRoute>
-                <PageNotAvailable />
+                <WarrantyCreateCNFPage />
               </PrivateRoute>
             }
           />
           <Route
-            path="/warranty-print_srf"
+            path="/PrintWarrantySRF"
             element={
               <PrivateRoute>
-                <PageNotAvailable />
+                <WarrantySRFPrintPage />
               </PrivateRoute>
             }
           />
           <Route
-            path="/warranty-print_cnf"
+            path="/PrintWarrantyCNFChallan"
             element={
               <PrivateRoute>
-                <PageNotAvailable />
+                <WarrantyCNFPrintPage />
               </PrivateRoute>
             }
           />
           <Route
-            path="/warranty-update_srf"
+            path="/UpdateWarrantySRF"
             element={
               <PrivateRoute>
-                <PageNotAvailable />
+                <WarrantyUpdatePage />
               </PrivateRoute>
             }
           />
           <Route
-            path="/warranty-enquiry"
+            path="/WarrantyEnquiry"
             element={
               <PrivateRoute>
-                <PageNotAvailable />
+                <WarrantyEnquiryPage />
               </PrivateRoute>
             }
           />
