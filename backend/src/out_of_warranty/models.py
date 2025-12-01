@@ -20,6 +20,11 @@ class OutOfWarranty(SQLModel, table=True):
     # FANS, PUMP, LIGHT, SDA, IWH, SWH, COOLER, OTHERS
     head: str = Field(sa_column=Column(pg.VARCHAR(20), nullable=True))
     service_charge: int = Field(sa_column=Column(pg.INTEGER, nullable=False))
+    service_charge_waive: str = Field(
+        sa_column=Column(pg.CHAR(1), nullable=False, default="N")
+    )
+    collection_date: date = Field(sa_column=Column(pg.DATE, nullable=True))
+    waive_details: str = Field(sa_column=Column(pg.VARCHAR(40), nullable=True))
     model: str = Field(sa_column=Column(pg.VARCHAR(30), nullable=False))
     serial_number: str = Field(sa_column=Column(pg.VARCHAR(15), nullable=False))
     problem: str = Field(sa_column=Column(pg.VARCHAR(30), nullable=True))
@@ -34,6 +39,10 @@ class OutOfWarranty(SQLModel, table=True):
     vendor_date2: date = Field(sa_column=Column(pg.DATE, nullable=True))
     vendor_cost1: float = Field(sa_column=Column(pg.FLOAT, nullable=True))
     vendor_cost2: float = Field(sa_column=Column(pg.FLOAT, nullable=True))
+    vendor_settlement_date: date = Field(sa_column=Column(pg.DATE, nullable=True))
+    vendor_settled: str = Field(
+        sa_column=Column(pg.VARCHAR(1), nullable=False, default="N")
+    )
     repair_date: date = Field(sa_column=Column(pg.DATE, nullable=True))
     work_done: str = Field(sa_column=Column(pg.VARCHAR(50), nullable=True))
     rewinding_cost: float = Field(sa_column=Column(pg.FLOAT, nullable=True))
@@ -62,21 +71,12 @@ class OutOfWarranty(SQLModel, table=True):
     delivery_date: date = Field(sa_column=Column(pg.DATE, nullable=True))
     pc_number: int = Field(sa_column=Column(pg.INTEGER, nullable=True))
     invoice_number: int = Field(sa_column=Column(pg.INTEGER, nullable=True))
-    final_status: str = Field(sa_column=Column(pg.VARCHAR(1), nullable=False, default="N"))
     vendor_bill_number: str = Field(sa_column=Column(pg.VARCHAR(8), nullable=True))
+    final_status: str = Field(sa_column=Column(pg.VARCHAR(1), nullable=False, default="N"))
     settlement_date: date = Field(sa_column=Column(pg.DATE, nullable=True))
     final_settled: str = Field(
         sa_column=Column(pg.VARCHAR(1), nullable=False, default="N")
     )
-    vendor_settlement_date: date = Field(sa_column=Column(pg.DATE, nullable=True))
-    vendor_settled: str = Field(
-        sa_column=Column(pg.VARCHAR(1), nullable=False, default="N")
-    )
-    service_charge_waive: str = Field(
-        sa_column=Column(pg.CHAR(1), nullable=False, default="N")
-    )
-    collection_date: date = Field(sa_column=Column(pg.DATE, nullable=True))
-    waive_details: str = Field(sa_column=Column(pg.VARCHAR(40), nullable=True))
     created_by: str = Field(
         sa_column=Column(pg.VARCHAR(15), ForeignKey("users.username"), nullable=False)
     )

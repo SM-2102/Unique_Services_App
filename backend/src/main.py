@@ -1,6 +1,5 @@
 from fastapi import FastAPI
 from fastapi.responses import FileResponse
-from fastapi.staticfiles import StaticFiles
 
 from auth.routes import auth_router
 from challan.routes import challan_router
@@ -31,8 +30,6 @@ app = FastAPI(
     redoc_url=f"/redoc",
 )
 
-app.mount("/public", StaticFiles(directory="public"), name="public")
-
 
 @app.get("/")
 def read_root():
@@ -52,7 +49,7 @@ def read_root():
 
 @app.get("/favicon.ico", include_in_schema=False)
 async def favicon():
-    return FileResponse("public/favicon.ico")
+    return FileResponse("favicon.ico")
 
 
 # Register middleware

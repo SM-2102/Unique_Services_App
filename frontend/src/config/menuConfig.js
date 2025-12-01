@@ -27,9 +27,9 @@ export const menuConfig = [
     actions: [
       { label: "Create SRF", path: "/CreateWarrantySRF" },
       { label: "Create CNF Challan", path: "/CreateWarrantyCNFChallan" },
-      { label: "Print SRF", path: "/PrintWarrantySRF" },
-      { label: "Print CNF Challan", path: "/PrintWarrantyCNFChallan" },
       { label: "Update SRF", path: "/UpdateWarrantySRF" },
+      { label: "Print CNF Challan", path: "/PrintWarrantyCNFChallan" },
+      { label: "Print SRF", path: "/PrintWarrantySRF" },
       { label: "Enquiry", path: "/WarrantyEnquiry", showInDashboard: false },
     ],
   },

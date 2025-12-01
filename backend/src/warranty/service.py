@@ -139,7 +139,12 @@ class WarrantyService:
 
     async def get_warranty_by_srf_number(self, srf_number: str, session: AsyncSession):
         if len(srf_number) != 8:
-            srf_number = "R" + srf_number.zfill(7)
+            if srf_number.__contains__("/"):
+                srf_number = "R" + srf_number.zfill(7)
+            else:
+                base = srf_number.split("/")[0]
+                srf_number = "R" + base.zfill(5) + "/1"
+        print(srf_number)
         if not srf_number.startswith("R"):
             raise IncorrectCodeFormat()
         statement = (
@@ -615,7 +620,7 @@ class WarrantyService:
         to_srf_date: Optional[date] = None,
         delivered_by: Optional[str] = None,
         delivered: Optional[str] = None,
-        cnf_status: Optional[str] = None,
+        received: Optional[str] = None,
         repaired: Optional[str] = None,
         head: Optional[str] = None,
     ):
@@ -645,21 +650,22 @@ class WarrantyService:
                 statement = statement.where(Warranty.delivery_date.isnot(None))
             else:
                 statement = statement.where(Warranty.delivery_date.is_(None))
-        if cnf_status:
-            if cnf_status == "Y":
+        if received:
+            if received == "Y":
+                print("checking received Y")
                 statement = statement.where(
-                    Warranty.receive_date.isnot(None) & Warranty.head == "REPLACE"
+                    Warranty.receive_date.isnot(None) & (Warranty.head == "REPLACE")
                 )
             else:
                 statement = statement.where(
-                    Warranty.receive_date.is_(None) & Warranty.head == "REPLACE"
+                    Warranty.receive_date.is_(None) & (Warranty.head == "REPLACE")
                 )
 
         if repaired:
             if repaired == "Y":
-                statement = statement.where(Warranty.repair_date.isnot(None))
+                statement = statement.where(Warranty.repair_date.isnot(None) & (Warranty.head == "REPAIR"))
             else:
-                statement = statement.where(Warranty.repair_date.is_(None))
+                statement = statement.where(Warranty.repair_date.is_(None) & (Warranty.head == "REPAIR"))
         if head:
             statement = statement.where(Warranty.head == head)
         statement = statement.order_by(Warranty.srf_number)
@@ -690,6 +696,7 @@ class WarrantyService:
                 ),
                 settlement=row.Warranty.settlement,
                 head=row.Warranty.head,
+                contact_number=row.Master.contact1,
             )
             for row in rows
         ]

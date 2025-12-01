@@ -192,7 +192,7 @@ class MenuService:
 
         # Create a dynamic CASE column for status
         status_case = case(
-            (OutOfWarranty.settlement_date.isnot(None), "COMPLETED"), else_="PENDING"
+            (OutOfWarranty.final_status == "Y", "COMPLETED"), else_="PENDING"
         ).label("status")
 
         statement = (

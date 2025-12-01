@@ -274,7 +274,7 @@ async def enquiry_warranty(
     to_srf_date: Optional[date] = None,
     delivered_by: Optional[str] = None,
     delivered: Optional[str] = None,
-    cnf_status: Optional[str] = None,
+    received: Optional[str] = None,
     repaired: Optional[str] = None,
     head: Optional[str] = None,
     session: AsyncSession = Depends(get_session),
@@ -290,7 +290,7 @@ async def enquiry_warranty(
             to_srf_date,
             delivered_by,
             delivered,
-            cnf_status,
+            received,
             repaired,
             head,
         )
