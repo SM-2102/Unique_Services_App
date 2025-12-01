@@ -60,12 +60,18 @@ class OutOfWarranty(SQLModel, table=True):
     round_off: float = Field(sa_column=Column(pg.FLOAT, nullable=True))
     receive_amount: float = Field(sa_column=Column(pg.FLOAT, nullable=True))
     delivery_date: date = Field(sa_column=Column(pg.DATE, nullable=True))
-    pcno: int = Field(sa_column=Column(pg.INTEGER, nullable=True))
+    pc_number: int = Field(sa_column=Column(pg.INTEGER, nullable=True))
     invoice_number: int = Field(sa_column=Column(pg.INTEGER, nullable=True))
-    status: str = Field(sa_column=Column(pg.VARCHAR(1), nullable=False, default="N"))
+    final_status: str = Field(sa_column=Column(pg.VARCHAR(1), nullable=False, default="N"))
     vendor_bill_number: str = Field(sa_column=Column(pg.VARCHAR(8), nullable=True))
     settlement_date: date = Field(sa_column=Column(pg.DATE, nullable=True))
+    final_settled: str = Field(
+        sa_column=Column(pg.VARCHAR(1), nullable=False, default="N")
+    )
     vendor_settlement_date: date = Field(sa_column=Column(pg.DATE, nullable=True))
+    vendor_settled: str = Field(
+        sa_column=Column(pg.VARCHAR(1), nullable=False, default="N")
+    )
     service_charge_waive: str = Field(
         sa_column=Column(pg.CHAR(1), nullable=False, default="N")
     )
