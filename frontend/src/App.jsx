@@ -249,7 +249,7 @@ function AppRoutesWithNav() {
             }
           />
           <Route
-            path="/oow-create_srf"
+            path="/CreateOutOfWarrantySRF"
             element={
               <PrivateRoute>
                 <PageNotAvailable />
@@ -257,7 +257,7 @@ function AppRoutesWithNav() {
             }
           />
           <Route
-            path="/oow-print_srf"
+            path="/PrintOutOfWarrantySRF"
             element={
               <PrivateRoute>
                 <PageNotAvailable />
@@ -265,7 +265,7 @@ function AppRoutesWithNav() {
             }
           />
           <Route
-            path="/oow-update_srf"
+            path="/UpdateOutOfWarrantySRF"
             element={
               <PrivateRoute>
                 <PageNotAvailable />
@@ -273,7 +273,7 @@ function AppRoutesWithNav() {
             }
           />
           <Route
-            path="/oow-settle_srf"
+            path="/ProposeToSettleOutOfWarrantySRF"
             element={
               <PrivateRoute>
                 <PageNotAvailable />
@@ -281,7 +281,7 @@ function AppRoutesWithNav() {
             }
           />
           <Route
-            path="/oow-create_vendor_challan"
+            path="/CreateOutOfWarrantyVendorChallan"
             element={
               <PrivateRoute>
                 <PageNotAvailable />
@@ -289,7 +289,7 @@ function AppRoutesWithNav() {
             }
           />
           <Route
-            path="/oow-print_vendor_challan"
+            path="/PrintOutOfWarrantyVendorChallan"
             element={
               <PrivateRoute>
                 <PageNotAvailable />
@@ -297,7 +297,7 @@ function AppRoutesWithNav() {
             }
           />
           <Route
-            path="/oow-print_estimate"
+            path="/PrintOutOfWarrantyEstimate"
             element={
               <PrivateRoute>
                 <PageNotAvailable />
@@ -305,7 +305,15 @@ function AppRoutesWithNav() {
             }
           />
           <Route
-            path="/oow-settle_vendor"
+            path="/FinalSettlementOutOfWarrantyVendor"
+            element={
+              <PrivateRoute requiredRole="ADMIN">
+                <PageNotAvailable />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/OutOfWarrantyEnquiry"
             element={
               <PrivateRoute>
                 <PageNotAvailable />
@@ -313,7 +321,15 @@ function AppRoutesWithNav() {
             }
           />
           <Route
-            path="/oow-enquiry"
+            path="/FinalSettlementOutOfWarrantySRF"
+            element={
+              <PrivateRoute requiredRole="ADMIN">
+                <PageNotAvailable />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/ProposeToSettleOutOfWarrantyVendor"
             element={
               <PrivateRoute>
                 <PageNotAvailable />

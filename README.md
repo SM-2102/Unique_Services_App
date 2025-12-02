@@ -46,7 +46,15 @@
 - [x] **RetailEnquiryPage** - Retail Enquiry
 - [x] **RetailPrintPage** - Retail Print Receipt
 - [x] **RetailSettleUser** - Proposed For Settlement
-- [x] **RetailSettleAdmin** - Settled Retail Record
+- [x] **RetailSettleAdmin** - Settled Retail Record [ADMIN]
+
+### Warranty Module
+- [x] **WarrantyCreatePage** - Create Warranty record
+- [x] **WarrantyUpdatePage** - Update Warranty record
+- [x] **WarrantySRFPrintPage** - Warranty SRF Print
+- [x] **WarrantyChallanPage** - Warranty Challan
+- [x] **WarrantyChallanPrintPage** - Warranty Challan Print
+- [x] **WarrantyEnquiryPage** - Warranty Enquiry Page
 
 ### Warranty Module
 - [ ] **WarrantyCreatePage** - Create Warranty record
@@ -109,30 +117,45 @@
 - [x] **/retail/update_received**
 - [x] **/retail/list_of_unsettled**
 - [x] **/retail/update_unsettled**
-- [x] **/retail/list_of_final_settlement**
-- [x] **/retail/update_final_settlement**
+- [x] **/retail/list_of_final_settlement** - [ADMIN]
+- [x] **/retail/update_final_settlement** - [ADMIN]
 - [x] **/retail/show_receipt_names**
 - [x] **/reetail/print**
 - [x] **/retail/enquiry{params}**
 
 ### Warranty Module
-- [ ] **warranty/next_srf_number**
-- [ ] **warranty/create**
-- [ ] **warranty/list_pending**
-- [ ] **warranty/by_srf_number**
-- [ ] **warranty/update/{srf_number}**
-- [ ] **warranty/list_delivered_by**
-- [ ] **warranty/last_srf_number**
-- [ ] **warranty/srf_print**
-- [ ] **warranty/next_cnf_challan_code**
-- [ ] **warranty/last_cnf_challan_code**
-- [ ] **warranty/list_cnf_challan**
-- [ ] **warranty/create_cnf_challan**
-- [ ] **warranty/cnf_challan_print**
-- [ ] **warranty/enquiry{params}**
+- [x] **warranty/next_srf_number**
+- [x] **warranty/create**
+- [x] **warranty/list_pending**
+- [x] **warranty/by_srf_number**
+- [x] **warranty/update/{srf_number}**
+- [x] **warranty/list_delivered_by**
+- [x] **warranty/last_srf_number**
+- [x] **warranty/srf_print**
+- [x] **warranty/next_cnf_challan_code**
+- [x] **warranty/last_cnf_challan_code**
+- [x] **warranty/list_cnf_challan**
+- [x] **warranty/create_cnf_challan**
+- [x] **warranty/cnf_challan_print**
+- [x] **warranty/enquiry{params}**
 
 ### Service Center Module
 - [x] **/service_center/list_names**
+
+### OutOfWarranty Module - [ADMIN]
+- [x] **out_of_warranty/next_srf_number**
+- [ ] **out_of_warranty/create**
+- [x] **out_of_warranty/list_pending**
+- [ ] **out_of_warranty/by_srf_number**
+- [ ] **out_of_warranty/update/{srf_number}**
+- [ ] **out_of_warranty/last_srf_number**
+- [ ] **out_of_warranty/srf_print**
+- [x] **out_of_warranty/next_cnf_challan_code**
+- [x] **out_of_warranty/last_cnf_challan_code**
+- [ ] **out_of_warranty/list_cnf_challan**
+- [ ] **out_of_warranty/create_cnf_challan**
+- [ ] **out_of_warranty/cnf_challan_print**
+- [ ] **out_of_warranty/enquiry{params}**
 
 
 ---
@@ -140,16 +163,16 @@
 ## Application Development Progress
 
 - [x] **Authorization**
-- [ ] **Database Schema** - needs refinement - Settlement
+- [x] **Database Schema**
 - [x] **Initial Deployment**
 - [x] **Backup**
 - [x] **Login & Menu**
 - [x] **User**
 - [x] **Master**
-- [ ] **Retail**
+- [x] **Retail**
 - [x] **Market**
 - [x] **Challan**
-- [ ] **Warranty**
+- [x] **Warranty**
 - [ ] **Out of Warranty**
 - [ ] **Final Deployment**
 

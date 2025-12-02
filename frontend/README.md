@@ -9,3 +9,7 @@ Review the `frontend/src/config/api.js` file and ensure it references environmen
 ```powershell
 npx prettier --write .
 ```
+
+### Make it production grade
+
+Remove the `<StrictMode>` from `main.jsx`

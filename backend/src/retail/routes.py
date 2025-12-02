@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse, StreamingResponse
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from auth.dependencies import AccessTokenBearer
+from auth.dependencies import AccessTokenBearer, RoleChecker
 from db.db import get_session
 from retail.schemas import (
     RetailCreate,
@@ -24,6 +24,8 @@ from retail.service import RetailService
 retail_router = APIRouter()
 retail_service = RetailService()
 access_token_bearer = AccessTokenBearer()
+role_checker = Depends(RoleChecker(allowed_roles=["ADMIN"]))
+
 
 """
 Create new retail record, after checking master name
@@ -126,6 +128,7 @@ List all final settlement records
     "/list_of_final_settlement",
     response_model=List[RetailFinalSettlementResponse],
     status_code=status.HTTP_200_OK,
+    dependencies=[role_checker],
 )
 async def list_retail_final_settlement(
     session: AsyncSession = Depends(get_session), _=Depends(access_token_bearer)
@@ -139,7 +142,7 @@ Update final settlement records - List of Records
 """
 
 
-@retail_router.patch("/update_final_settlement", status_code=status.HTTP_202_ACCEPTED)
+@retail_router.patch("/update_final_settlement", status_code=status.HTTP_202_ACCEPTED, dependencies=[role_checker])
 async def update_final_settlement(
     list_retail: List[UpdateRetailFinalSettlement],
     session: AsyncSession = Depends(get_session),
