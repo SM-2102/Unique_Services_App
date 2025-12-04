@@ -239,7 +239,7 @@ const RetailSettleAdminPage = () => {
                       padding: "24px 0",
                     }}
                   >
-                    No record found
+                    No Pending Records
                   </TableCell>
                 </TableRow>
               ) : (
@@ -291,6 +291,7 @@ const RetailSettleAdminPage = () => {
                                 textAlign: "center",
                                 fontWeight: 600,
                                 fontSize: "14px",
+                                borderRadius: "4px",
                                 width: "80px",
                                 padding: "5px",
                               },
@@ -317,11 +318,11 @@ const RetailSettleAdminPage = () => {
                             aria-label={`Edit amount for row ${idx + 1}`}
                             disabled={updating}
                             sx={{
-                              background: "#f8fafc",
+                              background: "#ffffffff",
                               borderRadius: "6px",
                               boxShadow: "0 1px 4px rgba(25,118,210,0.07)",
                               "& .MuiOutlinedInput-notchedOutline": {
-                                borderColor: "#b0bec5",
+                                borderColor: "#e9e7e7ff",
                               },
                               "&:hover .MuiOutlinedInput-notchedOutline": {
                                 borderColor: "#1976d2",

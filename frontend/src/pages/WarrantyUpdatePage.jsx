@@ -366,6 +366,7 @@ const WarrantyUpdatePage = () => {
                 value={form.repair_date}
                 className={`w-full px-3 py-1 rounded-lg border ${errs_label.repair_date ? "border-red-300" : "border-gray-300"} ${isRepairDateDisabled ? "bg-gray-200 text-gray-400 cursor-not-allowed" : "bg-gray-50 text-gray-900"} focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
                 onChange={handleChange}
+                max={new Date().toLocaleDateString("en-CA")}
                 disabled={isLocked || submitting || isRepairDateDisabled}
                 placeholder={isRepairDateDisabled ? "Disabled for REPLACE" : ""}
                 title={
@@ -408,6 +409,7 @@ const WarrantyUpdatePage = () => {
                 type="date"
                 value={form.receive_date}
                 onChange={handleChange}
+                max={new Date().toLocaleDateString("en-CA")}
                 className={`w-full px-3 py-1 rounded-lg border ${errs_label.receive_date ? "border-red-300" : "border-gray-300"} ${isReceiveDateDisabled ? "bg-gray-200 text-gray-400 cursor-not-allowed" : "bg-gray-50 text-gray-900"} focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
                 disabled={isLocked || submitting || isReceiveDateDisabled}
                 placeholder={isReceiveDateDisabled ? "Disabled for Repair" : ""}
@@ -496,6 +498,7 @@ const WarrantyUpdatePage = () => {
                 type="date"
                 value={form.invoice_date}
                 onChange={handleChange}
+                max={new Date().toLocaleDateString("en-CA")}
                 className={`w-full px-3 py-1 rounded-lg border ${errs_label.invoice_date ? "border-red-300" : "border-gray-300"} ${isInvoiceDateDisabled ? "bg-gray-200 text-gray-400 cursor-not-allowed" : "bg-gray-50 text-gray-900"} focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
                 disabled={isLocked || submitting || isInvoiceDateDisabled}
                 placeholder={isInvoiceDateDisabled ? "Disabled for Repair" : ""}

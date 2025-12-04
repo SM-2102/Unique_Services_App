@@ -263,7 +263,7 @@ const RoadChallanCreatePage = () => {
               type="date"
               value={form.challan_date}
               onChange={handleChange}
-              className="w-35 text-center px-2 py-1 rounded-lg border border-gray-300 text-gray-900 font-small"
+              className={`w-35 text-center px-2 py-1 rounded-lg border ${errs_label.challan_date ? "border-red-300" : "border-gray-300"} border-gray-300 text-gray-900 font-small`}
               required
               disabled={submitting}
               min={maxChallanDate}

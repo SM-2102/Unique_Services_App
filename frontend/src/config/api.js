@@ -63,8 +63,35 @@ const API_ENDPOINTS = {
   WARRANTY_CREATE_CNF_CHALLAN: `${BASE_API_URL}warranty/create_cnf_challan`,
   WARRANTY_CNF_PRINT: `${BASE_API_URL}warranty/cnf_challan_print`,
   WARRANTY_ENQUIRY: `${BASE_API_URL}warranty/enquiry`, //append params
-
+  
   SERVICE_CENTER_LIST_NAMES: `${BASE_API_URL}service_center/list_names`,
+
+  SERVICE_CHARGE: `${BASE_API_URL}service_charge/service_charge`,
+
+  OUT_OF_WARRANTY_NEXT_CODE: `${BASE_API_URL}out_of_warranty/next_srf_number`,
+  OUT_OF_WARRANTY_CREATE: `${BASE_API_URL}out_of_warranty/create`,
+  OUT_OF_WARRANTY_LIST_PENDING: `${BASE_API_URL}out_of_warranty/list_pending`,
+  OUT_OF_WARRANTY_BY_SRF_NUMBER: `${BASE_API_URL}out_of_warranty/by_srf_number`,
+  OUT_OF_WARRANTY_UPDATE: `${BASE_API_URL}out_of_warranty/update/`, //append srf_number
+  OUT_OF_WARRANTY_LAST_SRF_NUMBER: `${BASE_API_URL}out_of_warranty/last_srf_number`,
+  OUT_OF_WARRANTY_SRF_PRINT: `${BASE_API_URL}out_of_warranty/srf_print`,
+  OUT_OF_WARRANTY_NEXT_VENDOR_CHALLAN_CODE: `${BASE_API_URL}out_of_warranty/next_vendor_challan_code`,
+  OUT_OF_WARRANTY_LAST_VENDOR_CHALLAN_CODE: `${BASE_API_URL}out_of_warranty/last_vendor_challan_code`,
+  OUT_OF_WARRANTY_LIST_VENDOR_CHALLAN: `${BASE_API_URL}out_of_warranty/list_vendor_challan_details`,
+  OUT_OF_WARRANTY_CREATE_VENDOR_CHALLAN: `${BASE_API_URL}out_of_warranty/create_vendor_challan`,
+  OUT_OF_WARRANTY_VENDOR_CHALLAN_PRINT: `${BASE_API_URL}out_of_warranty/vendor_challan_print`,
+  OUT_OF_WARRANTY_LIST_RECEIVED_BY: `${BASE_API_URL}out_of_warranty/list_received_by`,
+  OUT_OF_WARRANTY_VENDOR_NOT_SETTLED: `${BASE_API_URL}out_of_warranty/vendor_not_settled`,
+  OUT_OF_WARRANTY_UPDATE_VENDOR_UNSETTLED: `${BASE_API_URL}out_of_warranty/update_vendor_unsettled`,
+  OUT_OF_WARRANTY_VENDOR_FINAL_SETTLED: `${BASE_API_URL}out_of_warranty/list_of_final_vendor_settlement`,
+  OUT_OF_WARRANTY_UPDATE_FINAL_VENDOR_SETTLED: `${BASE_API_URL}out_of_warranty/update_final_vendor_settlement`,
+  OUT_OF_WARRANTY_SRF_NOT_SETTLED: `${BASE_API_URL}out_of_warranty/srf_not_settled`,
+  OUT_OF_WARRANTY_UPDATE_SRF_UNSETTLED: `${BASE_API_URL}out_of_warranty/update_srf_unsettled`,
+  OUT_OF_WARRANTY_LIST_FINAL_SRF_SETTLEMENT: `${BASE_API_URL}out_of_warranty/list_of_final_srf_settlement`,
+  OUT_OF_WARRANTY_UPDATE_FINAL_SRF_SETTLEMENT: `${BASE_API_URL}out_of_warranty/update_final_srf_settlement`,
+  OUT_OF_WARRANTY_ENQUIRY: `${BASE_API_URL}out_of_warranty/enquiry`, //append params
+
+  
 };
 
 export default API_ENDPOINTS;

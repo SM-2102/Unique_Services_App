@@ -190,7 +190,7 @@ const RetailUpdatePage = () => {
                       padding: "24px 0",
                     }}
                   >
-                    No record found
+                    No Pending Records
                   </TableCell>
                 </TableRow>
               ) : (

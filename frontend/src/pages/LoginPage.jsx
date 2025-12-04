@@ -135,7 +135,7 @@ function LoginPage() {
                 className="py-2 px-8 rounded-lg bg-blue-600 text-white font-bold text-base shadow hover:bg-blue-700 transition-colors duration-200 mt-2 mb-2 w-fit disabled:opacity-60"
                 disabled={loading}
               >
-                {loading ? `Logging In ...` : "Login"}
+                {loading ? `Please Wait...` : "Login"}
               </button>
             </div>
           </form>

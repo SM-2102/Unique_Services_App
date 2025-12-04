@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from "react";
-import { updateRetailSettled } from "../services/retailUpdateSettledService";
 import {
   Paper,
   Typography,
@@ -11,18 +10,21 @@ import {
   TableRow,
   Box,
 } from "@mui/material";
-import { fetchRetailNotSettled } from "../services/retailNotSettledService";
 import Toast from "../components/Toast";
+import { fetchOutOfWarrantyVendorNotSettled } from "../services/outOfWarrantyVendorNotSettledService";
+import { updateOutOfWarrantyVendorSettled } from "../services/outOfWarrantyVendorUpdateSettledService";
 
 const columns = [
-  { key: "rcode", label: "Receipt Number" },
-  { key: "name", label: "Customer Name" },
-  { key: "details", label: "Details" },
+  { key: "srf_number", label: "SRF Number" },
+  { key: "division", label: "Division" },
+  { key: "model", label: "Model" },
+  { key: "challan_number", label: "Challan Number" },
   { key: "amount", label: "Amount" },
-  { key: "received", label: "Received" },
+  { key: "received_by", label: "Received By" },
+  { key: "vendor_bill_number", label: "Vendor Bill Number" },
 ];
 
-const RetailSettleUserPage = () => {
+const OutOfWarrantySettleVendorUserPage = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -47,17 +49,16 @@ const RetailSettleUserPage = () => {
     setUpdating(true);
     // Prepare payload: only selected rows, with settlement_date as today
     const today = new Date().toLocaleDateString("en-CA").slice(0, 10);
-    // Format for resolution only
     const today_ddmmyyyy = (() => {
       const dateObj = new Date();
       return `${String(dateObj.getDate()).padStart(2, "0")}-${String(dateObj.getMonth() + 1).padStart(2, "0")}-${dateObj.getFullYear()}`;
     })();
     const payload = data
       .filter((row, idx) => selectedRows.includes(idx))
-      .map(({ rcode, received }) => ({
-        rcode,
-        received,
-        settlement_date: today,
+      .map(({ srf_number, vendor_bill_number }) => ({
+        srf_number,
+        vendor_bill_number,
+        vendor_settlement_date: today,
       }));
     if (payload.length === 0) {
       setError({
@@ -69,10 +70,10 @@ const RetailSettleUserPage = () => {
       return;
     }
     try {
-      await updateRetailSettled(payload);
+      await updateOutOfWarrantyVendorSettled(payload);
       setError({
         message: "Records proposed for Settlement!",
-        resolution: `Settlement Date : ${today_ddmmyyyy}`,
+        resolution: `Vendor Settlement Date : ${today_ddmmyyyy}`,
         type: "success",
       });
       setShowToast(true);
@@ -92,7 +93,7 @@ const RetailSettleUserPage = () => {
   };
 
   useEffect(() => {
-    fetchRetailNotSettled()
+    fetchOutOfWarrantyVendorNotSettled()
       .then((res) => setData(res))
       .catch((err) =>
         setError({
@@ -103,11 +104,12 @@ const RetailSettleUserPage = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  // Handler for editing received
-  const handleReceivedChange = (idx, value) => {
+
+  // Handler for editing vendor_bill_number
+  const handleVendorBillNumberChange = (idx, value) => {
     setData((prev) => {
       const updated = [...prev];
-      updated[idx] = { ...updated[idx], received: value };
+      updated[idx] = { ...updated[idx], vendor_bill_number: value };
       return updated;
     });
   };
@@ -143,7 +145,7 @@ const RetailSettleUserPage = () => {
         color="primary.dark"
         sx={{ mb: 1 }}
       >
-        Retail Propose for Settlement
+        Out of Warranty Propose For Vendor Settlement
       </Typography>
       <Box
         display="flex"
@@ -190,7 +192,7 @@ const RetailSettleUserPage = () => {
               opacity: updating ? 0.7 : 1,
               transition: "background 0.2s, color 0.2s",
             }}
-            aria-label="Settle Retail Records"
+            aria-label="Settle Vendor Records"
           >
             {updating ? "Settling..." : "Settle Records"}
           </button>
@@ -213,15 +215,15 @@ const RetailSettleUserPage = () => {
                     ref={headerCheckboxRef}
                     checked={
                       selectedRows.length ===
-                        data.filter((row) => row.received !== "N").length &&
-                      data.filter((row) => row.received !== "N").length > 0
+                        data.filter((row) => row.vendor_bill_number).length &&
+                      data.filter((row) => row.vendor_bill_number).length > 0
                     }
                     onChange={(e) => {
                       if (e.target.checked) {
                         setSelectedRows(
                           data
                             .map((row, idx) =>
-                              row.received !== "N" ? idx : null,
+                              row.vendor_bill_number ? idx : null,
                             )
                             .filter((idx) => idx !== null),
                         );
@@ -278,9 +280,9 @@ const RetailSettleUserPage = () => {
                       <input
                         type="checkbox"
                         checked={selectedRows.includes(idx)}
-                        disabled={row.received === "N"}
+                        disabled={!row.vendor_bill_number}
                         onChange={(e) => {
-                          if (row.received === "N") return;
+                          if (!row.vendor_bill_number) return;
                           if (e.target.checked) {
                             setSelectedRows((prev) => [...prev, idx]);
                           } else {
@@ -304,40 +306,32 @@ const RetailSettleUserPage = () => {
                           }),
                         }}
                       >
-                        {col.key === "received" ? (
-                          <button
-                            type="button"
-                            onClick={() =>
-                              handleReceivedChange(
-                                idx,
-                                row.received === "Y" ? "N" : "Y",
+                        {col.key === "vendor_bill_number"
+                          ? (
+                            <input
+                              type="text"
+                              value={row.vendor_bill_number || ""}
+                              onChange={(e) => handleVendorBillNumberChange(idx, e.target.value)}
+                              style={{
+                                textAlign: "center",
+                                width: "120px",
+                                padding: "4px 8px",
+                                borderRadius: "4px",
+                                border: "1px solid #e4e4e4ff",
+                                fontWeight: 500,
+                                fontSize: "15px",
+                                background: "#fff",
+                              }}
+                              aria-label="Edit Vendor Bill Number"
+                            />
+                          ) : col.key === "amount"
+                            ? (
+                                row[col.key] !== null && row[col.key] !== undefined && row[col.key] !== ""
+                                  ? `₹ ${(Number(row[col.key]) || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                                  : "-"
                               )
-                            }
-                            style={{
-                              width: "60px",
-                              padding: "4px 0",
-                              borderRadius: "6px",
-                              border: "none",
-                              background:
-                                row.received === "Y" ? "#e3fcec" : "#ffe3e3",
-                              color:
-                                row.received === "Y" ? "#388e3c" : "#d32f2f",
-                              fontWeight: 700,
-                              fontSize: "15px",
-                              cursor: "pointer",
-                              boxShadow: "0 1px 4px rgba(25,118,210,0.07)",
-                              transition: "background 0.2s, color 0.2s",
-                            }}
-                            aria-label="Toggle Received"
-                          >
-                            {row.received === "Y" ? "Yes" : "No"}
-                          </button>
-                        ) : row[col.key] !== null &&
-                          row[col.key] !== undefined ? (
-                          row[col.key]
-                        ) : (
-                          "-"
-                        )}
+                          : (row[col.key] !== null && row[col.key] !== undefined && row[col.key] !== "" ? row[col.key] : "-")
+                        }
                       </TableCell>
                     ))}
                   </TableRow>
@@ -417,4 +411,4 @@ const RetailSettleUserPage = () => {
   );
 };
 
-export default RetailSettleUserPage;
+export default OutOfWarrantySettleVendorUserPage;

@@ -4,7 +4,7 @@
  * @returns {object} errors object
  */
 
-function validateWarrantySRFCreate(form) {
+function validateOutOfWarrantySRFCreate(form) {
   const errs = [];
   const errs_label = {};
   if (!form.name || form.name.length < 3) {
@@ -19,35 +19,43 @@ function validateWarrantySRFCreate(form) {
     errs.push("Division is required");
     errs_label.division = true;
   }
+  if(form.division == 'PUMP')
+  {
+    if (!form.head) {
+      errs.push("Head is required");
+      errs_label.head = true;
+    }
+  }
+  if(!form.service_charge) {
+    errs.push("Service Charge is required");
+    errs_label.service_charge = true;
+  }
+  if(form.service_charge_waive == 'Y')
+  {
+    if(!form.collection_date) {
+      errs.push("Collection Date is required");
+      errs_label.collection_date = true;
+    }
+    if(!form.waive_details) {
+      errs.push("Waive Details is required");
+      errs_label.waive_details = true;
+    }
+  }
   if (!form.model) {
     errs.push("Model is required");
     errs_label.model = true;
-  }
-  if (!form.head) {
-    errs.push("Head is required");
-    errs_label.head = true;
   }
   if (!form.problem) {
     errs.push("Problem is required");
     errs_label.problem = true;
   }
-  if (!form.serial_number) {
+
+   if (!form.serial_number) {
     errs.push("Serial Number is required");
     errs_label.serial_number = true;
   }
-  if (form.head === "REPLACE" && !form.sticker_number) {
-    errs.push("Sticker Number is required");
-    errs_label.sticker_number = true;
-  }
-  if (form.head === "REPLACE" && !form.asc_name) {
-    errs.push("ASC Name is required");
-    errs_label.asc_name = true;
-  }
-  if (form.head === "REPLACE" && !form.complaint_number) {
-    errs.push("Complaint Number is required");
-    errs_label.complaint_number = true;
-  }
+ 
   return [errs, errs_label];
 }
 
-export { validateWarrantySRFCreate };
+export { validateOutOfWarrantySRFCreate };

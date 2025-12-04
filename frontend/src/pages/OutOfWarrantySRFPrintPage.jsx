@@ -10,10 +10,10 @@ import {
 } from "@mui/material";
 import { AiOutlinePrinter } from "react-icons/ai";
 import Toast from "../components/Toast";
-import { fetchWarrantyLastSrfNumber } from "../services/warrantyLastSRFNumberService";
-import { printWarrantySRF } from "../services/warrantySRFPrintService";
+import { fetchOutOfWarrantyLastSrfNumber } from "../services/outOfWarrantyLastSRFNumberService";
+import { printOutOfWarrantySRF } from "../services/outOfWarrantySRFPrintService";
 
-const WarrantySRFPrintPage = () => {
+const OutOfWarrantySRFPrintPage = () => {
   const [srfNumber, setSrfNumber] = useState("");
   const [showToast, setShowToast] = useState(false);
   const [error, setError] = useState("");
@@ -22,7 +22,7 @@ const WarrantySRFPrintPage = () => {
   useEffect(() => {
     async function loadLastSrfNumber() {
       try {
-        const data = await fetchWarrantyLastSrfNumber();
+        const data = await fetchOutOfWarrantyLastSrfNumber();
         setSrfNumber(data.last_srf_number || "");
       } catch (err) {
         setError({
@@ -58,7 +58,7 @@ const WarrantySRFPrintPage = () => {
         }}
       >
         <h2 className="text-xl font-semibold text-blue-800 mb-4 pb-2 border-b border-blue-500 justify-center flex items-center gap-2">
-          Print Warranty SRF
+          Print Out Of Warranty SRF
         </h2>
         <form noValidate className="w-full flex flex-col gap-3">
           <div className="flex items-center gap-2">
@@ -107,19 +107,19 @@ const WarrantySRFPrintPage = () => {
                   return;
                 }
                 try {
-                  const blob = await printWarrantySRF(srfNumber);
+                  const blob = await printOutOfWarrantySRF(srfNumber);
                   const url = window.URL.createObjectURL(blob);
                   setPdfUrl(url);
                   // Open in new tab for viewing with download button
                   const newTab = window.open();
                   if (newTab) {
                     newTab.document.write(
-                      `<html><head><title>Warranty SRF Preview</title></head><body style='margin:0'>` +
-                        `<iframe id='warranty-srf-pdf-frame' src='${url}' width='100%' height='100%' style='border:none;min-height:100vh;'></iframe>` +
+                      `<html><head><title>Out Of Warranty SRF Preview</title></head><body style='margin:0'>` +
+                        `<iframe id='out-of-warranty-srf-pdf-frame' src='${url}' width='100%' height='100%' style='border:none;min-height:100vh;'></iframe>` +
                         `<div style='position:fixed;top:10px;right:10px;z-index:1000;display:flex;gap:10px;'>` +
                         `<a href='${url}' download='${srfNumber}.pdf' style='padding:10px 18px;background:#2563eb;color:#fff;border-radius:6px;text-decoration:none;font-weight:600;font-size:16px;'>Download PDF</a>` +
                         `<button onclick="(function(){
-                        var frame = document.getElementById('warranty-srf-pdf-frame');
+                        var frame = document.getElementById('out-of-warranty-srf-pdf-frame');
                         if(frame && frame.contentWindow){
                           frame.contentWindow.focus();
                           frame.contentWindow.print();
@@ -142,7 +142,7 @@ const WarrantySRFPrintPage = () => {
                   }, 2000);
                 } catch (err) {
                   setError({
-                    message: err.message || "Failed to print warranty SRF.",
+                    message: err.message || "Failed to print out of warranty SRF.",
                     resolution: err.resolution || "",
                     type: "error",
                   });
@@ -160,4 +160,4 @@ const WarrantySRFPrintPage = () => {
   );
 };
 
-export default WarrantySRFPrintPage;
+export default OutOfWarrantySRFPrintPage;

@@ -5,18 +5,30 @@ import { fetchMasterNames } from "../services/masterNamesService";
 import EnquiryTable from "../components/EnquiryTable";
 import ShowToast from "../components/Toast";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import { retailEnquiry } from "../services/retailEnquiryService";
+import { outOfWarrantyEnquiry } from "../services/outOfWarrantyEnquiryService";
 
 const columns = [
-  { key: "rcode", label: "Receipt Number" },
-  { key: "rdate", label: "Retail Date" },
+  { key: "srf_number", label: "SRF Number" },
+  { key: "srf_date", label: "SRF Date" },
   { key: "name", label: "Name" },
-  { key: "division", label: "Division" },
-  { key: "details", label: "Details" },
-  { key: "amount", label: "Amount" },
-  { key: "received", label: "Received" },
-  { key: "final_status", label: "Settled" },
+  { key: "contact_number", label: "Contact" },
+  { key: "model", label: "Model" },
+  { key: "estimate_date", label: "Estimate Date" },
+  { key: "repair_date", label: "Repair Date" },
+  { key: "vendor_date1", label: "Challan Date" },
+  { key: "delivery_date", label: "Delivery Date" },
+  {
+    key: "final_amount",
+    label: "Final Amount",
+    render: (value) => {
+      if (value === null || value === undefined || value === "") return "";
+      const num = Number(value);
+      if (isNaN(num)) return value;
+      return num.toLocaleString("en-IN", { style: "currency", currency: "INR", minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    },
+  },
 ];
+  
 
 const divisionOptions = [
   "FANS",
@@ -32,21 +44,31 @@ const divisionOptions = [
 const Filter = ({
   open = false,
   onToggle,
-  received,
-  setReceived,
   finalStatus,
   setFinalStatus,
+  finalSettled,
+  setFinalSettled,
+  vendorSettled,
+  setVendorSettled,
   name,
   setName,
   division,
   setDivision,
-  fromRetailDate,
-  setFromRetailDate,
-  toRetailDate,
-  setToRetailDate,
+  fromSRFDate,
+  setFromSRFDate,
+  toSRFDate,
+  setToSRFDate,
+  delivered,
+  setDelivered,
+  repaired,
+  setRepaired,
+  estimated,
+  setEstimated,
+  challaned,
+  setChallaned,
   onSearch,
-  masterNames,
   onClear,
+  masterNames,
 }) => {
   const [nameSuggestions, setNameSuggestions] = useState([]);
   const [showNameSuggestions, setShowNameSuggestions] = useState(false);
@@ -70,6 +92,7 @@ const Filter = ({
       setShowNameSuggestions(false);
     }
   }, [name, masterNames]);
+
 
   return (
     <>
@@ -163,6 +186,72 @@ const Filter = ({
             )}
           </div>
           <div style={{ marginBottom: 10 }}>
+            <label
+              htmlFor="fromSRFDate"
+              style={{
+                fontWeight: 600,
+                color: "#1976d2",
+                letterSpacing: 0.5,
+                fontSize: 13,
+                marginBottom: 4,
+                display: "block",
+              }}
+            >
+              SRF Date
+            </label>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                marginBottom: 6,
+              }}
+            >
+              <span style={{ minWidth: 60, fontSize: 13, color: "#333" }}>
+                From
+              </span>
+              <input
+                type="date"
+                id="fromSRFDate"
+                name="fromSRFDate"
+                value={fromSRFDate}
+                onChange={(e) => setFromSRFDate(e.target.value)}
+                style={{
+                  flex: 1,
+                  padding: "4px 8px",
+                  border: "1px solid #d1d5db",
+                  borderRadius: 6,
+                  fontSize: 13,
+                  background: "#f7f9fc",
+                  outline: "none",
+                  boxShadow: "0 1px 2px rgba(25, 118, 210, 0.04)",
+                }}
+              />
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ minWidth: 60, fontSize: 13, color: "#333" }}>
+                To
+              </span>
+              <input
+                type="date"
+                id="toSRFDate"
+                name="toSRFDate"
+                value={toSRFDate}
+                onChange={(e) => setToSRFDate(e.target.value)}
+                style={{
+                  flex: 1,
+                  padding: "4px 8px",
+                  border: "1px solid #d1d5db",
+                  borderRadius: 6,
+                  fontSize: 13,
+                  background: "#f7f9fc",
+                  outline: "none",
+                  boxShadow: "0 1px 2px rgba(25, 118, 210, 0.04)",
+                }}
+              />
+            </div>
+          </div>
+          <div style={{ marginBottom: 10 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
               <label
                 htmlFor="division"
@@ -171,7 +260,7 @@ const Filter = ({
                   color: "#1976d2",
                   letterSpacing: 0.5,
                   fontSize: 13,
-                  width: 150,
+                  width: 200,
                 }}
               >
                 Division
@@ -201,91 +290,25 @@ const Filter = ({
               </select>
             </div>
           </div>
-          <div style={{ marginBottom: 10 }}>
-            <label
-              htmlFor="fromRetailDate"
-              style={{
-                fontWeight: 600,
-                color: "#1976d2",
-                letterSpacing: 0.5,
-                fontSize: 13,
-                marginBottom: 4,
-                display: "block",
-              }}
-            >
-              Retail Date
-            </label>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-                marginBottom: 6,
-              }}
-            >
-              <span style={{ minWidth: 60, fontSize: 13, color: "#333" }}>
-                From
-              </span>
-              <input
-                type="date"
-                id="fromRetailDate"
-                name="fromRetailDate"
-                value={fromRetailDate}
-                onChange={(e) => setFromRetailDate(e.target.value)}
-                style={{
-                  flex: 1,
-                  padding: "4px 8px",
-                  border: "1px solid #d1d5db",
-                  borderRadius: 6,
-                  fontSize: 13,
-                  background: "#f7f9fc",
-                  outline: "none",
-                  boxShadow: "0 1px 2px rgba(25, 118, 210, 0.04)",
-                }}
-              />
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ minWidth: 60, fontSize: 13, color: "#333" }}>
-                To
-              </span>
-              <input
-                type="date"
-                id="toRetailDate"
-                name="toRetailDate"
-                value={toRetailDate}
-                onChange={(e) => setToRetailDate(e.target.value)}
-                style={{
-                  flex: 1,
-                  padding: "4px 8px",
-                  border: "1px solid #d1d5db",
-                  borderRadius: 6,
-                  fontSize: 13,
-                  background: "#f7f9fc",
-                  outline: "none",
-                  boxShadow: "0 1px 2px rgba(25, 118, 210, 0.04)",
-                }}
-              />
-            </div>
-          </div>
-          <div style={{ marginBottom: 10 }}>
+           <div style={{ marginBottom: 10 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
               <label
-                htmlFor="received"
+                htmlFor="estimated"
                 style={{
                   fontWeight: 600,
                   color: "#1976d2",
                   letterSpacing: 0.5,
                   fontSize: 13,
-                  width: 150,
+                  width: 200,
                 }}
               >
-                Payment
+                Estimated
               </label>
               <select
-                id="received"
-                name="received"
-                value={received}
-                onChange={(e) => setReceived(e.target.value)}
+                id="estimated"
+                name="estimated"
+                value={estimated}
+                onChange={(e) => setEstimated(e.target.value)}
                 style={{
                   padding: "4px 8px",
                   border: "1px solid #d1d5db",
@@ -298,11 +321,158 @@ const Filter = ({
                 }}
               >
                 <option value=""></option>
-                <option value="Y">Received</option>
-                <option value="N">Not Received</option>
+                <option value="Y">Yes</option>
+                <option value="N">No</option>
               </select>
             </div>
           </div>
+           <div style={{ marginBottom: 10 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+              <label
+                htmlFor="challaned"
+                style={{
+                  fontWeight: 600,
+                  color: "#1976d2",
+                  letterSpacing: 0.5,
+                  fontSize: 13,
+                  width: 200,
+                }}
+              >
+                Challan
+              </label>
+              <select
+                id="challaned"
+                name="challaned"
+                value={challaned}
+                onChange={(e) => setChallaned(e.target.value)}
+                style={{
+                  padding: "4px 8px",
+                  border: "1px solid #d1d5db",
+                  borderRadius: 6,
+                  fontSize: 13,
+                  background: "#f7f9fc",
+                  outline: "none",
+                  boxShadow: "0 1px 2px rgba(25, 118, 210, 0.04)",
+                  width: "100%",
+                }}
+              >
+                <option value=""></option>
+                <option value="Y">Issued</option>
+                <option value="N">Not Issued</option>
+              </select>
+            </div>
+          </div>
+
+          <div style={{ marginBottom: 10 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+              <label
+                htmlFor="repaired"
+                style={{
+                  fontWeight: 600,
+                  color: "#1976d2",
+                  letterSpacing: 0.5,
+                  fontSize: 13,
+                  width: 200,
+                }}
+              >
+                Repaired
+              </label>
+              <select
+                id="repaired"
+                name="repaired"
+                value={repaired}
+                onChange={(e) => setRepaired(e.target.value)}
+                style={{
+                  padding: "4px 8px",
+                  border: "1px solid #d1d5db",
+                  borderRadius: 6,
+                  fontSize: 13,
+                  background: "#f7f9fc",
+                  outline: "none",
+                  boxShadow: "0 1px 2px rgba(25, 118, 210, 0.04)",
+                  width: "100%",
+                }}
+              >
+                <option value=""></option>
+                <option value="Y">Yes</option>
+                <option value="N">No</option>
+              </select>
+            </div>
+          </div>
+          <div style={{ marginBottom: 10 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+              <label
+                htmlFor="delivered"
+                style={{
+                  fontWeight: 600,
+                  color: "#1976d2",
+                  letterSpacing: 0.5,
+                  fontSize: 13,
+                  width: 200,
+                }}
+              >
+                Delivered
+              </label>
+              <select
+                id="delivered"
+                name="delivered"
+                value={delivered}
+                onChange={(e) => setDelivered(e.target.value)}
+                style={{
+                  padding: "4px 8px",
+                  border: "1px solid #d1d5db",
+                  borderRadius: 6,
+                  fontSize: 13,
+                  background: "#f7f9fc",
+                  outline: "none",
+                  boxShadow: "0 1px 2px rgba(25, 118, 210, 0.04)",
+                  width: "100%",
+                }}
+              >
+                <option value=""></option>
+                <option value="Y">Yes</option>
+                <option value="N">No</option>
+              </select>
+            </div>
+          </div>
+
+          <div style={{ marginBottom: 10 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+              <label
+                htmlFor="vendorSettled"
+                style={{
+                  fontWeight: 600,
+                  color: "#1976d2",
+                  letterSpacing: 0.5,
+                  fontSize: 13,
+                  width: 200,
+                }}
+              >
+                Vendor Settled
+              </label>
+              <select
+                id="vendorSettled"
+                name="vendorSettled"
+                value={vendorSettled}
+                onChange={(e) => setVendorSettled(e.target.value)}
+                style={{
+                  padding: "4px 8px",
+                  border: "1px solid #d1d5db",
+                  borderRadius: 6,
+                  fontSize: 13,
+                  background: "#f7f9fc",
+                  outline: "none",
+                  boxShadow: "0 1px 2px rgba(25, 118, 210, 0.04)",
+                  width: "100%",
+                }}
+              >
+                <option value=""></option>
+                <option value="Y">Yes</option>
+                <option value="N">No</option>
+              </select>
+            </div>
+          </div>
+
           <div style={{ marginBottom: 10 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
               <label
@@ -312,10 +482,10 @@ const Filter = ({
                   color: "#1976d2",
                   letterSpacing: 0.5,
                   fontSize: 13,
-                  width: 150,
+                  width: 200,
                 }}
               >
-                Settled
+                Final Status
               </label>
               <select
                 id="finalStatus"
@@ -334,11 +504,52 @@ const Filter = ({
                 }}
               >
                 <option value=""></option>
+                <option value="Y">Completed</option>
+                <option value="N">Pending</option>
+              </select>
+            </div>
+          </div>
+
+          <div style={{ marginBottom: 10 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+              <label
+                htmlFor="finalSettled"
+                style={{
+                  fontWeight: 600,
+                  color: "#1976d2",
+                  letterSpacing: 0.5,
+                  fontSize: 13,
+                  width: 200,
+                }}
+              >
+                SRF Settled
+              </label>
+              <select
+                id="finalSettled"
+                name="finalSettled"
+                value={finalSettled}
+                onChange={(e) => setFinalSettled(e.target.value)}
+                style={{
+                  padding: "4px 8px",
+                  border: "1px solid #d1d5db",
+                  borderRadius: 6,
+                  fontSize: 13,
+                  background: "#f7f9fc",
+                  outline: "none",
+                  boxShadow: "0 1px 2px rgba(25, 118, 210, 0.04)",
+                  width: "100%",
+                }}
+              >
+                <option value=""></option>
                 <option value="Y">Yes</option>
                 <option value="N">No</option>
               </select>
             </div>
           </div>
+
+          
+
+
           {/* Centered Search & Clear Buttons */}
           <div
             style={{
@@ -406,35 +617,51 @@ const Filter = ({
   );
 };
 
-const RetailEnquiryPage = () => {
+const OutOfWarrantyEnquiryPage = () => {
   // Filter states for master_enquiry params
   const [finalStatus, setFinalStatus] = useState("");
+  const [finalSettled, setFinalSettled] = useState("");
+  const [vendorSettled, setVendorSettled] = useState("");
   const [name, setName] = useState("");
   const [division, setDivision] = useState("");
-  const [fromRetailDate, setFromRetailDate] = useState("");
-  const [toRetailDate, setToRetailDate] = useState("");
-  const [received, setReceived] = useState("");
-
-  // Data states
-
+  const getDefaultFromSRFDate = () => {
+    const today = new Date();
+    today.setMonth(today.getMonth() - 2);
+    return today.toLocaleDateString("en-CA");
+  };
+  const getDefaultToSRFDate = () => {
+    return new Date().toLocaleDateString("en-CA");
+  };
+  const [fromSRFDate, setFromSRFDate] = useState(getDefaultFromSRFDate());
+  const [toSRFDate, setToSRFDate] = useState(getDefaultToSRFDate());
+  const [delivered, setDelivered] = useState("");
+  const [repaired, setRepaired] = useState("");
+  const [estimated, setEstimated] = useState("");
+  const [challaned, setChallaned] = useState("");
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false); // Don't load on mount
   const [error, setError] = useState(null);
   const [filterOpen, setFilterOpen] = useState(true);
   const [searched, setSearched] = useState(false);
   const [masterNames, setMasterNames] = useState([]);
-
+  
   const handleClear = () => {
     setFinalStatus("");
+    setFinalSettled("");
+    setVendorSettled("");
     setName("");
     setDivision("");
-    setFromRetailDate("");
-    setToRetailDate("");
-    setReceived("");
+    setFromSRFDate(getDefaultFromSRFDate());
+    setToSRFDate(getDefaultToSRFDate());
+    setDelivered("");
+    setRepaired("");
+    setEstimated("");
+    setChallaned("");
     setSearched(false);
     setData([]);
     setError(null);
   };
+
   // Fetch master names for autocomplete on mount
   useEffect(() => {
     let mounted = true;
@@ -457,17 +684,19 @@ const RetailEnquiryPage = () => {
     setSearched(true);
     setFilterOpen(false);
     try {
-      // Update fetchRetailEnquiry to accept params
       const params = {};
       if (finalStatus) params.final_status = finalStatus;
       if (name) params.name = name;
       if (division) params.division = division;
-      if (fromRetailDate) params.from_rdate = fromRetailDate;
-      if (toRetailDate) params.to_rdate = toRetailDate;
-      if (received) params.received = received;
-      if (finalStatus) params.final_status = finalStatus;
-      console.log("Fetching with params:", params);
-      const res = await retailEnquiry(params);
+      if (fromSRFDate) params.from_srf_date = fromSRFDate;
+      if (toSRFDate) params.to_srf_date = toSRFDate;
+      if (delivered) params.delivered = delivered;
+      if (repaired) params.repaired = repaired;
+      if (finalSettled) params.final_settled = finalSettled;
+      if (vendorSettled) params.vendor_settled = vendorSettled;
+      if (estimated) params.estimated = estimated;
+      if (challaned) params.challaned = challaned;
+      const res = await outOfWarrantyEnquiry(params);
       setData(res);
     } catch (err) {
       setError(err.message || "Failed to fetch data");
@@ -484,25 +713,35 @@ const RetailEnquiryPage = () => {
         onToggle={() => setFilterOpen((prev) => !prev)}
         finalStatus={finalStatus}
         setFinalStatus={setFinalStatus}
-        received={received}
-        setReceived={setReceived}
         name={name}
         setName={setName}
         division={division}
         setDivision={setDivision}
-        fromRetailDate={fromRetailDate}
-        setFromRetailDate={setFromRetailDate}
-        toRetailDate={toRetailDate}
-        setToRetailDate={setToRetailDate}
-        onSearch={handleSearch}
+        fromSRFDate={fromSRFDate}
+        setFromSRFDate={setFromSRFDate}
+        toSRFDate={toSRFDate}
+        setToSRFDate={setToSRFDate}
         masterNames={masterNames}
+        delivered={delivered}
+        setDelivered={setDelivered}
+        repaired={repaired}
+        setRepaired={setRepaired}
+        estimated={estimated}
+        setEstimated={setEstimated}
+        challaned={challaned}
+        setChallaned={setChallaned}
+        finalSettled={finalSettled}
+        setFinalSettled={setFinalSettled}
+        vendorSettled={vendorSettled}
+        setVendorSettled={setVendorSettled}
+        onSearch={handleSearch}
         onClear={handleClear}
       />
       {/* Results or placeholder */}
       {error ? (
         <ShowToast
           type="error"
-          message="Cannot load Retail Enquiry data"
+          message="Cannot load Warranty Enquiry data"
           resolution="Try again later"
         />
       ) : (
@@ -510,7 +749,7 @@ const RetailEnquiryPage = () => {
           <EnquiryTable
             data={data}
             columns={columns}
-            title="Retail Enquiry List"
+            title="Out Of Warranty Enquiry List"
             noDataMessage={
               searched && data.length === 0 ? (
                 <tr>
@@ -535,4 +774,4 @@ const RetailEnquiryPage = () => {
   );
 };
 
-export default RetailEnquiryPage;
+export default OutOfWarrantyEnquiryPage;

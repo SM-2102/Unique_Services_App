@@ -46,8 +46,6 @@ const Filter = ({
   setToDeliveryDate,
   deliveredBy,
   setDeliveredBy,
-  invoiceDate,
-  setInvoiceDate,
   invoiceNo,
   setInvoiceNo,
   onSearch,
@@ -509,39 +507,6 @@ const Filter = ({
           <div style={{ marginBottom: 10 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
               <label
-                htmlFor="invoiceDate"
-                style={{
-                  fontWeight: 600,
-                  color: "#1976d2",
-                  letterSpacing: 0.5,
-                  fontSize: 13,
-                  width: 150,
-                }}
-              >
-                Invoice Date
-              </label>
-              <input
-                type="date"
-                id="invoiceDate"
-                name="invoiceDate"
-                value={invoiceDate}
-                onChange={(e) => setInvoiceDate(e.target.value)}
-                style={{
-                  padding: "4px 8px",
-                  border: "1px solid #d1d5db",
-                  borderRadius: 6,
-                  fontSize: 13,
-                  background: "#f7f9fc",
-                  outline: "none",
-                  boxShadow: "0 1px 2px rgba(25, 118, 210, 0.04)",
-                  width: "100%",
-                }}
-              />
-            </div>
-          </div>
-          <div style={{ marginBottom: 10 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-              <label
                 htmlFor="finalStatus"
                 style={{
                   fontWeight: 600,
@@ -650,7 +615,6 @@ const MarketEnquiryPage = () => {
   const [fromDeliveryDate, setFromDeliveryDate] = useState("");
   const [toDeliveryDate, setToDeliveryDate] = useState("");
   const [deliveredBy, setDeliveredBy] = useState("");
-  const [invoiceDate, setInvoiceDate] = useState("");
   const [invoiceNo, setInvoiceNo] = useState("");
 
   const [data, setData] = useState([]);
@@ -667,7 +631,6 @@ const MarketEnquiryPage = () => {
     setFromDeliveryDate("");
     setToDeliveryDate("");
     setDeliveredBy("");
-    setInvoiceDate("");
     setInvoiceNo("");
     setSearched(false);
     setData([]);
@@ -718,7 +681,6 @@ const MarketEnquiryPage = () => {
       if (fromDeliveryDate) params.from_delivery_date = fromDeliveryDate;
       if (toDeliveryDate) params.to_delivery_date = toDeliveryDate;
       if (deliveredBy) params.delivered_by = deliveredBy;
-      if (invoiceDate) params.invoice_date = invoiceDate;
       if (invoiceNo) params.invoice_number = invoiceNo;
       const res = await marketEnquiry(params);
       setData(res);
@@ -747,8 +709,6 @@ const MarketEnquiryPage = () => {
         setToDeliveryDate={setToDeliveryDate}
         deliveredBy={deliveredBy}
         setDeliveredBy={setDeliveredBy}
-        invoiceDate={invoiceDate}
-        setInvoiceDate={setInvoiceDate}
         invoiceNo={invoiceNo}
         setInvoiceNo={setInvoiceNo}
         onSearch={handleSearch}
@@ -781,7 +741,7 @@ const MarketEnquiryPage = () => {
                       padding: "24px 0",
                     }}
                   >
-                    No record found
+                    No records found
                   </td>
                 </tr>
               ) : null

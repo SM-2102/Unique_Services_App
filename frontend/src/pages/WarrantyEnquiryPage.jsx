@@ -794,7 +794,7 @@ const WarrantyEnquiryPage = () => {
                       padding: "24px 0",
                     }}
                   >
-                    No record found
+                    No records found
                   </td>
                 </tr>
               ) : null

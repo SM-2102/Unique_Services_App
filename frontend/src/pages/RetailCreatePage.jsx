@@ -313,7 +313,7 @@ const RetailCreatePage = () => {
                 required
                 value={form.rdate}
                 onChange={handleChange}
-                className={`w-full px-3 py-1 rounded-lg border ${errs_label.rdate ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
+                className={`w-full px-3 py-1 rounded-lg border ${errs_label.retail_date ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
                 disabled={submitting}
                 max={new Date().toLocaleDateString("en-CA")}
                 min={new Date().toLocaleDateString("en-CA")}
