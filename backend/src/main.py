@@ -13,6 +13,7 @@ from service_center.routes import service_center_router
 from user.routes import user_router
 from warranty.routes import warranty_router
 from out_of_warranty.routes import out_of_warranty_router
+from service_charge.routes import service_charge_router
 
 version = "v1"
 
@@ -71,4 +72,5 @@ app.include_router(warranty_router, prefix="/warranty", tags=["Warranty"])
 app.include_router(
     service_center_router, prefix="/service_center", tags=["Service Center"]
 )
+app.include_router(service_charge_router, prefix="/service_charge", tags=["Service Charge"])
 app.include_router(out_of_warranty_router, prefix="/out_of_warranty", tags=["Out of Warranty"])

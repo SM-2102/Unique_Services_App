@@ -144,7 +144,6 @@ class WarrantyService:
             else:
                 base = srf_number.split("/")[0]
                 srf_number = "R" + base.zfill(5) + "/1"
-        print(srf_number)
         if not srf_number.startswith("R"):
             raise IncorrectCodeFormat()
         statement = (
@@ -442,7 +441,7 @@ class WarrantyService:
                 srf_number=row.Warranty.srf_number,
                 name=row.Master.name,
                 model=row.Warranty.model,
-                serial_number=str(row.Warranty.serial_number),
+                serial_number=row.Warranty.serial_number,
                 challan=row.Warranty.challan,
             )
             for row in rows
@@ -652,7 +651,6 @@ class WarrantyService:
                 statement = statement.where(Warranty.delivery_date.is_(None))
         if received:
             if received == "Y":
-                print("checking received Y")
                 statement = statement.where(
                     Warranty.receive_date.isnot(None) & (Warranty.head == "REPLACE")
                 )

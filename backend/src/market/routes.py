@@ -114,7 +114,6 @@ async def master_enquiry(
     from_delivery_date: Optional[date] = None,
     to_delivery_date: Optional[date] = None,
     delivered_by: Optional[str] = None,
-    invoice_date: Optional[date] = None,
     invoice_number: Optional[str] = None,
     session: AsyncSession = Depends(get_session),
     _=Depends(access_token_bearer),
@@ -128,7 +127,6 @@ async def master_enquiry(
             from_delivery_date,
             to_delivery_date,
             delivered_by,
-            invoice_date,
             invoice_number,
         )
         return enquiry_list

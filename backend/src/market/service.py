@@ -121,7 +121,6 @@ class MarketService:
         from_delivery_date: Optional[date] = None,
         to_delivery_date: Optional[date] = None,
         delivered_by: Optional[str] = None,
-        invoice_date: Optional[date] = None,
         invoice_number: Optional[str] = None,
     ) -> List[MarketEnquiry]:
         # Check if master name exists
@@ -143,9 +142,6 @@ class MarketService:
 
         if delivered_by:
             statement = statement.where(Market.delivery_by.ilike(f"%{delivered_by}%"))
-
-        if invoice_date:
-            statement = statement.where(Market.invoice_date == invoice_date)
 
         if invoice_number:
             statement = statement.where(

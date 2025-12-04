@@ -5,45 +5,50 @@ from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse, StreamingResponse
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from auth.dependencies import AccessTokenBearer
+from auth.dependencies import AccessTokenBearer, RoleChecker
 from db.db import get_session
-# from exceptions import WarrantyNotFound
 from out_of_warranty.schemas import (
-    # OutOfWarrantyvendorChallanCode,
-    # OutOfWarrantyvendorChallanDetails,
-    # OutOfWarrantyvendorCreate,
-    # OutOfWarrantyvendorRequest,
-    # OutOfWarrantyCreate,
-    # OutOfWarrantyEnquiry,
+    OutOfWarrantyEnquiry,
+    OutOfWarrantyVendorChallanCode,
+    OutOfWarrantyVendorChallanDetails,
+    OutOfWarrantyVendorChallanCreate,
+    OutOfWarrantyVendorNotSettledRecord,
     OutOfWarrantyPending,
-    # OutOfWarrantySrfNumber,
-    # OutOfWarrantyUpdate,
-    # OutOfWarrantyUpdateResponse,
+    OutOfWarrantySrfNumber,
+    UpdateVendorUnsettled,
+    UpdateVendorFinalSettlement,
+    OutOfWarrantyVendorFinalSettlementRecord,
+    OutOfWarrantySRFSettleRecord,
+    UpdateSRFUnsettled,
+    UpdateSRFFinalSettlement,
+    OutOfWarrantyCreate,
 )
 from out_of_warranty.service import OutOfWarrantyService
 
 out_of_warranty_router = APIRouter()
 out_of_warranty_service = OutOfWarrantyService()
 access_token_bearer = AccessTokenBearer()
-
-# """
-# Create new OutOfWarranty record, after checking master name and ASC name
-# """
+role_checker = Depends(RoleChecker(allowed_roles=["ADMIN"]))
 
 
-# @out_of_warranty_router.post("/create", status_code=status.HTTP_201_CREATED)
-# async def create_warranty(
-#     OutOfWarranty: WarrantyCreate,
-#     session: AsyncSession = Depends(get_session),
-#     token=Depends(access_token_bearer),
-# ):
-#     new_warranty = await out_of_warranty_service.create_warranty(session, OutOfWarranty, token)
-#     return JSONResponse(
-#         content={
-#             "srf_number": new_warranty.srf_number,
-#             "message": f"SRF Number : {new_warranty.srf_number}",
-#         }
-#     )
+"""
+Create new Out Of Warranty record, after checking master name
+"""
+
+
+@out_of_warranty_router.post("/create", status_code=status.HTTP_201_CREATED)
+async def create_out_of_warranty(
+    out_of_warranty: OutOfWarrantyCreate,
+    session: AsyncSession = Depends(get_session),
+    token=Depends(access_token_bearer),
+):
+    new_out_of_warranty = await out_of_warranty_service.create_out_of_warranty(session, out_of_warranty, token)
+    return JSONResponse(
+        content={
+            "srf_number": new_out_of_warranty.srf_number,
+            "message": f"SRF Number : {new_out_of_warranty.srf_number}",
+        }
+    )
 
 
 """
@@ -138,25 +143,25 @@ async def last_srf_number(
     return JSONResponse(content={"last_srf_number": last_srf_number})
 
 
-# """
-# Print srf by srf number.
-# """
+"""
+Print srf by srf number.
+"""
 
 
-# @out_of_warranty_router.post("/srf_print", status_code=status.HTTP_200_OK)
-# async def print_srf(
-#     data: WarrantySrfNumber,
-#     session: AsyncSession = Depends(get_session),
-#     token=Depends(access_token_bearer),
-# ):
-#     srf_pdf = await out_of_warranty_service.print_srf(data.srf_number, token, session)
-#     return StreamingResponse(
-#         srf_pdf,
-#         media_type="application/pdf",
-#         headers={
-#             "Content-Disposition": f'attachment; filename="{data.srf_number}.pdf"'
-#         },
-#     )
+@out_of_warranty_router.post("/srf_print", status_code=status.HTTP_200_OK)
+async def print_srf(
+    data: OutOfWarrantySrfNumber,
+    session: AsyncSession = Depends(get_session),
+    token=Depends(access_token_bearer),
+):
+    srf_pdf = await out_of_warranty_service.print_srf(data.srf_number, token, session)
+    return StreamingResponse(
+        srf_pdf,
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f'attachment; filename="{data.srf_number}.pdf"'
+        },
+    )
 
 
 """
@@ -185,100 +190,245 @@ async def last_vendor_challan_code(
     return JSONResponse(content={"last_vendor_challan_code": last_challan_number})
 
 
-# """
-# List vendor Challan Details
-# """
+"""
+List vendor Challan Details
+"""
 
 
-# @out_of_warranty_router.post(
-#     "/list_vendor_challan_details",
-#     response_model=List[WarrantyvendorChallanDetails],
-#     status_code=status.HTTP_200_OK,
-# )
-# async def list_vendor_challan_details(
-#     data: WarrantyvendorRequest,
-#     session: AsyncSession = Depends(get_session),
-#     _=Depends(access_token_bearer),
-# ):
-#     vendor_list = await out_of_warranty_service.list_vendor_challan_details(session, data.division)
-#     return vendor_list
+@out_of_warranty_router.get(
+    "/list_vendor_challan_details",
+    response_model=List[OutOfWarrantyVendorChallanDetails],
+    status_code=status.HTTP_200_OK,
+)
+async def list_vendor_challan_details(
+    session: AsyncSession = Depends(get_session),
+    _=Depends(access_token_bearer),
+):
+    vendor_list = await out_of_warranty_service.list_vendor_challan_details(session)
+    return vendor_list
 
 
-# """
-# Update retail records - List of Records
-# """
+"""
+Update retail records - List of Records
+"""
 
 
-# @out_of_warranty_router.patch("/create_vendor_challan", status_code=status.HTTP_202_ACCEPTED)
-# async def create_vendor_challan(
-#     list_retail: List[WarrantyvendorCreate],
-#     session: AsyncSession = Depends(get_session),
-#     _=Depends(access_token_bearer),
-# ):
-#     await out_of_warranty_service.create_vendor_challan(list_retail, session)
-#     return JSONResponse(content={"message": f"vendor Challan Records Updated"})
+@out_of_warranty_router.patch("/create_vendor_challan", status_code=status.HTTP_202_ACCEPTED)
+async def create_vendor_challan(
+    list_vendor: List[OutOfWarrantyVendorChallanCreate],
+    session: AsyncSession = Depends(get_session),
+    _=Depends(access_token_bearer),
+):
+    await out_of_warranty_service.create_vendor_challan(list_vendor, session)
+    return JSONResponse(content={"message": f"Vendor Challan Records Updated"})
 
 
-# """
-# Print vendor challan by vendor number.
-# """
+"""
+Print vendor challan by challan number.
+"""
 
 
-# @out_of_warranty_router.post("/vendor_challan_print", status_code=status.HTTP_200_OK)
-# async def print_vendor_challan(
-#     data: WarrantyvendorChallanCode,
-#     session: AsyncSession = Depends(get_session),
-#     token=Depends(access_token_bearer),
-# ):
-#     vendor_pdf = await out_of_warranty_service.print_vendor_challan(
-#         data.challan_number, token, session
-#     )
-#     return StreamingResponse(
-#         vendor_pdf,
-#         media_type="application/pdf",
-#         headers={
-#             "Content-Disposition": f'attachment; filename="{data.challan_number}.pdf"'
-#         },
-#     )
+@out_of_warranty_router.post("/vendor_challan_print", status_code=status.HTTP_200_OK)
+async def print_vendor_challan(
+    data: OutOfWarrantyVendorChallanCode,
+    session: AsyncSession = Depends(get_session),
+    token=Depends(access_token_bearer),
+):
+    vendor_pdf = await out_of_warranty_service.print_vendor_challan(
+        data.challan_number, token, session
+    )
+    return StreamingResponse(
+        vendor_pdf,
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f'attachment; filename="{data.challan_number}.pdf"'
+        },
+    )
 
 
-# """
-# OutOfWarranty enquiry using query parameters.
+"""
+OutOfWarranty enquiry using query parameters.
 
-#  """
+ """
 
 
-# @out_of_warranty_router.get(
-#     "/enquiry", response_model=List[WarrantyEnquiry], status_code=status.HTTP_200_OK
-# )
-# async def enquiry_warranty(
-#     final_status: Optional[str] = None,
-#     name: Optional[str] = None,
-#     division: Optional[str] = None,
-#     from_srf_date: Optional[date] = None,
-#     to_srf_date: Optional[date] = None,
-#     delivered_by: Optional[str] = None,
-#     delivered: Optional[str] = None,
-#     received: Optional[str] = None,
-#     repaired: Optional[str] = None,
-#     head: Optional[str] = None,
-#     session: AsyncSession = Depends(get_session),
-#     _=Depends(access_token_bearer),
-# ):
-#     try:
-#         result = await out_of_warranty_service.enquiry_warranty(
-#             session,
-#             final_status,
-#             name,
-#             division,
-#             from_srf_date,
-#             to_srf_date,
-#             delivered_by,
-#             delivered,
-#             received,
-#             repaired,
-#             head,
-#         )
-#         return result
-#     except:
-#         return []
+@out_of_warranty_router.get(
+    "/enquiry", response_model=List[OutOfWarrantyEnquiry], status_code=status.HTTP_200_OK
+)
+async def enquiry_out_of_warranty(
+    final_status: Optional[str] = None,
+    final_settled: Optional[str] = None,
+    vendor_settled: Optional[str] = None,
+    name: Optional[str] = None,
+    division: Optional[str] = None,
+    from_srf_date: Optional[date] = None,
+    to_srf_date: Optional[date] = None,
+    estimated: Optional[str] = None,
+    repaired: Optional[str] = None,
+    challaned: Optional[str] = None,
+    delivered: Optional[str] = None,
+    session: AsyncSession = Depends(get_session),
+    _=Depends(access_token_bearer),
+):
+    try:
+        result = await out_of_warranty_service.enquiry_out_of_warranty(
+            session,
+            final_status,
+            name,
+            division,
+            from_srf_date,
+            to_srf_date,
+            estimated,
+            final_settled,
+            vendor_settled,
+            challaned,
+            delivered,
+            repaired,
+        )
+        return result
+    except:
+        return []
+
+"""
+List distinct received_by names
+"""
+
+
+@out_of_warranty_router.get(
+    "/list_received_by", response_model=List, status_code=status.HTTP_200_OK
+)
+async def list_received_by(
+    session: AsyncSession = Depends(get_session), _=Depends(access_token_bearer)
+):
+    names = await out_of_warranty_service.list_received_by(session)
+    return names
+
+
+"""
+List all unsettled vendor records.
+"""
+
+
+@out_of_warranty_router.get(
+    "/vendor_not_settled",
+    response_model=List[OutOfWarrantyVendorNotSettledRecord],
+    status_code=status.HTTP_200_OK,
+)
+async def list_vendor_unsettled(
+    session: AsyncSession = Depends(get_session), _=Depends(access_token_bearer)
+):
+    unsettled = await out_of_warranty_service.list_vendor_not_settled(session)
+    return unsettled
+
+
+"""
+Update out of warranty vendor records - List of Records
+"""
+
+
+@out_of_warranty_router.patch("/update_vendor_unsettled", status_code=status.HTTP_202_ACCEPTED)
+async def update_vendor_unsettled(
+    list_vendor: List[UpdateVendorUnsettled],
+    session: AsyncSession = Depends(get_session),
+    _=Depends(access_token_bearer),
+):
+    await out_of_warranty_service.update_vendor_unsettled(list_vendor, session)
+    return JSONResponse(content={"message": f"Vendor Records Proposed for Settlement"})
+
+
+"""
+List all final vendor settlement records
+"""
+
+
+@out_of_warranty_router.get(
+    "/list_of_final_vendor_settlement",
+    response_model=List[OutOfWarrantyVendorFinalSettlementRecord],
+    status_code=status.HTTP_200_OK,
+    dependencies=[role_checker],
+)
+async def list_final_vendor_settlement(
+    session: AsyncSession = Depends(get_session), _=Depends(access_token_bearer)
+):
+    final_settlement = await out_of_warranty_service.list_final_vendor_settlement(session)
+    return final_settlement
+
+
+"""
+Update final vendor settlement records - List of Records
+"""
+
+
+@out_of_warranty_router.patch("/update_final_vendor_settlement", status_code=status.HTTP_202_ACCEPTED, dependencies=[role_checker])
+async def update_final_vendor_settlement(
+    list_vendor: List[UpdateVendorFinalSettlement],
+    session: AsyncSession = Depends(get_session),
+    _=Depends(access_token_bearer),
+):
+    await out_of_warranty_service.update_final_vendor_settlement(list_vendor, session)
+    return JSONResponse(content={"message": f"Vendor Records Settled"})
+
+
+"""
+List all unsettled srf records.
+"""
+
+
+@out_of_warranty_router.get(
+    "/srf_not_settled",
+    response_model=List[OutOfWarrantySRFSettleRecord],
+    status_code=status.HTTP_200_OK,
+)
+async def list_srf_unsettled(
+    session: AsyncSession = Depends(get_session), _=Depends(access_token_bearer)
+):
+    unsettled = await out_of_warranty_service.list_srf_not_settled(session)
+    return unsettled
+
+
+"""
+Update out of warranty srf records - List of Records
+"""
+
+
+@out_of_warranty_router.patch("/update_srf_unsettled", status_code=status.HTTP_202_ACCEPTED)
+async def update_srf_unsettled(
+    list_srf: List[UpdateSRFUnsettled],
+    session: AsyncSession = Depends(get_session),
+    _=Depends(access_token_bearer),
+):
+    await out_of_warranty_service.update_srf_unsettled(list_srf, session)
+    return JSONResponse(content={"message": f"SRF Records Proposed for Settlement"})
+
+
+"""
+List all final srf settlement records
+"""
+
+
+@out_of_warranty_router.get(
+    "/list_of_final_srf_settlement",
+    response_model=List[OutOfWarrantySRFSettleRecord],
+    status_code=status.HTTP_200_OK,
+    dependencies=[role_checker],
+)
+async def list_final_srf_settlement(
+    session: AsyncSession = Depends(get_session), _=Depends(access_token_bearer)
+):
+    final_settlement = await out_of_warranty_service.list_final_srf_settlement(session)
+    return final_settlement
+
+
+"""
+Update final srf settlement records - List of Records
+"""
+
+
+@out_of_warranty_router.patch("/update_final_srf_settlement", status_code=status.HTTP_202_ACCEPTED, dependencies=[role_checker])
+async def update_final_srf_settlement(
+    list_srf: List[UpdateSRFFinalSettlement],
+    session: AsyncSession = Depends(get_session),
+    _=Depends(access_token_bearer),
+):
+    await out_of_warranty_service.update_final_srf_settlement(list_srf, session)
+    return JSONResponse(content={"message": f"Vendor Records Settled"})

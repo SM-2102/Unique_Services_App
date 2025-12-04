@@ -27,7 +27,7 @@ class OutOfWarranty(SQLModel, table=True):
     waive_details: str = Field(sa_column=Column(pg.VARCHAR(40), nullable=True))
     model: str = Field(sa_column=Column(pg.VARCHAR(30), nullable=False))
     serial_number: str = Field(sa_column=Column(pg.VARCHAR(15), nullable=False))
-    problem: str = Field(sa_column=Column(pg.VARCHAR(30), nullable=True))
+    problem: str = Field(sa_column=Column(pg.VARCHAR(30), nullable=True)) 
     remark: str = Field(sa_column=Column(pg.VARCHAR(40), nullable=True))
     challan_number: str = Field(sa_column=Column(pg.VARCHAR(6), nullable=True))
     # V00001, V0002

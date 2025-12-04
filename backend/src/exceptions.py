@@ -77,6 +77,9 @@ class ServiceCenterNotFound(BaseException):
 class WarrantyNotFound(BaseException):
     """Warranty Not Found"""
 
+class OutOfWarrantyNotFound(BaseException):
+    """Out Of Warranty Not Found"""
+
 
 def create_exception_handler(
     status_code: int, initial_detail: Any
@@ -276,6 +279,18 @@ def register_exceptions(app: FastAPI):
                 "message": "Warranty Not Found",
                 "resolution": "Please check the SRF number",
                 "error_code": "warranty_not_found",
+            },
+        ),
+    )
+
+    app.add_exception_handler(
+        OutOfWarrantyNotFound,
+        create_exception_handler(
+            status_code=status.HTTP_404_NOT_FOUND,
+            initial_detail={
+                "message": "Out Of Warranty Not Found",
+                "resolution": "Please check the SRF number",
+                "error_code": "out_of_warranty_not_found",
             },
         ),
     )
