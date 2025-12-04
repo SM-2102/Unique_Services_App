@@ -32,6 +32,15 @@ import WarrantyCreateCNFPage from "./pages/WarrantyCreateCNFPage.jsx";
 import WarrantyCNFPrintPage from "./pages/WarrantyCNFPrintPage.jsx";
 import WarrantyUpdatePage from "./pages/WarrantyUpdatePage.jsx";
 import WarrantyEnquiryPage from "./pages/WarrantyEnquiryPage.jsx";
+import OutOfWarrantyVendorPrintPage from "./pages/OutOfWarrantyVendorPrintPage.jsx";
+import OutOfWarrantySRFPrintPage from "./pages/OutOfWarrantySRFPrintPage.jsx";
+import OutOfWarrantyCreateVendorPage from "./pages/OutOfWarrantyVendorCreatePage.jsx";
+import OutOfWarrantySettleVendorUserPage from "./pages/OutOfWarrantyVendorSettleUserPage.jsx";
+import OutOfWarrantyVendorSettleAdminPage from "./pages/OutOfWarrantyVendorSettleAdminPage.jsx";
+import OutOfWarrantySettleSRFUserPage from "./pages/OutOfWarrantySRFSettleUserPage.jsx";
+import OutOfWarrantySettleSRFAdminPage from "./pages/OutOfWarrantySRFSettleAdminPage.jsx";
+import OutOfWarrantyEnquiryPage from "./pages/OutOfWarrantyEnquiryPage.jsx";
+import OutOfWarrantyCreatePage from "./pages/OutOfWarrantyCreatePage.jsx";
 
 function AppRoutesWithNav() {
   return (
@@ -252,7 +261,7 @@ function AppRoutesWithNav() {
             path="/CreateOutOfWarrantySRF"
             element={
               <PrivateRoute>
-                <PageNotAvailable />
+                <OutOfWarrantyCreatePage />
               </PrivateRoute>
             }
           />
@@ -260,7 +269,7 @@ function AppRoutesWithNav() {
             path="/PrintOutOfWarrantySRF"
             element={
               <PrivateRoute>
-                <PageNotAvailable />
+                <OutOfWarrantySRFPrintPage />
               </PrivateRoute>
             }
           />
@@ -276,7 +285,7 @@ function AppRoutesWithNav() {
             path="/ProposeToSettleOutOfWarrantySRF"
             element={
               <PrivateRoute>
-                <PageNotAvailable />
+                <OutOfWarrantySettleSRFUserPage />
               </PrivateRoute>
             }
           />
@@ -284,7 +293,7 @@ function AppRoutesWithNav() {
             path="/CreateOutOfWarrantyVendorChallan"
             element={
               <PrivateRoute>
-                <PageNotAvailable />
+                <OutOfWarrantyCreateVendorPage />
               </PrivateRoute>
             }
           />
@@ -292,7 +301,7 @@ function AppRoutesWithNav() {
             path="/PrintOutOfWarrantyVendorChallan"
             element={
               <PrivateRoute>
-                <PageNotAvailable />
+                <OutOfWarrantyVendorPrintPage />
               </PrivateRoute>
             }
           />
@@ -308,7 +317,7 @@ function AppRoutesWithNav() {
             path="/FinalSettlementOutOfWarrantyVendor"
             element={
               <PrivateRoute requiredRole="ADMIN">
-                <PageNotAvailable />
+                <OutOfWarrantyVendorSettleAdminPage />
               </PrivateRoute>
             }
           />
@@ -316,7 +325,7 @@ function AppRoutesWithNav() {
             path="/OutOfWarrantyEnquiry"
             element={
               <PrivateRoute>
-                <PageNotAvailable />
+                <OutOfWarrantyEnquiryPage />
               </PrivateRoute>
             }
           />
@@ -324,7 +333,7 @@ function AppRoutesWithNav() {
             path="/FinalSettlementOutOfWarrantySRF"
             element={
               <PrivateRoute requiredRole="ADMIN">
-                <PageNotAvailable />
+                <OutOfWarrantySettleSRFAdminPage />
               </PrivateRoute>
             }
           />
@@ -332,7 +341,7 @@ function AppRoutesWithNav() {
             path="/ProposeToSettleOutOfWarrantyVendor"
             element={
               <PrivateRoute>
-                <PageNotAvailable />
+                <OutOfWarrantySettleVendorUserPage />
               </PrivateRoute>
             }
           />

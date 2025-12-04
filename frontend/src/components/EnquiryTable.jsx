@@ -166,7 +166,9 @@ const EnquiryTable = ({
                           }}
                         >
                           {row[col.key] !== null && row[col.key] !== undefined
-                            ? row[col.key]
+                            ? (typeof col.render === "function"
+                                ? col.render(row[col.key], row)
+                                : row[col.key])
                             : "-"}
                         </TableCell>
                       ))}
