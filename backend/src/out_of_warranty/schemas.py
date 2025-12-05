@@ -143,6 +143,7 @@ class OutOfWarrantySRFSettleRecord(BaseModel):
     pc_number: Optional[int]
     invoice_number: Optional[int]
     service_charge: Optional[float]
+    waive_details: Optional[str]
 
 class UpdateSRFUnsettled(BaseModel):
     srf_number: str

@@ -138,7 +138,7 @@ const OutOfWarrantyVendorSettleAdminPage = () => {
         color="primary.dark"
         sx={{ mb: 1 }}
       >
-        Retail Final Settlement
+        Out Of Warranty Vendor Final Settlement
       </Typography>
       <Box
         display="flex"

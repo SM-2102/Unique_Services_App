@@ -48,6 +48,7 @@ class MarketCode(BaseModel):
 class MarketEnquiry(BaseModel):
     mcode: str
     name: str
+    contact_number: str
     division: str
     invoice_number: str
     invoice_date: str

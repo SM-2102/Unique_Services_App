@@ -527,7 +527,7 @@ const OutOfWarrantyCreatePage = () => {
             />
           </div>
           {/* Model & Serial Number - same line */}
-          <div className="flex items-center w-full gap-8">
+          <div className="flex items-center w-full">
             <div className="flex items-center w-1/2 gap-2">
               <label
                 htmlFor="model"
@@ -550,7 +550,7 @@ const OutOfWarrantyCreatePage = () => {
             <div className="flex items-center w-1/2 gap-2">
               <label
                 htmlFor="serial_number"
-                className="w-55 text-md font-medium text-gray-700"
+                className="w-70 text-md font-medium text-gray-700 ml-6"
               >
                 Serial No.<span className="text-red-500">*</span>
               </label>

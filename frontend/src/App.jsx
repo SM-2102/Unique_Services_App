@@ -41,6 +41,7 @@ import OutOfWarrantySettleSRFUserPage from "./pages/OutOfWarrantySRFSettleUserPa
 import OutOfWarrantySettleSRFAdminPage from "./pages/OutOfWarrantySRFSettleAdminPage.jsx";
 import OutOfWarrantyEnquiryPage from "./pages/OutOfWarrantyEnquiryPage.jsx";
 import OutOfWarrantyCreatePage from "./pages/OutOfWarrantyCreatePage.jsx";
+import OutOfWarrantyEstimatePrintPage from "./pages/OutOfWarrantyEstimatePrintPage.jsx";
 
 function AppRoutesWithNav() {
   return (
@@ -309,7 +310,7 @@ function AppRoutesWithNav() {
             path="/PrintOutOfWarrantyEstimate"
             element={
               <PrivateRoute>
-                <PageNotAvailable />
+                <OutOfWarrantyEstimatePrintPage />
               </PrivateRoute>
             }
           />

@@ -760,6 +760,7 @@ class OutOfWarrantyService:
                 pc_number=row.OutOfWarranty.pc_number,
                 invoice_number=row.OutOfWarranty.invoice_number,
                 service_charge=row.OutOfWarranty.service_charge,
+                waive_details=row.OutOfWarranty.waive_details,
             )
             for row in rows
         ]
@@ -795,6 +796,7 @@ class OutOfWarrantyService:
                 pc_number=row.OutOfWarranty.pc_number,
                 invoice_number=row.OutOfWarranty.invoice_number,
                 service_charge=row.OutOfWarranty.service_charge,
+                waive_details=row.OutOfWarranty.waive_details,
             )
             for row in rows
         ]

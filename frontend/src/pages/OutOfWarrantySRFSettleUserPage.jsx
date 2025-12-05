@@ -13,6 +13,7 @@ import {
 import Toast from "../components/Toast";
 import { fetchOutOfWarrantySRFNotSettled } from "../services/outOfWarrantySRFNotSettledService";
 import { updateOutOfWarrantySRFSettled } from "../services/outOfWarrantySRFUpdateSettledService";
+import Tooltip from "@mui/material/Tooltip";
 
 const columns = [
   { key: "srf_number", label: "SRF Number" },
@@ -284,22 +285,74 @@ const OutOfWarrantySettleSRFUserPage = () => {
                           }),
                         }}
                       >
-                        {col.key === "pc_invoice"
+                        
+                        {col.key === "service_charge" ? (
+                                Number(row.service_charge) === 0 ? (
+                                  <Tooltip
+                                    title={
+                                      <span style={{ fontSize: "12px", lineHeight: 1.4 }}>
+                                        {row.waive_details || "No waive details"}
+                                      </span>
+                                    }
+                                    arrow
+                                    placement="top"
+                                    slotProps={{
+                                      tooltip: {
+                                        sx: {
+                                          bgcolor: "#093275ff",
+                                          color: "#fff",
+                                          px: 1.5,
+                                          py: 1,
+                                          borderRadius: "8px",
+                                          boxShadow: "0 3px 12px rgba(0,0,0,0.25)",
+                                        },
+                                      },
+                                      arrow: {
+                                        sx: {
+                                          color: "#1e293b",
+                                        },
+                                      },
+                                    }}
+                                  >
+                                    <span
+                                      style={{
+                                        color: "#d32f2f",
+                                        fontWeight: 700,
+                                        cursor: "pointer",
+                                        borderBottom: "2px dotted #d32f2f",
+                                        paddingBottom: "1px",
+                                      }}
+                                    >
+                                      ₹ 0.00
+                                    </span>
+                                  </Tooltip>
+                                ) : (
+                                  `₹ ${(Number(row.service_charge) || 0).toLocaleString(undefined, {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2,
+                                  })}`
+                                )
+                              )
+                              : col.key === "final_amount" ? (
+                                row[col.key] !== null && row[col.key] !== undefined && row[col.key] !== ""
+                                  ? `₹ ${(Number(row[col.key]) || 0).toLocaleString(undefined, {
+                                      minimumFractionDigits: 2,
+                                      maximumFractionDigits: 2,
+                                    })}`
+                                  : "-"
+                              ) : col.key === "pc_invoice"
                             ? (
                               row.pc_number && row.pc_number !== null && row.pc_number !== ""
                                 ? row.pc_number
                                 : (row.invoice_number && row.invoice_number !== null && row.invoice_number !== ""
                                   ? row.invoice_number
                                   : "-")
-                            )
-                          : col.key === "final_amount" || col.key === "service_charge"
-                            ? (
-                                row[col.key] !== null && row[col.key] !== undefined && row[col.key] !== ""
-                                  ? `₹ ${(Number(row[col.key]) || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-                                  : "-"
-                              )
-                            : (row[col.key] !== null && row[col.key] !== undefined && row[col.key] !== "" ? row[col.key] : "-")
-                        }
+                            ) : (
+  row[col.key] !== null && row[col.key] !== undefined && row[col.key] !== ""
+    ? row[col.key]
+    : "-"
+)}
+
                       </TableCell>
                     ))}
                   </TableRow>

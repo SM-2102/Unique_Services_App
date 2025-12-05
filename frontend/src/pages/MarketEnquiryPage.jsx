@@ -10,10 +10,11 @@ import ShowToast from "../components/Toast";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 const columns = [
-  { key: "mcode", label: "Material Code" },
+  { key: "mcode", label: "Receipt No." },
   { key: "name", label: "Name" },
+  { key: "contact_number", label: "Contact" },
   { key: "division", label: "Division" },
-  { key: "invoice_number", label: "Invoice Number" },
+  { key: "invoice_number", label: "Invoice No." },
   { key: "invoice_date", label: "Invoice Date" },
   { key: "quantity", label: "Quantity" },
   { key: "delivery_date", label: "Delivery Date" },

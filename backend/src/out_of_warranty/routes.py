@@ -432,3 +432,18 @@ async def update_final_srf_settlement(
 ):
     await out_of_warranty_service.update_final_srf_settlement(list_srf, session)
     return JSONResponse(content={"message": f"Vendor Records Settled"})
+
+"""
+Get out of warranty estimate print details by name (check if customer exists)
+"""
+
+
+@out_of_warranty_router.get("/show_receipt_names", response_model=List[OutOfWarrantyEstimatePrintResponse])
+async def retail_print(
+    name: str,
+    session: AsyncSession = Depends(get_session),
+    _=Depends(access_token_bearer),
+):
+
+    print_details = await out_of_warranty_service.get_out_of_warranty_estimate_print_details(session, name)
+    return print_details

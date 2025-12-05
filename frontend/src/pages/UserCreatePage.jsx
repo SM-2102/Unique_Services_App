@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Container, Typography, Paper } from "@mui/material";
 import { createUser } from "../services/createUserService";
 import Toast from "../components/Toast";
-import { validateCreateUser } from "../utils/createUserValidation";
+import { validateCreateUser } from "../utils/userCreateValidation";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const roles = ["USER", "ADMIN"];
