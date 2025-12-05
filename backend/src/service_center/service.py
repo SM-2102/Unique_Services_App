@@ -24,3 +24,12 @@ class ServiceCenterService:
         result = await session.execute(statement)
         names = result.scalars().all()
         return names
+    
+    async def create_service_center(self, session: AsyncSession, name: str):
+        try:
+            await self.check_service_center_name_available(name, session)
+        except ServiceCenterNotFound:
+            new_service_center = Service_Centre(asc_name=name)
+            session.add(new_service_center)
+            await session.commit()
+        

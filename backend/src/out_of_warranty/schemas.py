@@ -165,3 +165,12 @@ class OutOfWarrantyEnquiry(BaseModel):
     final_amount: Optional[float]
     contact_number: Optional[str]
 
+class OutOfWarrantyEstimatePrintResponse(BaseModel):
+    srf_number:str
+    srf_date: str
+    model: str
+    total: str
+
+
+class OutOfWarrantySRFNumber(BaseModel):
+    srf_number: List[str]

@@ -23,9 +23,9 @@ function validateRetailCreate(form) {
     errs.push("Details is required");
     errs_label["details"] = "Details is required";
   }
-  if(!form.retail_date) {
+  if(!form.rdate) {
     errs.push("Retail Date is required");
-    errs_label.retail_date = true;
+    errs_label.rdate = true;
   }
 
   return [errs, errs_label];

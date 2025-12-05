@@ -90,7 +90,8 @@ const API_ENDPOINTS = {
   OUT_OF_WARRANTY_LIST_FINAL_SRF_SETTLEMENT: `${BASE_API_URL}out_of_warranty/list_of_final_srf_settlement`,
   OUT_OF_WARRANTY_UPDATE_FINAL_SRF_SETTLEMENT: `${BASE_API_URL}out_of_warranty/update_final_srf_settlement`,
   OUT_OF_WARRANTY_ENQUIRY: `${BASE_API_URL}out_of_warranty/enquiry`, //append params
-
+  OUT_OF_WARRANTY_ESTIMATE_PRINT_DETAILS: `${BASE_API_URL}out_of_warranty/show_receipt_names`,
+  OUT_OF_WARRANTY_ESTIMATE_PRINT: `${BASE_API_URL}out_of_warranty/estimate_print`,
   
 };
 

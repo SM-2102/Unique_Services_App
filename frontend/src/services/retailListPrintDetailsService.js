@@ -2,7 +2,7 @@ import { authFetch } from "./authFetchService";
 import API_ENDPOINTS from "../config/api";
 
 /**
- * Fetches the lretail details for printing based on the customer's name.
+ * Fetches the retail details for printing based on the customer's name.
  */
 
 async function fetchRetailPrintDetails(name) {

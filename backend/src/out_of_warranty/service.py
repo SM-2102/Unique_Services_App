@@ -1,6 +1,6 @@
 import io
 import os
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from typing import List, Optional
 
 from PyPDF2 import PdfReader, PdfWriter
@@ -11,7 +11,7 @@ from sqlalchemy import case, func, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
-from exceptions import IncorrectCodeFormat, OutOfWarrantyNotFound
+from exceptions import IncorrectCodeFormat, OutOfWarrantyNotFound, MasterNotFound
 from master.models import Master
 from master.service import MasterService
 from utils.date_utils import format_date_ddmmyyyy, parse_date
@@ -31,6 +31,8 @@ from out_of_warranty.schemas import (
     UpdateSRFUnsettled,
     UpdateSRFFinalSettlement,
     OutOfWarrantyCreate,
+    OutOfWarrantyEstimatePrintResponse,
+    OutOfWarrantySRFNumber,
 )
 
 master_service = MasterService()
@@ -811,3 +813,201 @@ class OutOfWarrantyService:
             if existing_srf:
                 existing_srf.final_settled = srf.final_settled
         await session.commit()
+
+    async def get_out_of_warranty_estimate_print_details(
+        self,
+        session: AsyncSession,
+        name: str,
+    ) -> List[OutOfWarrantyEstimatePrintResponse]:
+        master_exists = await master_service.check_master_name_available(name, session)
+        if not master_exists:
+            raise MasterNotFound()
+        statement = (
+            select(OutOfWarranty)
+            .join(Master, Master.code == OutOfWarranty.code)
+            .where((Master.name == name) & (OutOfWarranty.final_settled != "Y"))
+            .order_by(OutOfWarranty.srf_number)
+        )
+
+        result = await session.execute(statement)
+        rows = result.scalars().all()
+        return [
+            OutOfWarrantyEstimatePrintResponse(
+                srf_number=row.srf_number,
+                srf_date=format_date_ddmmyyyy(row.srf_date),
+                model=row.model,
+                total=f"{row.total:.2f}" if row.total else "0.00",
+            )
+            for row in rows
+        ]
+    
+    async def print_estimate(
+        self,
+        codes: OutOfWarrantySRFNumber,
+        session: AsyncSession
+    ) -> io.BytesIO:
+
+        # Query out_of_warranty + master
+        statement = (
+            select(OutOfWarranty, Master)
+            .join(Master, OutOfWarranty.code == Master.code)
+            .where(OutOfWarranty.srf_number.in_(codes.srf_number))
+            .order_by(OutOfWarranty.srf_number)
+        )
+
+        result = await session.execute(statement)   
+        rows = result.all()
+
+        # Extract header fields
+        first_row = rows[0]
+        master = first_row.Master
+
+        code = master.code
+        master_details = await master_service.get_master_details(code, session)
+        name = master_details["name"]
+        address = master_details["full_address"]
+
+        today_date = datetime.now().strftime("%d-%m-%Y")
+
+        # Prepare table rows
+        table_rows = []
+        grand_total = 0.0
+
+        for row in rows:
+            ow = row.OutOfWarranty
+
+            srf = ow.srf_number or ""
+            service_charge = float(ow.service_charge or 0)
+            rewinding_cost = float(ow.rewinding_cost or 0)
+            spare_cost = float(ow.spare_cost or 0)
+            other_cost = float(ow.other_cost or 0)
+            godown_cost = float(ow.godown_cost or 0)
+            discount = float(ow.discount or 0)
+            total_amount = float(ow.total or 0)
+
+            table_rows.append([
+                srf,
+                f"{service_charge:.2f}",
+                f"{rewinding_cost:.2f}",
+                f"{spare_cost:.2f}",
+                f"{other_cost:.2f}",
+                f"{godown_cost:.2f}",
+                f"{discount:.2f}",
+                f"{total_amount:.2f}",
+            ])
+
+            grand_total += total_amount
+
+        grand_total_str = f"{grand_total:.2f}"
+
+        def generate_overlay(table_rows, code, name, address, today_date, grand_total):
+            packet = io.BytesIO()
+            can = canvas.Canvas(packet, pagesize=A4)
+            width, height = A4
+
+            # Header
+            can.setFont("Helvetica-Bold", 10)
+            can.drawString(150, 688, code)
+            can.drawString(220, 668, name)
+            can.drawString(220, 645, address)
+            can.drawString(460, 688, today_date)
+
+            # Grand total
+            column_width = 50
+            x_start = 460
+            text_width = stringWidth(grand_total, "Helvetica-Bold", 10)
+            x_position = x_start + (column_width - text_width) / 2
+            can.drawString(x_position, 425, grand_total)
+
+            # Table layout
+            y = 567
+            line_spacing = 8
+            min_row_height = 17
+            row_padding = 0.2
+
+            columns = [
+                {"x": 50,  "width": 90},  # SRF No
+                {"x": 145, "width": 65},  # Service Charge
+                {"x": 220, "width": 40},  # Rewinding Cost
+                {"x": 265, "width": 40},  # Spare Cost
+                {"x": 310, "width": 40},  # Other Cost
+                {"x": 355, "width": 40},  # Godown Cost
+                {"x": 400, "width": 50},  # Discount
+                {"x": 460, "width": 50},  # Total Amount
+            ]
+
+            can.setFont("Helvetica", 8)
+
+            for row in table_rows:
+                row_lines = []
+                for col, text in zip(columns, row):
+                    words = text.split()
+                    lines, line = [], ""
+
+                    for word in words:
+                        test_line = (line + " " + word).strip()
+                        if stringWidth(test_line, "Helvetica", 9) <= col["width"]:
+                            line = test_line
+                        else:
+                            lines.append(line)
+                            line = word
+
+                    if line:
+                        lines.append(line)
+
+                    row_lines.append(lines)
+
+                max_lines = max(len(lines) for lines in row_lines)
+                row_height = max(max_lines * line_spacing, min_row_height)
+
+                for col, lines in zip(columns, row_lines):
+                    total_height = len(lines) * line_spacing
+                    vertical_offset = (row_height - total_height) / 2
+
+                    for i, ln in enumerate(lines):
+                        text_width = stringWidth(ln, "Helvetica", 9)
+                        center_x = col["x"] + col["width"] / 2 - text_width / 2
+                        y_position = y - vertical_offset - (i * line_spacing)
+                        can.drawString(center_x, y_position, ln)
+
+                y -= row_height + row_padding
+
+            can.save()
+            packet.seek(0)
+            return PdfReader(packet)
+
+        # Build overlay PDF
+        overlay = generate_overlay(
+            table_rows,
+            code,
+            name,
+            address,
+            today_date,
+            grand_total_str,
+        )
+
+        # Load static PDF template (same style as your other code)
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        static_dir = os.path.normpath(os.path.join(base_dir, "..", "static"))
+        template_path = safe_join(static_dir, "estimate.pdf")
+
+        with open(template_path, "rb") as f:
+            template_buffer = io.BytesIO(f.read())
+
+        base_pdf = PdfReader(template_buffer)
+
+        writer = PdfWriter()
+
+        # Merge overlay onto template pages
+        for i in range(len(base_pdf.pages)):
+            base_page = base_pdf.pages[i]
+            overlay_page = overlay.pages[min(i, len(overlay.pages) - 1)]
+            base_page.merge_page(overlay_page)
+            writer.add_page(base_page)
+
+        # Return PDF buffer
+        output = io.BytesIO()
+        writer.write(output)
+        output.seek(0)
+
+        return output

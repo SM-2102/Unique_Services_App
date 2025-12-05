@@ -50,7 +50,7 @@
 - [x] **WarrantyEnquiryPage** - Warranty Enquiry Page
 
 ### OutOfWarranty Module
-- [ ] **OutOFWarrantyCreatePage** - Create Out Of Warranty record
+- [x] **OutOFWarrantyCreatePage** - Create Out Of Warranty record
 - [ ] **OutOFWarrantyUpdatePage** - Update Out Of Warranty record
 - [x] **OutOFWarrantySRFPrintPage** - Out Of Warranty SRF Print
 - [x] **OutOFWarrantySRFSettleUserPage** - Out Of Warranty SRF Propose to Settle
@@ -60,7 +60,7 @@
 - [x] **OutOFWarrantyChallanPrintPage** - Out Of Warranty Vendor Challan Print
 - [x] **OutOFWarrantyChallanSettleUserPage** - Out Of Warranty Challan Propose to Settle
 - [x] **OutOFWarrantyChallanSettleAdminPage** - Out Of Warranty Challan Settlement [ADMIN]
-- [ ] **OutOFWarrantyEnquiryPage** - Out Of Warranty Enquiry Page
+- [x] **OutOFWarrantyEnquiryPage** - Out Of Warranty Enquiry Page
 
 ---
 
@@ -141,7 +141,7 @@
 
 ### OutOfWarranty Module - [ADMIN]
 - [x] **out_of_warranty/next_srf_number**
-- [ ] **out_of_warranty/create**
+- [x] **out_of_warranty/create**
 - [x] **out_of_warranty/list_pending**
 - [ ] **out_of_warranty/by_srf_number**
 - [ ] **out_of_warranty/update/{srf_number}**
@@ -152,7 +152,7 @@
 - [x] **out_of_warranty/list_vendor_challan**
 - [x] **out_of_warranty/create_vendor_challan**
 - [x] **out_of_warranty/vendor_challan_print**
-- [ ] **out_of_warranty/enquiry{params}**
+- [x] **out_of_warranty/enquiry{params}**
 - [x] **out_of_warranty/list_received_by**
 - [x] **out_of_warranty/vendor_not_settled**
 - [x] **out_of_warranty/update_vendor_unsettled**
@@ -162,6 +162,8 @@
 - [x] **out_of_warranty/update_srf_unsettled**
 - [x] **out_of_warranty/list_of_final_srf_settlement**
 - [x] **out_of_warranty/update_final_srf_settlement**
+- [x] **out_of_warranty/show_receipt_names**
+- [ ] **out_of_warranty/estimate_print**
 
 ### ServiceCharge Module
 - [x] **service_charge/service_charge**

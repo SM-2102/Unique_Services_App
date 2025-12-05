@@ -11,8 +11,8 @@ import {
 import { BiSearch } from "react-icons/bi";
 import Toast from "../components/Toast";
 import { fetchMasterNames } from "../services/masterNamesService";
-import { fetchRetailPrintDetails } from "../services/retailListPrintDetailsService";
-import { printRetail } from "../services/retailPrintService";
+import { printOutOfWarrantyEstimate } from "../services/outOfWarrantyEstimatePrintService";
+import { fetchOutOfWarrantyEstimatePrintDetails } from "../services/outOfWarrantyEstimatePrintDetailsService";
 
 const OutOfWarrantyEstimatePrintPage = () => {
   const [customerName, setCustomerName] = useState("");
@@ -24,10 +24,10 @@ const OutOfWarrantyEstimatePrintPage = () => {
   const [pdfUrl, setPdfUrl] = useState(null);
   const [printDetails, setPrintDetails] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
-  const handleCheckboxChange = (rcode) => {
+  const handleCheckboxChange = (srf_number) => {
     setSelectedRows((prev) => {
-      if (prev.includes(rcode)) {
-        return prev.filter((r) => r !== rcode);
+      if (prev.includes(srf_number)) {
+        return prev.filter((r) => r !== srf_number);
       } else {
         if (prev.length >= 8) {
           setError({
@@ -38,7 +38,7 @@ const OutOfWarrantyEstimatePrintPage = () => {
           setShowToast(true);
           return prev;
         }
-        return [...prev, rcode];
+        return [...prev, srf_number];
       }
     });
   };
@@ -55,19 +55,19 @@ const OutOfWarrantyEstimatePrintPage = () => {
     }
     try {
       // Pass selectedRows array directly
-      const blob = await printRetail(selectedRows);
+      const blob = await printOutOfWarrantyEstimate(selectedRows);
       const url = window.URL.createObjectURL(blob);
       setPdfUrl(url);
       // Open in new tab for viewing with download and print buttons
       const newTab = window.open();
       if (newTab) {
         newTab.document.write(
-          `<html><head><title>Retail Challan Preview</title></head><body style='margin:0'>` +
-            `<iframe id='retail-pdf-frame' src='${url}' width='100%' height='100%' style='border:none;min-height:100vh;'></iframe>` +
+          `<html><head><title>Out Of Warranty Estimate Preview</title></head><body style='margin:0'>` +
+            `<iframe id='estimate-pdf-frame' src='${url}' width='100%' height='100%' style='border:none;min-height:100vh;'></iframe>` +
             `<div style='position:fixed;top:10px;right:10px;z-index:1000;display:flex;gap:10px;'>` +
-            `<a href='${url}' download='retail.pdf' style='padding:10px 18px;background:#2563eb;color:#fff;border-radius:6px;text-decoration:none;font-weight:600;font-size:16px;'>Download PDF</a>` +
+            `<a href='${url}' download='out_of_warranty_estimate.pdf' style='padding:10px 18px;background:#2563eb;color:#fff;border-radius:6px;text-decoration:none;font-weight:600;font-size:16px;'>Download PDF</a>` +
             `<button onclick="(function(){
-              var frame = document.getElementById('retail-pdf-frame');
+              var frame = document.getElementById('estimate-pdf-frame');
               if(frame && frame.contentWindow){
                 frame.contentWindow.focus();
                 frame.contentWindow.print();
@@ -239,7 +239,7 @@ const OutOfWarrantyEstimatePrintPage = () => {
                   return;
                 }
                 try {
-                  const data = await fetchRetailPrintDetails(customerName);
+                  const data = await fetchOutOfWarrantyEstimatePrintDetails(customerName);
                   setPrintDetails(Array.isArray(data) ? data : []);
                   setSelectedRows([]);
                   if (!data || data.length === 0) {
@@ -274,12 +274,6 @@ const OutOfWarrantyEstimatePrintPage = () => {
               elevation={2}
               sx={{ p: 2, borderRadius: 2, background: "#fff" }}
             >
-              <Typography
-                variant="h6"
-                sx={{ mb: 2, color: "#2563eb", fontWeight: 600 }}
-              >
-                Retail Records
-              </Typography>
               <table
                 style={{
                   width: "100%",
@@ -304,7 +298,7 @@ const OutOfWarrantyEstimatePrintPage = () => {
                         color: "#374151",
                       }}
                     >
-                      RCode
+                      SRF Number
                     </th>
                     <th
                       style={{
@@ -314,7 +308,7 @@ const OutOfWarrantyEstimatePrintPage = () => {
                         color: "#374151",
                       }}
                     >
-                      Date
+                      SRF Date
                     </th>
                     <th
                       style={{
@@ -324,7 +318,7 @@ const OutOfWarrantyEstimatePrintPage = () => {
                         color: "#374151",
                       }}
                     >
-                      Details
+                      Model
                     </th>
                     <th
                       style={{
@@ -341,10 +335,10 @@ const OutOfWarrantyEstimatePrintPage = () => {
                 <tbody>
                   {printDetails.map((row) => (
                     <tr
-                      key={row.rcode}
+                      key={row.setPdfUrl}
                       style={{
                         borderBottom: "1px solid #e5e7eb",
-                        background: selectedRows.includes(row.rcode)
+                        background: selectedRows.includes(row.srf_number)
                           ? "#e0e7ff"
                           : "#fff",
                       }}
@@ -352,8 +346,8 @@ const OutOfWarrantyEstimatePrintPage = () => {
                       <td style={{ textAlign: "center", padding: "0.5rem" }}>
                         <input
                           type="checkbox"
-                          checked={selectedRows.includes(row.rcode)}
-                          onChange={() => handleCheckboxChange(row.rcode)}
+                          checked={selectedRows.includes(row.srf_number)}
+                          onChange={() => handleCheckboxChange(row.srf_number)}
                           disabled={!!pdfUrl}
                           style={{
                             accentColor: "#2563eb",
@@ -369,13 +363,13 @@ const OutOfWarrantyEstimatePrintPage = () => {
                           textAlign: "center",
                         }}
                       >
-                        {row.rcode}
+                        {row.srf_number}
                       </td>
                       <td style={{ padding: "0.5rem", textAlign: "center" }}>
-                        {row.rdate}
+                        {row.srf_date}
                       </td>
                       <td style={{ padding: "0.5rem", textAlign: "center" }}>
-                        {row.details}
+                        {row.model}
                       </td>
                       <td
                         style={{
@@ -385,7 +379,7 @@ const OutOfWarrantyEstimatePrintPage = () => {
                           fontWeight: 600,
                         }}
                       >
-                        ₹{row.amount}
+                        ₹{row.total}
                       </td>
                     </tr>
                   ))}

@@ -22,6 +22,8 @@ from out_of_warranty.schemas import (
     UpdateSRFUnsettled,
     UpdateSRFFinalSettlement,
     OutOfWarrantyCreate,
+    OutOfWarrantyEstimatePrintResponse,
+    OutOfWarrantySRFNumber,
 )
 from out_of_warranty.service import OutOfWarrantyService
 
@@ -439,7 +441,7 @@ Get out of warranty estimate print details by name (check if customer exists)
 
 
 @out_of_warranty_router.get("/show_receipt_names", response_model=List[OutOfWarrantyEstimatePrintResponse])
-async def retail_print(
+async def estimate_print(
     name: str,
     session: AsyncSession = Depends(get_session),
     _=Depends(access_token_bearer),
@@ -447,3 +449,22 @@ async def retail_print(
 
     print_details = await out_of_warranty_service.get_out_of_warranty_estimate_print_details(session, name)
     return print_details
+
+
+"""
+Print estimate receipt by srf number.
+"""
+
+
+@out_of_warranty_router.post("/estimate_print", status_code=status.HTTP_200_OK)
+async def print_estimate(
+    data: OutOfWarrantySRFNumber,
+    session: AsyncSession = Depends(get_session),
+    _=Depends(access_token_bearer),
+):
+    estimate_pdf = await out_of_warranty_service.print_estimate(data, session)
+    return StreamingResponse(
+        estimate_pdf,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f'attachment; filename="estimate.pdf"'},
+    )

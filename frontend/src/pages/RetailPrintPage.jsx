@@ -274,12 +274,6 @@ const RetailPrintPage = () => {
               elevation={2}
               sx={{ p: 2, borderRadius: 2, background: "#fff" }}
             >
-              <Typography
-                variant="h6"
-                sx={{ mb: 2, color: "#2563eb", fontWeight: 600 }}
-              >
-                Retail Records
-              </Typography>
               <table
                 style={{
                   width: "100%",

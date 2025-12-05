@@ -248,9 +248,7 @@ class RetailService:
     async def print_retail(
         self, codes: RetailRcode, session: AsyncSession
     ) -> io.BytesIO:
-        """
-        Generates a PDF retail estimate for the given retail codes.
-        """
+        
         # Query retail and master info for all codes
         statement = (
             select(Retail, Master)
