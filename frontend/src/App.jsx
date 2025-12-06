@@ -1,15 +1,10 @@
-import ShowAllUsersPage from "./pages/ShowAllUsersPage.jsx";
 import DeleteUserPage from "./pages/UserDeletePage.jsx";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import MenuDashboardPage from "./pages/MenuDashboardPage.jsx";
 import PageNotFound from "./pages/PageNotFound";
-import PageNotAvailable from "./pages/PageNotAvailable.jsx";
-import ChangePasswordPage from "./pages/ChangePasswordPage.jsx";
-import ShowStandardUsersPage from "./pages/ShowStandardUsersPage.jsx";
-import CreateUserPage from "./pages/UserCreatePage.jsx";
 import PrivateRoute from "./components/PrivateRoute";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import { DashboardDataProvider } from "./context/DashboardDataContext.jsx";
@@ -28,7 +23,7 @@ import RetailSettleUserPage from "./pages/RetailSettleUserPage.jsx";
 import RetailPrintPage from "./pages/RetailPrintPage.jsx";
 import WarrantyCreatePage from "./pages/WarrantyCreatePage.jsx";
 import WarrantySRFPrintPage from "./pages/WarrantySRFPrintPage.jsx";
-import WarrantyCreateCNFPage from "./pages/WarrantyCreateCNFPage.jsx";
+import WarrantyCreateCNFPage from "./pages/WarrantyCNFCreatePage.jsx";
 import WarrantyCNFPrintPage from "./pages/WarrantyCNFPrintPage.jsx";
 import WarrantyUpdatePage from "./pages/WarrantyUpdatePage.jsx";
 import WarrantyEnquiryPage from "./pages/WarrantyEnquiryPage.jsx";
@@ -44,6 +39,10 @@ import OutOfWarrantyCreatePage from "./pages/OutOfWarrantyCreatePage.jsx";
 import OutOfWarrantyEstimatePrintPage from "./pages/OutOfWarrantyEstimatePrintPage.jsx";
 import ServiceCenterCreatePage from "./pages/ServiceCenterCreatePage.jsx";
 import OutOfWarrantyUpdatePage from "./pages/OutOfWarrantyUpdatePage.jsx";
+import ChangePasswordPage from "./pages/UserChangePasswordPage.jsx";
+import CreateUserPage from "./pages/UserCreatePage.jsx";
+import ShowStandardUsersPage from "./pages/UserShowStandardPage.jsx";
+import ShowAllUsersPage from "./pages/UserShowAllPage.jsx";
 
 function AppRoutesWithNav() {
   return (

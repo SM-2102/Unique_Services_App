@@ -133,7 +133,7 @@ const CustomerChart = ({ data }) => {
       </div>
 
       {/* ASC Names Metric - below Customers */}
-      <div className="flex flex-row flex-nowrap items-end group transition-transform duration-200 hover:scale-100 ml-0 w-full max-w-[700px] px-2 whitespace-nowrap" style={{ minWidth: 0 }} tabIndex={0}>
+      <div className="flex flex-row flex-nowrap items-end group transition-transform duration-200 hover:scale-100 ml-8 w-full max-w-[700px] px-2 whitespace-nowrap" style={{ minWidth: 0 }} tabIndex={0}>
         <span style={{
           ...gradientTextStyle,
           fontSize: "1.3rem",

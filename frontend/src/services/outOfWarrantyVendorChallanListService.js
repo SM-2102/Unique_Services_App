@@ -15,7 +15,6 @@ async function fetchOutOfWarrantyVendorChallanList() {
   });
 
   const data = await response.json();
-  console.log("Fetched OutOfWarrantyVendorChallanList:", data);
   if (!response.ok) {
     throw {
       message:

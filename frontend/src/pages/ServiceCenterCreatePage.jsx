@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import Toast from "../components/Toast";
-import { fetchASCNames } from "../services/serviceCenterASCNames";
+import { fetchASCNames } from "../services/serviceCenterASCNamesService";
 import { createASCName } from "../services/serviceCenterCreateService";
 
 const initialForm = {
@@ -106,7 +106,7 @@ const ServiceCenterCreatePage = () => {
   };
 
   return (
-    <div className="flex min-h-[80vh] mt-6 justify-center items-center">
+    <div className="flex min-h-[80vh] justify-center items-center">
       <form
         onSubmit={handleSubmit}
         onKeyDown={(e) => {

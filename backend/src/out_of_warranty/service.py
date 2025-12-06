@@ -142,7 +142,6 @@ class OutOfWarrantyService:
             else:
                 base = srf_number.split("/")[0]
                 srf_number = "S" + base.zfill(5) + "/1"
-        print(srf_number)
         if not srf_number.startswith("S"):
             raise IncorrectCodeFormat()
         statement = (
@@ -212,9 +211,7 @@ class OutOfWarrantyService:
         existing_out_of_warranty = result.scalars().first()
         # if role != ADMIN, ignore discount
         if token["user"]["role"] != "ADMIN":
-            print("Not Admin")
             out_of_warranty.__dict__.pop("discount", None)
-        print(out_of_warranty)
         for var, value in out_of_warranty.__dict__.items():
             setattr(existing_out_of_warranty, var, value)
         existing_out_of_warranty.updated_by = token["user"]["username"]

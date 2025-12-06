@@ -239,7 +239,7 @@ const OutOfWarrantyCreateVendorPage = () => {
             >
               Received By<span className="text-red-500">*</span>
             </label>
-            <div className="w-35" style={{ minWidth: 200, position: "relative" }}>
+            <div className="w-35" style={{ minWidth: 300, position: "relative" }}>
               <input
                 id="received_by"
                 name="received_by"

@@ -8,7 +8,6 @@
  - File Names
  - Unused imports
  - Pretty print
-  - print and console
 
 
 ## Frontend Pages Progress

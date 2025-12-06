@@ -4,7 +4,7 @@ import { fetchMasterNames } from "../services/masterNamesService";
 import { fetchNextWarrantyCode } from "../services/warrantyNextSrfNumberService";
 import { validateWarrantySRFCreate } from "../utils/warrantySRFCreateValidation";
 import { createWarranty } from "../services/warrantyCreateService";
-import { fetchASCNames } from "../services/serviceCenterASCNames";
+import { fetchASCNames } from "../services/serviceCenterASCNamesService";
 
 const initialForm = {
   srf_number: "",

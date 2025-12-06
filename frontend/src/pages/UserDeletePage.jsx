@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Container, Paper, Typography } from "@mui/material";
 import Toast from "../components/Toast";
 import { useAuth } from "../context/AuthContext";
-import { deleteUser } from "../services/deleteUserService";
-import { fetchAllUsers } from "../services/showAllUsersService";
+import { deleteUser } from "../services/userDeleteService";
+import { fetchAllUsers } from "../services/userShowAllService";
 
 const DeleteUserPage = () => {
   const { user } = useAuth();

@@ -466,7 +466,6 @@ const RetailEnquiryPage = () => {
       if (toRetailDate) params.to_rdate = toRetailDate;
       if (received) params.received = received;
       if (finalStatus) params.final_status = finalStatus;
-      console.log("Fetching with params:", params);
       const res = await retailEnquiry(params);
       setData(res);
     } catch (err) {

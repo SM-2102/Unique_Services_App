@@ -44,8 +44,7 @@ function validateOutOfWarrantyUpdate(form) {
     errs_label["repair_date"] = true;
   }
   if(form.vendor_cost1 > 0 && (!form.vendor_date1 || !form.vendor_date2)) {
-    errs.push("Vendor Dates Required for Cost to Vendor");
-    errs_label["vendor_date1"] = true;
+    errs.push("Vendor Dates Required");
     errs_label["vendor_date2"] = true;
   }
   if (form.vendor_date1 && form.vendor_date2) {
@@ -55,7 +54,6 @@ function validateOutOfWarrantyUpdate(form) {
       if (vendorDate1 > vendorDate2) {
         errs.push("Invalid Return Date");
         errs_label["vendor_date2"] = true;
-        errs_label["vendor_date1"] = true;
       }
     }
   }
@@ -102,12 +100,20 @@ function validateOutOfWarrantyUpdate(form) {
       }
     }
   }
-  const minRewinding = form.vendor_cost1 * 1.2;
+  const minVendorRewinding = form.rewinding_cost * 0.8;
+  const minVendorOther = form.other_cost * 0.8;
 
-  if (form.rewinding_cost) {
-    if (form.rewinding_cost < minRewinding) {
-      errs.push(`Minimum rewinding_cost : ${minRewinding.toFixed(2)})`);
-      errs_label["rewinding_cost"] = true;
+  if (form.rewinding_cost){
+    if (form.vendor_cost1 > minVendorRewinding) {
+      errs.push("Vendor Rewinding Cost Too High");
+      errs_label["vendor_cost1"] = true;
+    }
+  }
+
+  if (form.other_cost){
+    if (form.vendor_cost2 > minVendorOther) {
+      errs.push("Vendor Other Cost Too High");
+      errs_label["vendor_cost2"] = true;
     }
   }
 
@@ -116,10 +122,15 @@ function validateOutOfWarrantyUpdate(form) {
     errs_label["work_done"] = true;
   }
 
-  if(form.delivery_date && form.receive_amount != form.final_amount) {
+  if(form.delivery_date && form.receive_amount < form.final_amount) {
     errs.push("Full Payment Not Received");
     errs_label["receive_amount"] = true;
   }
+  if(form.delivery_date && form.receive_amount > form.final_amount) {
+    errs.push("Excess Payment Received");
+    errs_label["receive_amount"] = true;
+  }
+
   if(form.final_status === 'Y') {
     if(!form.delivery_date) {
       errs.push("Delivery Date is required");

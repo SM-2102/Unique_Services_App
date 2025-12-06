@@ -12,7 +12,7 @@ const Toast = ({
   message,
   resolution = "",
   type = "info",
-  duration = 1500,
+  duration = 2000,
   onClose,
 }) => {
   const [visible, setVisible] = useState(true);

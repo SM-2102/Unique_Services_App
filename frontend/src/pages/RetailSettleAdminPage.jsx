@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import Toast from "../components/Toast";
 import { fetchRetailFinalSettlement } from "../services/retailFinalSettlementService";
-import { updateRetailFinalSettlement } from "../services/retailUpdateFinalSettlement";
+import { updateRetailFinalSettlement } from "../services/retailUpdateFinalSettlementService";
 
 const columns = [
   { key: "rcode", label: "Receipt Number" },

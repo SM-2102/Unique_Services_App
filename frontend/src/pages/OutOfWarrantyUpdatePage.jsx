@@ -289,8 +289,6 @@ const OutOfWarrantyUpdatePage = () => {
     const payload = Object.fromEntries(
       Object.entries(rawPayload).map(([k, v]) => [k, v === "" ? null : v]),
     );
-    console.log("Submitting payload:");
-    console.log(payload);
     try {
       await updateOutOfWarranty(form.srf_number, payload);
       setError({
@@ -299,9 +297,9 @@ const OutOfWarrantyUpdatePage = () => {
         type: "success",
       });
       setShowToast(true);
-      // setTimeout(() => {
-      //   window.location.reload();
-      // }, 1500);
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
     } catch (err) {
       setError({
         message: err?.message || "Failed to update out of warranty record.",
@@ -685,7 +683,7 @@ const OutOfWarrantyUpdatePage = () => {
                   htmlFor="other_cost"
                   className="w-60 text-md font-medium text-gray-700"
                 >
-                  Other Cost to Vendor
+                  Other Cost to Customer
                 </label>
                 <input
                   id="other_cost"

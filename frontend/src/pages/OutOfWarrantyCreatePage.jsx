@@ -4,7 +4,7 @@ import { fetchMasterNames } from "../services/masterNamesService";
 import { fetchNextOutOfWarrantyCode } from "../services/outOfWarrantyNextSrfNumberService";
 import { validateOutOfWarrantySRFCreate } from "../utils/outOfWarrantySRFCreateValidation";
 import { createOutOfWarranty } from "../services/outOfWarrantyCreateService";
-import { fetchOutOfWarrantyServiceCharge } from "../services/serviceChargeOutOfWarranty";
+import { fetchOutOfWarrantyServiceCharge } from "../services/serviceChargeOutOfWarrantyService";
 
 const initialForm = {
   srf_number: "",
