@@ -153,7 +153,6 @@ const WarrantyCreateCNFPage = () => {
     }
   };
 
-
   // Handler for editing challan
   const handleReceivedChange = (idx, value) => {
     setData((prev) => {

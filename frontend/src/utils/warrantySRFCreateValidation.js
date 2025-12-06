@@ -11,7 +11,7 @@ function validateWarrantySRFCreate(form) {
     errs.push("Name is required");
     errs_label.name = true;
   }
-  if(!form.srf_date) {
+  if (!form.srf_date) {
     errs.push("SRF Date is required");
     errs_label.srf_date = true;
   }

@@ -18,7 +18,9 @@ async function createOutOfWarrantyVendorChallan(outOfWarrantyData) {
   if (!response.ok) {
     throw {
       message:
-        data.message || data.detail || "Failed to update out of warranty vendor record",
+        data.message ||
+        data.detail ||
+        "Failed to update out of warranty vendor record",
       resolution: data.resolution || "",
     };
   }

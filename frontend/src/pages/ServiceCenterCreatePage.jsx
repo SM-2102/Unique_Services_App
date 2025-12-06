@@ -32,8 +32,7 @@ const ServiceCenterCreatePage = () => {
     if (name === "asc_name") {
       const suggestions = ascNames.filter(
         (n) =>
-          n.toLowerCase().includes(value.toLowerCase()) &&
-          value.length > 0
+          n.toLowerCase().includes(value.toLowerCase()) && value.length > 0,
       );
       setAscNameSuggestions(suggestions);
       setShowSuggestions(suggestions.length > 0);
@@ -72,11 +71,11 @@ const ServiceCenterCreatePage = () => {
       });
       setShowToast(true);
       return;
-    }  
+    }
     setSubmitting(true);
 
     const rawPayload = {
-      asc_name: form.asc_name
+      asc_name: form.asc_name,
     };
     // Map empty string values to null
     const payload = Object.fromEntries(

@@ -8,14 +8,17 @@ import API_ENDPOINTS from "../config/api";
  * @returns {Promise<Blob>} PDF blob
  */
 async function printOutOfWarrantyVendor(challan_number) {
-  const response = await authFetch(API_ENDPOINTS.OUT_OF_WARRANTY_VENDOR_CHALLAN_PRINT, {
-    method: "POST",
-    headers: {
-      Accept: "application/pdf",
-      "Content-Type": "application/json",
+  const response = await authFetch(
+    API_ENDPOINTS.OUT_OF_WARRANTY_VENDOR_CHALLAN_PRINT,
+    {
+      method: "POST",
+      headers: {
+        Accept: "application/pdf",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ challan_number }),
     },
-    body: JSON.stringify({ challan_number }),
-  });
+  );
   if (!response.ok) {
     let data = {};
     try {
@@ -24,7 +27,8 @@ async function printOutOfWarrantyVendor(challan_number) {
       // If not JSON, leave data as empty object
     }
     throw {
-      message: data.message || "Failed to print Out of Warranty Vendor Challan.",
+      message:
+        data.message || "Failed to print Out of Warranty Vendor Challan.",
       resolution: data.resolution || "",
     };
   }

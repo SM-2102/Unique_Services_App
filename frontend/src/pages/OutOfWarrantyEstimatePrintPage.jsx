@@ -239,7 +239,8 @@ const OutOfWarrantyEstimatePrintPage = () => {
                   return;
                 }
                 try {
-                  const data = await fetchOutOfWarrantyEstimatePrintDetails(customerName);
+                  const data =
+                    await fetchOutOfWarrantyEstimatePrintDetails(customerName);
                   setPrintDetails(Array.isArray(data) ? data : []);
                   setSelectedRows([]);
                   if (!data || data.length === 0) {

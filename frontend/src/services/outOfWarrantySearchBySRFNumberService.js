@@ -7,13 +7,16 @@ import { authFetch } from "./authFetchService";
  * @returns {Promise<object>} Market data
  */
 async function searchOutOfWarrantyBySRFNumber(srf_number) {
-  const response = await authFetch(API_ENDPOINTS.OUT_OF_WARRANTY_BY_SRF_NUMBER, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
+  const response = await authFetch(
+    API_ENDPOINTS.OUT_OF_WARRANTY_BY_SRF_NUMBER,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ srf_number }),
     },
-    body: JSON.stringify({ srf_number }),
-  });
+  );
   const data = await response.json();
   if (!response.ok) {
     throw {

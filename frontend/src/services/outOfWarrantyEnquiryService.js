@@ -26,7 +26,9 @@ async function outOfWarrantyEnquiry(params = {}) {
   if (!response.ok) {
     throw {
       message:
-        data.message || data.detail || "Failed to fetch out of warranty records",
+        data.message ||
+        data.detail ||
+        "Failed to fetch out of warranty records",
       resolution: data.resolution || "",
     };
   }

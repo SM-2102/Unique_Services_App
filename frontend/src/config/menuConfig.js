@@ -41,16 +41,32 @@ export const menuConfig = [
     bgColor: "#e6fff7",
     actions: [
       { label: "Create SRF Record", path: "/CreateOutOfWarrantySRF" },
-      { label: "Create Vendor Challan", path: "/CreateOutOfWarrantyVendorChallan" },
+      {
+        label: "Create Vendor Challan",
+        path: "/CreateOutOfWarrantyVendorChallan",
+      },
       { label: "Update SRF Record", path: "/UpdateOutOfWarrantySRF" },
-      { label: "Print Vendor Challan", path: "/PrintOutOfWarrantyVendorChallan" },
+      {
+        label: "Print Vendor Challan",
+        path: "/PrintOutOfWarrantyVendorChallan",
+      },
       { label: "Print SRF Record", path: "/PrintOutOfWarrantySRF" },
       { label: "Print Estimate Receipt", path: "/PrintOutOfWarrantyEstimate" },
       { label: "Settle SRF Record", path: "/ProposeToSettleOutOfWarrantySRF" },
-      { label: "Settle Vendor Record", path: "/ProposeToSettleOutOfWarrantyVendor" },
+      {
+        label: "Settle Vendor Record",
+        path: "/ProposeToSettleOutOfWarrantyVendor",
+      },
       { label: "Settle Final SRF", path: "/FinalSettlementOutOfWarrantySRF" },
-      { label: "Settle Final Vendor", path: "/FinalSettlementOutOfWarrantyVendor" },
-      { label: "Enquiry", path: "/OutOfWarrantyEnquiry", showInDashboard: false },
+      {
+        label: "Settle Final Vendor",
+        path: "/FinalSettlementOutOfWarrantyVendor",
+      },
+      {
+        label: "Enquiry",
+        path: "/OutOfWarrantyEnquiry",
+        showInDashboard: false,
+      },
     ],
   },
   {

@@ -58,7 +58,7 @@ function filterActionsForRole(actions, isAdmin) {
         a.path === "/FinalSettlementOutOfWarrantySRF" ||
         a.path === "/FinalSettlementOutOfWarrantyVendor" ||
         a.path === "/CreateASCName"
-      )
+      ),
   );
 }
 
@@ -71,10 +71,12 @@ const NavBar = ({ open, setOpen }) => {
   // Convert menuConfig to menuItems for NavBar (submenus = actions, reordered, filtered)
   const menuItems = menuConfig.map(({ key, title, actions }) => ({
     title,
-    submenus: sortActions(key, filterActionsForRole(actions, isAdmin)).map(({ label, path }) => ({
-      title: label,
-      path,
-    })),
+    submenus: sortActions(key, filterActionsForRole(actions, isAdmin)).map(
+      ({ label, path }) => ({
+        title: label,
+        path,
+      }),
+    ),
   }));
 
   // Close on outside click
@@ -131,9 +133,7 @@ const NavBar = ({ open, setOpen }) => {
             onMouseEnter={() => handleSubmenuEnter(idx)}
             onMouseLeave={() => handleSubmenuLeave(idx)}
           >
-            <div
-              className="flex items-center text-black text-base font-semibold px-6 py-3 rounded-md cursor-pointer hover:bg-blue-900/30 transition select-none"
-            >
+            <div className="flex items-center text-black text-base font-semibold px-6 py-3 rounded-md cursor-pointer hover:bg-blue-900/30 transition select-none">
               <span>{item.title}</span>
               {submenuOpen.includes(idx) ? (
                 <FaChevronUp className="ml-2 text-blue-700" />

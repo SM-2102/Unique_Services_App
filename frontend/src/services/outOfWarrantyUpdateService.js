@@ -21,7 +21,9 @@ async function updateOutOfWarranty(srf_number, outOfWarrantyData) {
   if (!response.ok) {
     throw {
       message:
-        data.message || data.detail || "Failed to update out of warranty record",
+        data.message ||
+        data.detail ||
+        "Failed to update out of warranty record",
       resolution: data.resolution || "",
     };
   }

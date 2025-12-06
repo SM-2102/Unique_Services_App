@@ -49,7 +49,6 @@ function toTitleCase(str) {
   return str.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
-
 const CustomerChart = ({ data }) => {
   // Animated metric for number_of_customers
   const [customerCount, setCustomerCount] = useState(0);
@@ -123,30 +122,68 @@ const CustomerChart = ({ data }) => {
   return (
     <div className="w-full h-full flex flex-col justify-center items-center">
       {/* Customers Metric */}
-      <div className="flex flex-row flex-nowrap items-end group transition-transform duration-200 hover:scale-105 ml-0 w-full max-w-[700px] px-2 whitespace-nowrap" style={{ minWidth: 0 }} tabIndex={0}>
-        <span style={{ ...gradientTextStyle, fontSize: "2rem", minWidth: 0, wordBreak: "break-word", flexShrink: 1 }} className="main-metric group-hover:scale-100 transition-transform duration-200">
+      <div
+        className="flex flex-row flex-nowrap items-end group transition-transform duration-200 hover:scale-105 ml-0 w-full max-w-[700px] px-2 whitespace-nowrap"
+        style={{ minWidth: 0 }}
+        tabIndex={0}
+      >
+        <span
+          style={{
+            ...gradientTextStyle,
+            fontSize: "2rem",
+            minWidth: 0,
+            wordBreak: "break-word",
+            flexShrink: 1,
+          }}
+          className="main-metric group-hover:scale-100 transition-transform duration-200"
+        >
           {customerCount}+
         </span>
-        <span className="text-xl md:text-2xl font-medium ml-3 truncate" style={{ ...stylishFont, color: "#ff416c", fontWeight: 600, minWidth: 0, flexShrink: 1 }}>
+        <span
+          className="text-xl md:text-2xl font-medium ml-3 truncate"
+          style={{
+            ...stylishFont,
+            color: "#ff416c",
+            fontWeight: 600,
+            minWidth: 0,
+            flexShrink: 1,
+          }}
+        >
           Customers
         </span>
       </div>
 
       {/* ASC Names Metric - below Customers */}
-      <div className="flex flex-row flex-nowrap items-end group transition-transform duration-200 hover:scale-100 ml-8 w-full max-w-[700px] px-2 whitespace-nowrap" style={{ minWidth: 0 }} tabIndex={0}>
-        <span style={{
-          ...gradientTextStyle,
-          fontSize: "1.3rem",
-          minWidth: 0,
-          wordBreak: "break-word",
-          flexShrink: 1,
-          background: "linear-gradient(90deg, #3a7bd5 0%, #00d2ff 100%)",
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-        }} className="main-metric group-hover:scale-100 transition-transform duration-200">
+      <div
+        className="flex flex-row flex-nowrap items-end group transition-transform duration-200 hover:scale-100 ml-8 w-full max-w-[700px] px-2 whitespace-nowrap"
+        style={{ minWidth: 0 }}
+        tabIndex={0}
+      >
+        <span
+          style={{
+            ...gradientTextStyle,
+            fontSize: "1.3rem",
+            minWidth: 0,
+            wordBreak: "break-word",
+            flexShrink: 1,
+            background: "linear-gradient(90deg, #3a7bd5 0%, #00d2ff 100%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+          }}
+          className="main-metric group-hover:scale-100 transition-transform duration-200"
+        >
           {ascCount}+
         </span>
-        <span className="text-md md:text-md font-medium ml-2 truncate" style={{ ...stylishFont, color: "#3a7bd5", fontWeight: 500, minWidth: 0, flexShrink: 1 }}>
+        <span
+          className="text-md md:text-md font-medium ml-2 truncate"
+          style={{
+            ...stylishFont,
+            color: "#3a7bd5",
+            fontWeight: 500,
+            minWidth: 0,
+            flexShrink: 1,
+          }}
+        >
           Authorized Service Centres
         </span>
       </div>
@@ -154,12 +191,62 @@ const CustomerChart = ({ data }) => {
       {/* Vertical Bar Chart for Top Customers beside label */}
       {topCustomersArr.length > 0 && (
         <div className="w-full flex flex-col items-center justify-center">
-          <div style={{ width: "100%", minWidth: 0, maxWidth: "100%", height: 160, background: "#ffe4ec", borderRadius: 16, overflow: "hidden", display: "block", position: "relative", margin: 0, padding: 0, boxSizing: "border-box" }}>
+          <div
+            style={{
+              width: "100%",
+              minWidth: 0,
+              maxWidth: "100%",
+              height: 160,
+              background: "#ffe4ec",
+              borderRadius: 16,
+              overflow: "hidden",
+              display: "block",
+              position: "relative",
+              margin: 0,
+              padding: 0,
+              boxSizing: "border-box",
+            }}
+          >
             {/* Watermark background */}
-            <div style={{ position: "absolute", top: "50%", left: "50%", width: "140%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", pointerEvents: "none", zIndex: 1, opacity: 0.7, fontSize: "2.5rem", fontWeight: 900, fontFamily: "Poppins, Montserrat, Segoe UI, Arial, sans-serif", color: "#3a7bd5", textAlign: "center", userSelect: "none", whiteSpace: "pre-line", textShadow: "0 2px 12px #ff416c, 0 0 2px #fff", background: "none", transform: "translate(-50%, -50%) rotate(-24deg)" }}>
+            <div
+              style={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                width: "140%",
+                height: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                pointerEvents: "none",
+                zIndex: 1,
+                opacity: 0.7,
+                fontSize: "2.5rem",
+                fontWeight: 900,
+                fontFamily: "Poppins, Montserrat, Segoe UI, Arial, sans-serif",
+                color: "#3a7bd5",
+                textAlign: "center",
+                userSelect: "none",
+                whiteSpace: "pre-line",
+                textShadow: "0 2px 12px #ff416c, 0 0 2px #fff",
+                background: "none",
+                transform: "translate(-50%, -50%) rotate(-24deg)",
+              }}
+            >
               Top Customers
             </div>
-            <div style={{ width: "100%", height: "100%", minWidth: 0, position: "relative", zIndex: 2, margin: 0, padding: 0, overflow: "hidden" }}>
+            <div
+              style={{
+                width: "100%",
+                height: "100%",
+                minWidth: 0,
+                position: "relative",
+                zIndex: 2,
+                margin: 0,
+                padding: 0,
+                overflow: "hidden",
+              }}
+            >
               <Bar
                 data={{
                   labels: topCustomersArr.map((c) => c.name),

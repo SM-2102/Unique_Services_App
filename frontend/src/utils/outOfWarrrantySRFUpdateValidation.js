@@ -23,27 +23,27 @@ function validateOutOfWarrantyUpdate(form) {
       errs_label[`cost${i}`] = true;
     }
   }
-  if (!form.vendor_date1 && form.vendor_date2)  {
+  if (!form.vendor_date1 && form.vendor_date2) {
     errs.push("Create Challan First");
     errs_label["vendor_date1"] = true;
   }
-  if (form.vendor_date1 && !form.vendor_date2 && form.repair_date)  {
+  if (form.vendor_date1 && !form.vendor_date2 && form.repair_date) {
     errs.push("Return Date Required");
     errs_label["repair_date"] = true;
   }
-  if (form.repair_date && !form.estimate_date)  {
+  if (form.repair_date && !form.estimate_date) {
     errs.push("Estimate Date Required");
     errs_label["estimate_date"] = true;
   }
-  if (form.estimate_date && form.vendor_date1 && !form.vendor_date2)  {
+  if (form.estimate_date && form.vendor_date1 && !form.vendor_date2) {
     errs.push("Return Date Required");
     errs_label["vendor_date2"] = true;
   }
-  if(!form.repair_date && form.delivery_date) {
+  if (!form.repair_date && form.delivery_date) {
     errs.push("Repair Date Required");
     errs_label["repair_date"] = true;
   }
-  if(form.vendor_cost1 > 0 && (!form.vendor_date1 || !form.vendor_date2)) {
+  if (form.vendor_cost1 > 0 && (!form.vendor_date1 || !form.vendor_date2)) {
     errs.push("Vendor Dates Required");
     errs_label["vendor_date2"] = true;
   }
@@ -69,7 +69,7 @@ function validateOutOfWarrantyUpdate(form) {
     }
   }
 
-  if(form.estimate_date && form.repair_date) {
+  if (form.estimate_date && form.repair_date) {
     const estimateDate = new Date(form.estimate_date);
     const repairDate = new Date(form.repair_date);
     if (!isNaN(estimateDate) && !isNaN(repairDate)) {
@@ -80,7 +80,7 @@ function validateOutOfWarrantyUpdate(form) {
     }
   }
 
-  if(form.vendor_date2 && form.repair_date) {
+  if (form.vendor_date2 && form.repair_date) {
     const vendorDate2 = new Date(form.vendor_date2);
     const repairDate = new Date(form.repair_date);
     if (!isNaN(vendorDate2) && !isNaN(repairDate)) {
@@ -90,7 +90,7 @@ function validateOutOfWarrantyUpdate(form) {
       }
     }
   }
-  if(form.repair_date && form.delivery_date) {
+  if (form.repair_date && form.delivery_date) {
     const repairDate = new Date(form.repair_date);
     const deliveryDate = new Date(form.delivery_date);
     if (!isNaN(repairDate) && !isNaN(deliveryDate)) {
@@ -103,49 +103,48 @@ function validateOutOfWarrantyUpdate(form) {
   const minVendorRewinding = form.rewinding_cost * 0.8;
   const minVendorOther = form.other_cost * 0.8;
 
-  if (form.rewinding_cost){
+  if (form.rewinding_cost) {
     if (form.vendor_cost1 > minVendorRewinding) {
       errs.push("Vendor Rewinding Cost Too High");
       errs_label["vendor_cost1"] = true;
     }
   }
 
-  if (form.other_cost){
+  if (form.other_cost) {
     if (form.vendor_cost2 > minVendorOther) {
       errs.push("Vendor Other Cost Too High");
       errs_label["vendor_cost2"] = true;
     }
   }
 
-  if(form.delivery_date && !form.work_done) {
+  if (form.delivery_date && !form.work_done) {
     errs.push("Work Done is required");
     errs_label["work_done"] = true;
   }
 
-  if(form.delivery_date && form.receive_amount < form.final_amount) {
+  if (form.delivery_date && form.receive_amount < form.final_amount) {
     errs.push("Full Payment Not Received");
     errs_label["receive_amount"] = true;
   }
-  if(form.delivery_date && form.receive_amount > form.final_amount) {
+  if (form.delivery_date && form.receive_amount > form.final_amount) {
     errs.push("Excess Payment Received");
     errs_label["receive_amount"] = true;
   }
 
-  if(form.final_status === 'Y') {
-    if(!form.delivery_date) {
+  if (form.final_status === "Y") {
+    if (!form.delivery_date) {
       errs.push("Delivery Date is required");
       errs_label["delivery_date"] = true;
     }
-    if(!form.pc_number && form.gst === 'N') {
+    if (!form.pc_number && form.gst === "N") {
       errs.push("PC Number is required");
       errs_label["pc_number"] = true;
     }
-    if(!form.invoice_number && form.gst === 'Y') {
+    if (!form.invoice_number && form.gst === "Y") {
       errs.push("Invoice Number is required");
       errs_label["invoice_number"] = true;
     }
   }
-
 
   return [errs, errs_label];
 }

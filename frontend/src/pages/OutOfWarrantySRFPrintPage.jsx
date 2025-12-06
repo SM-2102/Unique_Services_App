@@ -142,7 +142,8 @@ const OutOfWarrantySRFPrintPage = () => {
                   }, 2000);
                 } catch (err) {
                   setError({
-                    message: err.message || "Failed to print out of warranty SRF.",
+                    message:
+                      err.message || "Failed to print out of warranty SRF.",
                     resolution: err.resolution || "",
                     type: "error",
                   });

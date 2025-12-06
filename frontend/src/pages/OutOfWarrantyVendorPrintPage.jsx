@@ -142,7 +142,8 @@ const OutOfWarrantyVendorPrintPage = () => {
                   }, 2000);
                 } catch (err) {
                   setError({
-                    message: err.message || "Failed to print out of warranty vendor.",
+                    message:
+                      err.message || "Failed to print out of warranty vendor.",
                     resolution: err.resolution || "",
                     type: "error",
                   });

@@ -24,11 +24,15 @@ const columns = [
       if (value === null || value === undefined || value === "") return "";
       const num = Number(value);
       if (isNaN(num)) return value;
-      return num.toLocaleString("en-IN", { style: "currency", currency: "INR", minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      return num.toLocaleString("en-IN", {
+        style: "currency",
+        currency: "INR",
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
     },
   },
 ];
-  
 
 const divisionOptions = [
   "FANS",
@@ -92,7 +96,6 @@ const Filter = ({
       setShowNameSuggestions(false);
     }
   }, [name, masterNames]);
-
 
   return (
     <>
@@ -290,7 +293,7 @@ const Filter = ({
               </select>
             </div>
           </div>
-           <div style={{ marginBottom: 10 }}>
+          <div style={{ marginBottom: 10 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
               <label
                 htmlFor="estimated"
@@ -326,7 +329,7 @@ const Filter = ({
               </select>
             </div>
           </div>
-           <div style={{ marginBottom: 10 }}>
+          <div style={{ marginBottom: 10 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
               <label
                 htmlFor="challaned"
@@ -547,9 +550,6 @@ const Filter = ({
             </div>
           </div>
 
-          
-
-
           {/* Centered Search & Clear Buttons */}
           <div
             style={{
@@ -644,7 +644,7 @@ const OutOfWarrantyEnquiryPage = () => {
   const [filterOpen, setFilterOpen] = useState(true);
   const [searched, setSearched] = useState(false);
   const [masterNames, setMasterNames] = useState([]);
-  
+
   const handleClear = () => {
     setFinalStatus("");
     setFinalSettled("");

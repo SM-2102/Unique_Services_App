@@ -32,7 +32,6 @@ const initialForm = {
 
 // Suggestions for Received By
 
-
 const OutOfWarrantyCreateVendorPage = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -42,7 +41,8 @@ const OutOfWarrantyCreateVendorPage = () => {
   const [updating, setUpdating] = useState(false);
   const [form, setForm] = useState(initialForm);
   const [receivedBySuggestions, setReceivedBySuggestions] = useState([]);
-  const [showReceivedBySuggestions, setShowReceivedBySuggestions] = useState(false);
+  const [showReceivedBySuggestions, setShowReceivedBySuggestions] =
+    useState(false);
 
   // Handler for Create Challan button
   const handleCreateChallan = async () => {
@@ -121,7 +121,6 @@ const OutOfWarrantyCreateVendorPage = () => {
     };
   }, []);
 
-
   // Handler for Received By input change
   const handleReceivedByChange = async (e) => {
     const value = e.target.value;
@@ -139,7 +138,6 @@ const OutOfWarrantyCreateVendorPage = () => {
       setShowReceivedBySuggestions(false);
     }
   };
-
 
   // Fetch data on mount
   useEffect(() => {
@@ -167,7 +165,6 @@ const OutOfWarrantyCreateVendorPage = () => {
       mounted = false;
     };
   }, []);
-
 
   // Handler for editing challan
   const handleReceivedChange = (idx, value) => {
@@ -232,14 +229,20 @@ const OutOfWarrantyCreateVendorPage = () => {
             />
           </div>
           {/* SRF Date and Received By Row */}
-          <div className="flex items-center justify-center mb-2 mt-3 gap-5" style={{ position: "relative" }}>
+          <div
+            className="flex items-center justify-center mb-2 mt-3 gap-5"
+            style={{ position: "relative" }}
+          >
             <label
               htmlFor="received_by"
               className="text-md font-medium text-gray-700 w-25"
             >
               Received By<span className="text-red-500">*</span>
             </label>
-            <div className="w-35" style={{ minWidth: 300, position: "relative" }}>
+            <div
+              className="w-35"
+              style={{ minWidth: 300, position: "relative" }}
+            >
               <input
                 id="received_by"
                 name="received_by"
@@ -252,10 +255,15 @@ const OutOfWarrantyCreateVendorPage = () => {
                 autoComplete="off"
                 style={{ minWidth: 200 }}
                 onFocus={() => {
-                  if (form.received_by.length > 0 && receivedBySuggestions.length > 0)
+                  if (
+                    form.received_by.length > 0 &&
+                    receivedBySuggestions.length > 0
+                  )
                     setShowReceivedBySuggestions(true);
                 }}
-                onBlur={() => setTimeout(() => setShowReceivedBySuggestions(false), 150)}
+                onBlur={() =>
+                  setTimeout(() => setShowReceivedBySuggestions(false), 150)
+                }
               />
               {showReceivedBySuggestions && (
                 <ul
@@ -292,7 +300,6 @@ const OutOfWarrantyCreateVendorPage = () => {
               )}
             </div>
           </div>
-
         </form>
 
         {/* Table Section */}

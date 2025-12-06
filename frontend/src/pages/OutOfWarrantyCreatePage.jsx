@@ -13,7 +13,7 @@ const initialForm = {
   head: "",
   division: "",
   service_charge: "",
-  service_charge_waive: "N", 
+  service_charge_waive: "N",
   collection_date: "",
   waive_details: "",
   model: "",
@@ -60,7 +60,7 @@ const OutOfWarrantyCreatePage = () => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const nameInputRef = useRef(null);
   const [nameInputWidth, setNameInputWidth] = useState("100%");
-  
+
   // Popup for add another item
   const [showAddAnother, setShowAddAnother] = useState(false);
 
@@ -135,7 +135,7 @@ const OutOfWarrantyCreatePage = () => {
       setNameInputWidth(nameInputRef.current.offsetWidth + "px");
     }
   }, [form.name, showSuggestions]);
- 
+
   const [errs, errs_label] = validateOutOfWarrantySRFCreate(form);
 
   const handleChange = (e) => {
@@ -416,8 +416,8 @@ const OutOfWarrantyCreatePage = () => {
             </div>
           </div>
           <div className="flex items-center w-full">
-          {/* Head & Service Charge - same line */}
-          
+            {/* Head & Service Charge - same line */}
+
             <div className="flex items-center w-1/2 gap-2">
               <label
                 htmlFor="head"
@@ -425,23 +425,25 @@ const OutOfWarrantyCreatePage = () => {
               >
                 Head
               </label>
-                <select
-                  id="head"
-                  name="head"
-                  value={form.head}
-                  onChange={handleChange}
-                  className={`w-full px-3 py-1 rounded-lg border ${errs_label.head ? "border-red-300" : "border-gray-300"} ${isHeadDisabled ? "bg-gray-200 text-gray-400 cursor-not-allowed" : "bg-gray-50 text-gray-900"} focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
-                  disabled={submitting || isHeadDisabled}
-                >
-                  <option value="" disabled>{isHeadDisabled ? "Disabled for Division" : ""}</option>
-                  {headOptions.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
+              <select
+                id="head"
+                name="head"
+                value={form.head}
+                onChange={handleChange}
+                className={`w-full px-3 py-1 rounded-lg border ${errs_label.head ? "border-red-300" : "border-gray-300"} ${isHeadDisabled ? "bg-gray-200 text-gray-400 cursor-not-allowed" : "bg-gray-50 text-gray-900"} focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
+                disabled={submitting || isHeadDisabled}
+              >
+                <option value="" disabled>
+                  {isHeadDisabled ? "Disabled for Division" : ""}
+                </option>
+                {headOptions.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
             </div>
-             <div className="flex items-center w-1/2 gap-2">
+            <div className="flex items-center w-1/2 gap-2">
               <label
                 htmlFor="service_charge"
                 className="w-70 text-md font-medium text-gray-700 ml-6"
@@ -451,7 +453,7 @@ const OutOfWarrantyCreatePage = () => {
               <input
                 id="service_charge"
                 name="service_charge"
-                type="number"   
+                type="number"
                 value={serviceChargeLoading ? "" : form.service_charge}
                 onChange={handleChange}
                 className={`w-full px-3 py-1 rounded-lg border ${errs_label.service_charge ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
@@ -481,7 +483,9 @@ const OutOfWarrantyCreatePage = () => {
                     ${form.service_charge_waive === "Y" ? "bg-green-600 hover:bg-green-800" : "bg-red-600 hover:bg-red-800"}
                     disabled:opacity-60`}
                 >
-                  {form.service_charge_waive === "Y" ? "Collected" : "Not Collected"}
+                  {form.service_charge_waive === "Y"
+                    ? "Collected"
+                    : "Not Collected"}
                 </button>
               </div>
             </div>
@@ -498,14 +502,22 @@ const OutOfWarrantyCreatePage = () => {
                 name="collection_date"
                 type="date"
                 onChange={handleChange}
-                 value={form.collection_date}
-                 className={`w-full px-3 py-1 rounded-lg border ${errs_label.collection_date ? "border-red-300" : "border-gray-300"} ${form.service_charge_waive === 'N' ? "bg-gray-200 text-gray-400 cursor-not-allowed" : "bg-gray-50 text-gray-900"} font-small focus:outline-none focus:ring-2 focus:ring-blue-400`}
-                 required
-                 disabled={form.service_charge_waive === 'N'}
-                 max={new Date().toLocaleDateString("en-CA")}
-                 style={{ maxWidth: "calc(100% - 120px)" }}
-                 placeholder={form.service_charge_waive === 'N' ? "Disabled when Not Collected" : ""}
-                 title={form.service_charge_waive === 'N' ? "Collection Date is disabled when Service Charge is Not Collected" : ""}
+                value={form.collection_date}
+                className={`w-full px-3 py-1 rounded-lg border ${errs_label.collection_date ? "border-red-300" : "border-gray-300"} ${form.service_charge_waive === "N" ? "bg-gray-200 text-gray-400 cursor-not-allowed" : "bg-gray-50 text-gray-900"} font-small focus:outline-none focus:ring-2 focus:ring-blue-400`}
+                required
+                disabled={form.service_charge_waive === "N"}
+                max={new Date().toLocaleDateString("en-CA")}
+                style={{ maxWidth: "calc(100% - 120px)" }}
+                placeholder={
+                  form.service_charge_waive === "N"
+                    ? "Disabled when Not Collected"
+                    : ""
+                }
+                title={
+                  form.service_charge_waive === "N"
+                    ? "Collection Date is disabled when Service Charge is Not Collected"
+                    : ""
+                }
               />
             </div>
           </div>
@@ -521,13 +533,21 @@ const OutOfWarrantyCreatePage = () => {
               id="waive_details"
               name="waive_details"
               type="text"
-                value={form.waive_details}
-                onChange={handleChange}
-                className={`w-full px-3 py-1 rounded-lg border ${errs_label.waive_details ? "border-red-300" : "border-gray-300"} ${form.service_charge_waive === 'N' ? "bg-gray-200 text-gray-600 cursor-not-allowed" : "bg-gray-50 text-gray-900"} focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
-                maxLength={40}
-                disabled={form.service_charge_waive === 'N'}
-                placeholder={form.service_charge_waive === 'N' ? "Disabled when Service Charge is not Collected" : ""}
-                title={form.service_charge_waive === 'N' ? "Waive Details is disabled when Service Charge is Not Collected" : ""}
+              value={form.waive_details}
+              onChange={handleChange}
+              className={`w-full px-3 py-1 rounded-lg border ${errs_label.waive_details ? "border-red-300" : "border-gray-300"} ${form.service_charge_waive === "N" ? "bg-gray-200 text-gray-600 cursor-not-allowed" : "bg-gray-50 text-gray-900"} focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
+              maxLength={40}
+              disabled={form.service_charge_waive === "N"}
+              placeholder={
+                form.service_charge_waive === "N"
+                  ? "Disabled when Service Charge is not Collected"
+                  : ""
+              }
+              title={
+                form.service_charge_waive === "N"
+                  ? "Waive Details is disabled when Service Charge is Not Collected"
+                  : ""
+              }
             />
           </div>
           {/* Model & Serial Number - same line */}
@@ -571,7 +591,7 @@ const OutOfWarrantyCreatePage = () => {
               />
             </div>
           </div>
-        
+
           {/* Problem - one line */}
           <div className="flex items-center w-full gap-2">
             <label

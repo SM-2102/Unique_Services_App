@@ -40,7 +40,7 @@ const MenuCard = ({
             a.path === "/FinalSettlementOutOfWarrantySRF" ||
             a.path === "/FinalSettlementOutOfWarrantyVendor" ||
             a.path === "/CreateASCName"
-          )
+          ),
       );
   const filteredDashboardActions = isAdmin
     ? dashboardActions
@@ -54,7 +54,7 @@ const MenuCard = ({
             a.path === "/FinalSettlementOutOfWarrantySRF" ||
             a.path === "/FinalSettlementOutOfWarrantyVendor" ||
             a.path === "/CreateASCName"
-          )
+          ),
       );
   useEffect(() => {
     if (!shouldShowEnquiry(title)) return;
@@ -135,58 +135,60 @@ const MenuCard = ({
       />
 
       {/* overlay that contains action buttons when open */}
-      {isOpen && filteredDashboardActions && filteredDashboardActions.length > 0 && (
-        <div className="absolute inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-10 px-4">
-          {(() => {
-            let containerClass = "";
-            const buttonClass =
-              "px-3 py-2 w-[172px] text-sm gap-1.5 flex items-center justify-center border border-transparent shadow-sm";
+      {isOpen &&
+        filteredDashboardActions &&
+        filteredDashboardActions.length > 0 && (
+          <div className="absolute inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-10 px-4">
+            {(() => {
+              let containerClass = "";
+              const buttonClass =
+                "px-3 py-2 w-[172px] text-sm gap-1.5 flex items-center justify-center border border-transparent shadow-sm";
 
-            if (filteredDashboardActions.length === 1) {
-              // Single button centered
-              containerClass = "flex justify-center items-center w-full";
-            } else if (filteredDashboardActions.length === 2) {
-              // Two buttons stacked vertically
-              containerClass =
-                "grid grid-cols-1 max-w-[200px] w-full gap-2.5 place-items-center";
-            } else if (filteredDashboardActions.length === 3) {
-              // Three buttons stacked vertically
-              containerClass =
-                "grid grid-cols-1 max-w-[350px] w-full gap-2.5 place-items-center";
-            } else {
-              // Default layout: 2-column grid for 3–4 buttons
-              containerClass =
-                "grid grid-cols-2 max-w-[350px] w-full gap-2.5 place-items-center";
-            }
+              if (filteredDashboardActions.length === 1) {
+                // Single button centered
+                containerClass = "flex justify-center items-center w-full";
+              } else if (filteredDashboardActions.length === 2) {
+                // Two buttons stacked vertically
+                containerClass =
+                  "grid grid-cols-1 max-w-[200px] w-full gap-2.5 place-items-center";
+              } else if (filteredDashboardActions.length === 3) {
+                // Three buttons stacked vertically
+                containerClass =
+                  "grid grid-cols-1 max-w-[350px] w-full gap-2.5 place-items-center";
+              } else {
+                // Default layout: 2-column grid for 3–4 buttons
+                containerClass =
+                  "grid grid-cols-2 max-w-[350px] w-full gap-2.5 place-items-center";
+              }
 
-            return (
-              <div className={containerClass}>
-                {filteredDashboardActions.map((a, idx) => {
-                  // For the 5-button case: center the last one
-                  const specialClass =
-                    filteredDashboardActions.length === 5 && idx === 4
-                      ? "col-span-2 justify-self-center"
-                      : "";
+              return (
+                <div className={containerClass}>
+                  {filteredDashboardActions.map((a, idx) => {
+                    // For the 5-button case: center the last one
+                    const specialClass =
+                      filteredDashboardActions.length === 5 && idx === 4
+                        ? "col-span-2 justify-self-center"
+                        : "";
 
-                  return (
-                    <button
-                      key={idx}
-                      onClick={(ev) => {
-                        ev.stopPropagation();
-                        if (a.path) navigate(a.path);
-                        // Do not close overlay here; let browser navigation handle state
-                      }}
-                      className={`${buttonClass} ${specialClass} rounded-md bg-white/95 border border-white/40 shadow-sm hover:shadow-md font-medium text-blue-800 hover:bg-white hover:scale-105 transform transition-all duration-150`}
-                    >
-                      {a.label}
-                    </button>
-                  );
-                })}
-              </div>
-            );
-          })()}
-        </div>
-      )}
+                    return (
+                      <button
+                        key={idx}
+                        onClick={(ev) => {
+                          ev.stopPropagation();
+                          if (a.path) navigate(a.path);
+                          // Do not close overlay here; let browser navigation handle state
+                        }}
+                        className={`${buttonClass} ${specialClass} rounded-md bg-white/95 border border-white/40 shadow-sm hover:shadow-md font-medium text-blue-800 hover:bg-white hover:scale-105 transform transition-all duration-150`}
+                      >
+                        {a.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              );
+            })()}
+          </div>
+        )}
 
       <div className="flex items-start justify-between">
         <div className="relative group flex flex-col justify-center min-h-[2.8em] h-[2.8em]">

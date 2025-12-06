@@ -63,7 +63,7 @@ const API_ENDPOINTS = {
   WARRANTY_CREATE_CNF_CHALLAN: `${BASE_API_URL}warranty/create_cnf_challan`,
   WARRANTY_CNF_PRINT: `${BASE_API_URL}warranty/cnf_challan_print`,
   WARRANTY_ENQUIRY: `${BASE_API_URL}warranty/enquiry`, //append params
-  
+
   SERVICE_CENTER_LIST_NAMES: `${BASE_API_URL}service_center/list_names`,
   SERVICE_CENTER_CREATE: `${BASE_API_URL}service_center/create`,
 
@@ -93,7 +93,6 @@ const API_ENDPOINTS = {
   OUT_OF_WARRANTY_ENQUIRY: `${BASE_API_URL}out_of_warranty/enquiry`, //append params
   OUT_OF_WARRANTY_ESTIMATE_PRINT_DETAILS: `${BASE_API_URL}out_of_warranty/show_receipt_names`,
   OUT_OF_WARRANTY_ESTIMATE_PRINT: `${BASE_API_URL}out_of_warranty/estimate_print`,
-  
 };
 
 export default API_ENDPOINTS;

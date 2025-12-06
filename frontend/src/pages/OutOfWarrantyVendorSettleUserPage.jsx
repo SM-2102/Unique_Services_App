@@ -104,7 +104,6 @@ const OutOfWarrantySettleVendorUserPage = () => {
       .finally(() => setLoading(false));
   }, []);
 
-
   // Handler for editing vendor_bill_number
   const handleVendorBillNumberChange = (idx, value) => {
     setData((prev) => {
@@ -306,32 +305,40 @@ const OutOfWarrantySettleVendorUserPage = () => {
                           }),
                         }}
                       >
-                        {col.key === "vendor_bill_number"
-                          ? (
-                            <input
-                              type="text"
-                              value={row.vendor_bill_number || ""}
-                              onChange={(e) => handleVendorBillNumberChange(idx, e.target.value)}
-                              style={{
-                                textAlign: "center",
-                                width: "120px",
-                                padding: "4px 8px",
-                                borderRadius: "4px",
-                                border: "1px solid #e4e4e4ff",
-                                fontWeight: 500,
-                                fontSize: "15px",
-                                background: "#fff",
-                              }}
-                              aria-label="Edit Vendor Bill Number"
-                            />
-                          ) : col.key === "amount"
-                            ? (
-                                row[col.key] !== null && row[col.key] !== undefined && row[col.key] !== ""
-                                  ? `₹ ${(Number(row[col.key]) || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-                                  : "-"
-                              )
-                          : (row[col.key] !== null && row[col.key] !== undefined && row[col.key] !== "" ? row[col.key] : "-")
-                        }
+                        {col.key === "vendor_bill_number" ? (
+                          <input
+                            type="text"
+                            value={row.vendor_bill_number || ""}
+                            onChange={(e) =>
+                              handleVendorBillNumberChange(idx, e.target.value)
+                            }
+                            style={{
+                              textAlign: "center",
+                              width: "120px",
+                              padding: "4px 8px",
+                              borderRadius: "4px",
+                              border: "1px solid #e4e4e4ff",
+                              fontWeight: 500,
+                              fontSize: "15px",
+                              background: "#fff",
+                            }}
+                            aria-label="Edit Vendor Bill Number"
+                          />
+                        ) : col.key === "amount" ? (
+                          row[col.key] !== null &&
+                          row[col.key] !== undefined &&
+                          row[col.key] !== "" ? (
+                            `₹ ${(Number(row[col.key]) || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                          ) : (
+                            "-"
+                          )
+                        ) : row[col.key] !== null &&
+                          row[col.key] !== undefined &&
+                          row[col.key] !== "" ? (
+                          row[col.key]
+                        ) : (
+                          "-"
+                        )}
                       </TableCell>
                     ))}
                   </TableRow>

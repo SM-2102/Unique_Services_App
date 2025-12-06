@@ -66,9 +66,9 @@ const Filter = ({
   const nameSuggestionClickedRef = React.useRef(false);
 
   const [deliveredBySuggestions, setDeliveredBySuggestions] = useState([]);
-    const [showDeliveredBySuggestions, setShowDeliveredBySuggestions] =
-      useState(false);
-    const deliveredBySuggestionClickedRef = React.useRef(false);
+  const [showDeliveredBySuggestions, setShowDeliveredBySuggestions] =
+    useState(false);
+  const deliveredBySuggestionClickedRef = React.useRef(false);
 
   // Name suggestions
   useEffect(() => {
@@ -90,22 +90,22 @@ const Filter = ({
   }, [name, masterNames]);
 
   useEffect(() => {
-      if (deliveredBySuggestionClickedRef.current) {
-        setShowDeliveredBySuggestions(false);
-        setDeliveredBySuggestions([]);
-        deliveredBySuggestionClickedRef.current = false;
-        return;
-      }
-      if (deliveredBy && deliveredByOptions && deliveredByOptions.length > 0) {
-        const filtered = deliveredByOptions.filter((d) =>
-          d.toLowerCase().startsWith(deliveredBy.toLowerCase()),
-        );
-        setDeliveredBySuggestions(filtered);
-        setShowDeliveredBySuggestions(filtered.length > 0);
-      } else {
-        setShowDeliveredBySuggestions(false);
-      }
-    }, [deliveredBy, deliveredByOptions]);
+    if (deliveredBySuggestionClickedRef.current) {
+      setShowDeliveredBySuggestions(false);
+      setDeliveredBySuggestions([]);
+      deliveredBySuggestionClickedRef.current = false;
+      return;
+    }
+    if (deliveredBy && deliveredByOptions && deliveredByOptions.length > 0) {
+      const filtered = deliveredByOptions.filter((d) =>
+        d.toLowerCase().startsWith(deliveredBy.toLowerCase()),
+      );
+      setDeliveredBySuggestions(filtered);
+      setShowDeliveredBySuggestions(filtered.length > 0);
+    } else {
+      setShowDeliveredBySuggestions(false);
+    }
+  }, [deliveredBy, deliveredByOptions]);
 
   return (
     <>
@@ -451,7 +451,7 @@ const Filter = ({
               </select>
             </div>
           </div>
-          
+
           <div style={{ marginBottom: 10 }}>
             <label
               htmlFor="deliveredBy"
@@ -666,7 +666,7 @@ const WarrantyEnquiryPage = () => {
   const [searched, setSearched] = useState(false);
   const [masterNames, setMasterNames] = useState([]);
   const [deliveredByOptions, setDeliveredByOptions] = useState([]);
-  
+
   const handleClear = () => {
     setFinalStatus("");
     setName("");

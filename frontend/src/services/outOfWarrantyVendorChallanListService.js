@@ -7,18 +7,23 @@ import { authFetch } from "./authFetchService";
  * @returns {Promise<Array>} List of CNF challan records
  */
 async function fetchOutOfWarrantyVendorChallanList() {
-  const response = await authFetch(API_ENDPOINTS.OUT_OF_WARRANTY_LIST_VENDOR_CHALLAN, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
+  const response = await authFetch(
+    API_ENDPOINTS.OUT_OF_WARRANTY_LIST_VENDOR_CHALLAN,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
     },
-  });
+  );
 
   const data = await response.json();
   if (!response.ok) {
     throw {
       message:
-        data.message || data.detail || "Failed to fetch Vendor challan records.",
+        data.message ||
+        data.detail ||
+        "Failed to fetch Vendor challan records.",
       resolution: data.resolution || "",
     };
   }

@@ -18,7 +18,7 @@ function validateWarrantyUpdate(form) {
       errs.push("Challan Creation is required");
       errs_label.challan_date = true;
     }
-     if (form.receive_date && !form.invoice_date) {
+    if (form.receive_date && !form.invoice_date) {
       errs.push("Invoice Date is required");
       errs_label.invoice_date = true;
     }
@@ -88,7 +88,7 @@ function validateWarrantyUpdate(form) {
       }
     }
   }
-    if (form.receive_date) {
+  if (form.receive_date) {
     const receiveDate = new Date(form.receive_date);
     const srfDate = parseDDMMYYYY(form.srf_date);
     const invoiceDate = new Date(form.invoice_date);
@@ -107,7 +107,7 @@ function validateWarrantyUpdate(form) {
       }
     }
   }
-    if (form.delivery_date) {
+  if (form.delivery_date) {
     const deliveryDate = new Date(form.delivery_date);
     const receiveDate = new Date(form.receive_date);
     const repairDate = new Date(form.repair_date);
@@ -126,7 +126,7 @@ function validateWarrantyUpdate(form) {
       }
     }
   }
-    if (form.final_status === "Y") {
+  if (form.final_status === "Y") {
     if (!form.delivered_by) {
       errs.push("Delivered By is required");
       errs_label.delivered_by = true;

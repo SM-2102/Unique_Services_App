@@ -53,10 +53,10 @@ const initialForm = {
   invoice_number: "",
   final_status: "N",
 };
- 
+
 const OutOfWarrantyUpdatePage = () => {
-    // ...existing code...
-    // Place this after all useState declarations
+  // ...existing code...
+  // Place this after all useState declarations
   const [form, setForm] = useState(initialForm);
   const { user } = useAuth();
   const isAdmin = user?.role === "ADMIN";
@@ -72,61 +72,79 @@ const OutOfWarrantyUpdatePage = () => {
     return arr.length ? arr : [{ spare: "", cost: "" }];
   })();
   const [spares, setSpares] = useState(initialSpares);
-      // Add new spare row (max 6)
-      const handleAddSpare = (e) => {
-        e.preventDefault();
-        if (spares.length < 6 && spares[spares.length - 1].spare) {
-          setSpares((prev) => [...prev, { spare: "", cost: "" }]);
-        }
-      };
-    // Sync spares state to form
-    useEffect(() => {
-      // Only show filled spares, or one empty row if none
-      const filled = [];
-      for (let i = 0; i < 6; i++) {
-        const spare = form[`spare${i + 1}`] || "";
-        const cost = form[`cost${i + 1}`] || "";
-        if (spare || cost) filled.push({ spare, cost });
-      }
-      setSpares(filled.length ? filled : [{ spare: "", cost: "" }]);
-    }, [form.spare1, form.spare2, form.spare3, form.spare4, form.spare5, form.spare6, form.cost1, form.cost2, form.cost3, form.cost4, form.cost5, form.cost6]);
+  // Add new spare row (max 6)
+  const handleAddSpare = (e) => {
+    e.preventDefault();
+    if (spares.length < 6 && spares[spares.length - 1].spare) {
+      setSpares((prev) => [...prev, { spare: "", cost: "" }]);
+    }
+  };
+  // Sync spares state to form
+  useEffect(() => {
+    // Only show filled spares, or one empty row if none
+    const filled = [];
+    for (let i = 0; i < 6; i++) {
+      const spare = form[`spare${i + 1}`] || "";
+      const cost = form[`cost${i + 1}`] || "";
+      if (spare || cost) filled.push({ spare, cost });
+    }
+    setSpares(filled.length ? filled : [{ spare: "", cost: "" }]);
+  }, [
+    form.spare1,
+    form.spare2,
+    form.spare3,
+    form.spare4,
+    form.spare5,
+    form.spare6,
+    form.cost1,
+    form.cost2,
+    form.cost3,
+    form.cost4,
+    form.cost5,
+    form.cost6,
+  ]);
 
-    // Update form when spares table changes
-    const handleSpareChange = (idx, field, value) => {
-      setSpares((prev) => {
-        const updated = prev.map((item, i) =>
-          i === idx ? { ...item, [field]: value } : item
-        );
-        // Always update all six spareN/costN fields in form
-        setForm((f) => {
-          const newForm = { ...f };
-          let spareCostSum = 0;
-          for (let i = 0; i < 6; i++) {
-            newForm[`spare${i + 1}`] = updated[i]?.spare || "";
-            newForm[`cost${i + 1}`] = updated[i]?.cost || "";
-            const costVal = parseFloat(updated[i]?.cost);
-            if (!isNaN(costVal)) spareCostSum += costVal;
-          }
-          newForm.spare_cost = spareCostSum;
-          // Calculate total
-          const rewinding_cost = parseFloat(newForm.rewinding_cost) || 0;
-          const other_cost = parseFloat(newForm.other_cost) || 0;
-          const godown_cost = parseFloat(newForm.godown_cost) || 0;
-          const service_charge = parseFloat(newForm.service_charge) || 0;
-          const discount = parseFloat(newForm.discount) || 0;
-          newForm.total = rewinding_cost + other_cost + spareCostSum + godown_cost + service_charge - discount;
-          return newForm;
-        });
-        return updated;
+  // Update form when spares table changes
+  const handleSpareChange = (idx, field, value) => {
+    setSpares((prev) => {
+      const updated = prev.map((item, i) =>
+        i === idx ? { ...item, [field]: value } : item,
+      );
+      // Always update all six spareN/costN fields in form
+      setForm((f) => {
+        const newForm = { ...f };
+        let spareCostSum = 0;
+        for (let i = 0; i < 6; i++) {
+          newForm[`spare${i + 1}`] = updated[i]?.spare || "";
+          newForm[`cost${i + 1}`] = updated[i]?.cost || "";
+          const costVal = parseFloat(updated[i]?.cost);
+          if (!isNaN(costVal)) spareCostSum += costVal;
+        }
+        newForm.spare_cost = spareCostSum;
+        // Calculate total
+        const rewinding_cost = parseFloat(newForm.rewinding_cost) || 0;
+        const other_cost = parseFloat(newForm.other_cost) || 0;
+        const godown_cost = parseFloat(newForm.godown_cost) || 0;
+        const service_charge = parseFloat(newForm.service_charge) || 0;
+        const discount = parseFloat(newForm.discount) || 0;
+        newForm.total =
+          rewinding_cost +
+          other_cost +
+          spareCostSum +
+          godown_cost +
+          service_charge -
+          discount;
+        return newForm;
       });
-    };
+      return updated;
+    });
+  };
   const [showVendorActivity, setShowVendorActivity] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState({});
   const [isLocked, setIsLocked] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [pendingItems, setPendingItems] = useState([]);
-
 
   const handleSearch = async (searchCode) => {
     // If this was called as an event handler (e.g. onClick={handleSearch}),
@@ -194,7 +212,7 @@ const OutOfWarrantyUpdatePage = () => {
         invoice_number: data.invoice_number ?? "",
         final_status: data.final_status ?? "",
       });
-   
+
       // Handle locked state
       if (data.final_status === "Y") {
         setError({
@@ -284,7 +302,7 @@ const OutOfWarrantyUpdatePage = () => {
       invoice_number: form.invoice_number,
       final_status: form.final_status === "Y" ? "Y" : "N",
     };
-    
+
     // Map empty string values to null
     const payload = Object.fromEntries(
       Object.entries(rawPayload).map(([k, v]) => [k, v === "" ? null : v]),
@@ -318,14 +336,47 @@ const OutOfWarrantyUpdatePage = () => {
     setForm((prev) => {
       const updated = { ...prev, [name]: newValue };
       // Recalculate total immediately if relevant field changes
-      if (["rewinding_cost", "other_cost", "spare_cost", "godown_cost", "service_charge", "discount"].includes(name)) {
-        const rewinding_cost = name === "rewinding_cost" ? parseFloat(newValue) || 0 : parseFloat(updated.rewinding_cost) || 0;
-        const other_cost = name === "other_cost" ? parseFloat(newValue) || 0 : parseFloat(updated.other_cost) || 0;
-        const spare_cost = name === "spare_cost" ? parseFloat(newValue) || 0 : parseFloat(updated.spare_cost) || 0;
-        const godown_cost = name === "godown_cost" ? parseFloat(newValue) || 0 : parseFloat(updated.godown_cost) || 0;
-        const service_charge = name === "service_charge" ? parseFloat(newValue) || 0 : parseFloat(updated.service_charge) || 0;
-        const discount = name === "discount" ? parseFloat(newValue) || 0 : parseFloat(updated.discount) || 0;
-        updated.total = rewinding_cost + other_cost + spare_cost + godown_cost + service_charge - discount;
+      if (
+        [
+          "rewinding_cost",
+          "other_cost",
+          "spare_cost",
+          "godown_cost",
+          "service_charge",
+          "discount",
+        ].includes(name)
+      ) {
+        const rewinding_cost =
+          name === "rewinding_cost"
+            ? parseFloat(newValue) || 0
+            : parseFloat(updated.rewinding_cost) || 0;
+        const other_cost =
+          name === "other_cost"
+            ? parseFloat(newValue) || 0
+            : parseFloat(updated.other_cost) || 0;
+        const spare_cost =
+          name === "spare_cost"
+            ? parseFloat(newValue) || 0
+            : parseFloat(updated.spare_cost) || 0;
+        const godown_cost =
+          name === "godown_cost"
+            ? parseFloat(newValue) || 0
+            : parseFloat(updated.godown_cost) || 0;
+        const service_charge =
+          name === "service_charge"
+            ? parseFloat(newValue) || 0
+            : parseFloat(updated.service_charge) || 0;
+        const discount =
+          name === "discount"
+            ? parseFloat(newValue) || 0
+            : parseFloat(updated.discount) || 0;
+        updated.total =
+          rewinding_cost +
+          other_cost +
+          spare_cost +
+          godown_cost +
+          service_charge -
+          discount;
       }
       return updated;
     });
@@ -348,11 +399,11 @@ const OutOfWarrantyUpdatePage = () => {
       form.final_amount !== roundedFinal ||
       form.round_off !== round_off
     ) {
-      setForm(prev => ({
+      setForm((prev) => ({
         ...prev,
         gst_amount,
         final_amount: roundedFinal,
-        round_off
+        round_off,
       }));
     }
   }, [form.total, form.gst]);
@@ -510,7 +561,12 @@ const OutOfWarrantyUpdatePage = () => {
           {/* Elegant divider above Vendor Activity button for clarity */}
           <div className="w-full flex items-center">
             <div className="flex-grow h-0.5 rounded-full bg-gradient-to-r from-blue-200 via-blue-400 to-blue-200 opacity-80 shadow-sm"></div>
-            <span className="mx-3 text-blue-400 font-semibold text-xs tracking-widest select-none" style={{letterSpacing:2}}>VENDOR SECTION</span>
+            <span
+              className="mx-3 text-blue-400 font-semibold text-xs tracking-widest select-none"
+              style={{ letterSpacing: 2 }}
+            >
+              VENDOR SECTION
+            </span>
             <div className="flex-grow h-0.5 rounded-full bg-gradient-to-l from-blue-200 via-blue-400 to-blue-200 opacity-80 shadow-sm"></div>
           </div>
           {/* Vendor Activity Toggle Button */}
@@ -519,9 +575,11 @@ const OutOfWarrantyUpdatePage = () => {
               type="button"
               className={`transition-all duration-300 px-4 py-1.5 rounded-lg font-semibold shadow text-white ${showVendorActivity ? "bg-gradient-to-r from-blue-700 to-blue-400" : "bg-gradient-to-r from-blue-400 to-blue-700"}`}
               onClick={() => setShowVendorActivity((prev) => !prev)}
-              style={{ minWidth: 180}}
+              style={{ minWidth: 180 }}
             >
-              {showVendorActivity ? "Hide Vendor Activity" : "Show Vendor Activity"}
+              {showVendorActivity
+                ? "Hide Vendor Activity"
+                : "Show Vendor Activity"}
             </button>
           </div>
           {/* Vendor Activity Fields - animated dropdown */}
@@ -552,7 +610,7 @@ const OutOfWarrantyUpdatePage = () => {
                   className={`w-full px-3 py-1 rounded-lg ${errs_label.received_by ? "border-red-300" : "border-gray-300"} border border-gray-300 bg-gray-50 text-gray-900 cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
                   disabled={isLocked || submitting}
                   autoComplete="off"
-                  ></input>
+                ></input>
               </div>
             </div>
             {/* Vendor Cost and Dates */}
@@ -635,86 +693,91 @@ const OutOfWarrantyUpdatePage = () => {
           {/* Elegant divider above Vendor Activity button for clarity */}
           <div className="w-full flex items-center">
             <div className="flex-grow h-0.5 rounded-full bg-gradient-to-r from-blue-200 via-blue-400 to-blue-200 opacity-80 shadow-sm"></div>
-            <span className="mx-3 text-blue-400 font-semibold text-xs tracking-widest select-none" style={{letterSpacing:2}}>CUSTOMER SECTION</span>
+            <span
+              className="mx-3 text-blue-400 font-semibold text-xs tracking-widest select-none"
+              style={{ letterSpacing: 2 }}
+            >
+              CUSTOMER SECTION
+            </span>
             <div className="flex-grow h-0.5 rounded-full bg-gradient-to-l from-blue-200 via-blue-400 to-blue-200 opacity-80 shadow-sm"></div>
           </div>
           {/* Vendor Cost and Dates */}
-            <div className="flex items-center w-full gap-3.5">
-              <div className="flex items-center w-3/5 gap-2">
-                <label
-                  htmlFor="rewinding_cost"
-                  className="w-60 text-md font-medium text-gray-700"
-                >
-                  Rewinding Cost to Customer
-                </label>
-                <input
-                  id="rewinding_cost"
-                  name="rewinding_cost"
-                  type="number"
-                  value={form.rewinding_cost}
-                  onChange={handleChange}
-                  className={`flex-1 min-w-0 w-full px-3 py-1 rounded-lg border ${errs_label.rewinding_cost ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
-                  disabled={isLocked || submitting}
-                />
-              </div>
-
-              <div className="flex items-center w-2/5 gap-2">
-                <label
-                  htmlFor="estimate_date"
-                  className={`w-57 text-md font-medium text-gray-700 gap-1 ml-2`}
-                >
-                  Estimate Date
-                </label>
-                <input
-                  id="estimate_date"
-                  name="estimate_date"
-                  type="date"
-                  value={form.estimate_date}
-                  onChange={handleChange}
-                  max={new Date().toLocaleDateString("en-CA")}
-                  className={`w-full px-3 py-1 rounded-lg border ${errs_label.estimate_date ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
-                  disabled={isLocked || submitting}
-                />
-              </div>
+          <div className="flex items-center w-full gap-3.5">
+            <div className="flex items-center w-3/5 gap-2">
+              <label
+                htmlFor="rewinding_cost"
+                className="w-60 text-md font-medium text-gray-700"
+              >
+                Rewinding Cost to Customer
+              </label>
+              <input
+                id="rewinding_cost"
+                name="rewinding_cost"
+                type="number"
+                value={form.rewinding_cost}
+                onChange={handleChange}
+                className={`flex-1 min-w-0 w-full px-3 py-1 rounded-lg border ${errs_label.rewinding_cost ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
+                disabled={isLocked || submitting}
+              />
             </div>
-            <div className="flex items-center w-full gap-3.5">
-              <div className="flex items-center w-3/5 gap-2">
-                <label
-                  htmlFor="other_cost"
-                  className="w-60 text-md font-medium text-gray-700"
-                >
-                  Other Cost to Customer
-                </label>
-                <input
-                  id="other_cost"
-                  name="other_cost"
-                  type="number"
-                  value={form.other_cost}
-                  onChange={handleChange}
-                  className={`flex-1 min-w-0 w-full px-3 py-1 rounded-lg border ${errs_label.other_cost ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
-                  disabled={isLocked || submitting}
-                />
-              </div>
 
-              <div className="flex items-center w-2/5 gap-2">
-                <label
-                  htmlFor="repair_date"
-                  className={`w-57 text-md font-medium text-gray-700 gap-1 ml-2`}
-                >
-                  Repair Date
-                </label>
-                <input
-                  id="repair_date"
-                  name="repair_date"
-                  type="date"
-                  value={form.repair_date}
-                  onChange={handleChange}
-                  max={new Date().toLocaleDateString("en-CA")}
-                  className={`w-full px-3 py-1 rounded-lg border ${errs_label.repair_date ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
-                  disabled={isLocked || submitting}
-                />
-              </div>
+            <div className="flex items-center w-2/5 gap-2">
+              <label
+                htmlFor="estimate_date"
+                className={`w-57 text-md font-medium text-gray-700 gap-1 ml-2`}
+              >
+                Estimate Date
+              </label>
+              <input
+                id="estimate_date"
+                name="estimate_date"
+                type="date"
+                value={form.estimate_date}
+                onChange={handleChange}
+                max={new Date().toLocaleDateString("en-CA")}
+                className={`w-full px-3 py-1 rounded-lg border ${errs_label.estimate_date ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
+                disabled={isLocked || submitting}
+              />
             </div>
+          </div>
+          <div className="flex items-center w-full gap-3.5">
+            <div className="flex items-center w-3/5 gap-2">
+              <label
+                htmlFor="other_cost"
+                className="w-60 text-md font-medium text-gray-700"
+              >
+                Other Cost to Customer
+              </label>
+              <input
+                id="other_cost"
+                name="other_cost"
+                type="number"
+                value={form.other_cost}
+                onChange={handleChange}
+                className={`flex-1 min-w-0 w-full px-3 py-1 rounded-lg border ${errs_label.other_cost ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
+                disabled={isLocked || submitting}
+              />
+            </div>
+
+            <div className="flex items-center w-2/5 gap-2">
+              <label
+                htmlFor="repair_date"
+                className={`w-57 text-md font-medium text-gray-700 gap-1 ml-2`}
+              >
+                Repair Date
+              </label>
+              <input
+                id="repair_date"
+                name="repair_date"
+                type="date"
+                value={form.repair_date}
+                onChange={handleChange}
+                max={new Date().toLocaleDateString("en-CA")}
+                className={`w-full px-3 py-1 rounded-lg border ${errs_label.repair_date ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
+                disabled={isLocked || submitting}
+              />
+            </div>
+          </div>
 
           {/* Remark - mapped to status*/}
           <div
@@ -745,7 +808,12 @@ const OutOfWarrantyUpdatePage = () => {
           {/* Elegant divider above Vendor Activity button for clarity */}
           <div className="w-full flex items-center">
             <div className="flex-grow h-0.5 rounded-full bg-gradient-to-r from-blue-200 via-blue-400 to-blue-200 opacity-80 shadow-sm"></div>
-            <span className="mx-3 text-blue-400 font-semibold text-xs tracking-widest select-none" style={{letterSpacing:2}}>SPARES SECTION</span>
+            <span
+              className="mx-3 text-blue-400 font-semibold text-xs tracking-widest select-none"
+              style={{ letterSpacing: 2 }}
+            >
+              SPARES SECTION
+            </span>
             <div className="flex-grow h-0.5 rounded-full bg-gradient-to-l from-blue-200 via-blue-400 to-blue-200 opacity-80 shadow-sm"></div>
           </div>
           {/* Spares Table */}
@@ -754,38 +822,53 @@ const OutOfWarrantyUpdatePage = () => {
               <table className="min-w-full bg-white rounded-xl shadow-md">
                 <thead className="bg-gradient-to-r from-gray-100 to-gray-200">
                   <tr>
-                    <th className="py-1.5 text-center font-semibold text-gray-700">Index</th>
-                    <th className="px-3 py-1.5 text-center font-semibold text-gray-700">Spare</th>
-                    <th className="px-3 py-1.5 text-center font-semibold text-gray-700">Cost</th>
+                    <th className="py-1.5 text-center font-semibold text-gray-700">
+                      Index
+                    </th>
+                    <th className="px-3 py-1.5 text-center font-semibold text-gray-700">
+                      Spare
+                    </th>
+                    <th className="px-3 py-1.5 text-center font-semibold text-gray-700">
+                      Cost
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {spares.map((item, idx) => (
-                    <tr key={idx} className="hover:bg-blue-50 transition rounded-sm">
-                      <td className="px-2 py-1 text-center text-gray-700">{idx + 1}</td>
+                    <tr
+                      key={idx}
+                      className="hover:bg-blue-50 transition rounded-sm"
+                    >
+                      <td className="px-2 py-1 text-center text-gray-700">
+                        {idx + 1}
+                      </td>
                       <td className="px-2 py-1">
-                          <input
-                            id={`spare${idx + 1}`}
-                            name={`spare${idx + 1}`}
-                            type="text"
-                            value={item.spare}
-                            onChange={e => handleSpareChange(idx, "spare", e.target.value)}
-                            className={`w-full px-3 py-1 rounded-lg border border-gray-200 bg-gray-50 text-gray-900 shadow-sm`}
-                            maxLength={30}
-                            disabled={isLocked || submitting}
-                          />
+                        <input
+                          id={`spare${idx + 1}`}
+                          name={`spare${idx + 1}`}
+                          type="text"
+                          value={item.spare}
+                          onChange={(e) =>
+                            handleSpareChange(idx, "spare", e.target.value)
+                          }
+                          className={`w-full px-3 py-1 rounded-lg border border-gray-200 bg-gray-50 text-gray-900 shadow-sm`}
+                          maxLength={30}
+                          disabled={isLocked || submitting}
+                        />
                       </td>
                       <td className="px-2 py-1 w-25">
-                          <input
-                            id={`cost${idx + 1}`}
-                            name={`cost${idx + 1}`}
-                            type="number"
-                            value={item.cost}
-                            onChange={e => handleSpareChange(idx, "cost", e.target.value)}
-                            className={`w-full px-3 py-1 rounded-lg border border-gray-200 bg-gray-50 text-gray-900 shadow-sm`}
-                            min={0}
-                            disabled={isLocked || submitting || !item.spare}
-                          />
+                        <input
+                          id={`cost${idx + 1}`}
+                          name={`cost${idx + 1}`}
+                          type="number"
+                          value={item.cost}
+                          onChange={(e) =>
+                            handleSpareChange(idx, "cost", e.target.value)
+                          }
+                          className={`w-full px-3 py-1 rounded-lg border border-gray-200 bg-gray-50 text-gray-900 shadow-sm`}
+                          min={0}
+                          disabled={isLocked || submitting || !item.spare}
+                        />
                       </td>
                     </tr>
                   ))}
@@ -810,7 +893,12 @@ const OutOfWarrantyUpdatePage = () => {
           {/* Existing spare_cost/godown_cost fields below table */}
           <div className="flex items-center w-full gap-6 mt-2">
             <div className="flex items-center w-1/2 gap-2">
-              <label htmlFor="spare_cost" className="w-44 text-md font-medium text-gray-700">Total Spare Cost</label>
+              <label
+                htmlFor="spare_cost"
+                className="w-44 text-md font-medium text-gray-700"
+              >
+                Total Spare Cost
+              </label>
               <input
                 id="spare_cost"
                 name="spare_cost"
@@ -822,7 +910,12 @@ const OutOfWarrantyUpdatePage = () => {
               />
             </div>
             <div className="flex items-center w-1/2 gap-2">
-              <label htmlFor="godown_cost" className={`w-50 text-md font-medium text-gray-700 gap-1`}>Godown Cost</label>
+              <label
+                htmlFor="godown_cost"
+                className={`w-50 text-md font-medium text-gray-700 gap-1`}
+              >
+                Godown Cost
+              </label>
               <input
                 id="godown_cost"
                 name="godown_cost"
@@ -834,55 +927,60 @@ const OutOfWarrantyUpdatePage = () => {
               />
             </div>
           </div>
-             <div className="flex items-center w-full gap-6">
-              <div className="flex items-center w-1/2 gap-2">
-                <label
-                  htmlFor="discount"
-                  className="w-44 text-md font-medium text-gray-700"
-                >
-                  Discount
-                </label>
-                <input
-                  id="discount"
-                  name="discount"
-                  type="number"
-                  value={form.discount}
-                  onChange={handleChange}
-                  className={`flex-1 min-w-0 w-full px-3 py-1 rounded-lg border ${errs_label.discount ? "border-red-300" : "border-gray-300"} ${!isAdmin ? "bg-gray-200 text-gray-600 cursor-not-allowed" : "bg-gray-50 text-gray-900"} focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
-                  disabled={isLocked || submitting || !isAdmin}
-                  placeholder={!isAdmin ? "Disabled" : form.discount}
-                />
-              </div>
-
-              <div className="flex items-center w-1/2 gap-2">
-                <label
-                  htmlFor="total"
-                  className={`w-50 text-md font-medium text-gray-700 gap-1`}
-                >
-                  Total Amount
-                </label>
-                <input
-                  id="total"
-                  name="total"
-                  type="number"
-                  value={form.total}
-                  readOnly
-                  className={`flex-1 min-w-0 px-3 py-1 rounded-lg border ${errs_label.total ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small cursor-not-allowed`}
-                  disabled={isLocked || submitting}
-                />
-              </div>
+          <div className="flex items-center w-full gap-6">
+            <div className="flex items-center w-1/2 gap-2">
+              <label
+                htmlFor="discount"
+                className="w-44 text-md font-medium text-gray-700"
+              >
+                Discount
+              </label>
+              <input
+                id="discount"
+                name="discount"
+                type="number"
+                value={form.discount}
+                onChange={handleChange}
+                className={`flex-1 min-w-0 w-full px-3 py-1 rounded-lg border ${errs_label.discount ? "border-red-300" : "border-gray-300"} ${!isAdmin ? "bg-gray-200 text-gray-600 cursor-not-allowed" : "bg-gray-50 text-gray-900"} focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
+                disabled={isLocked || submitting || !isAdmin}
+                placeholder={!isAdmin ? "Disabled" : form.discount}
+              />
             </div>
+
+            <div className="flex items-center w-1/2 gap-2">
+              <label
+                htmlFor="total"
+                className={`w-50 text-md font-medium text-gray-700 gap-1`}
+              >
+                Total Amount
+              </label>
+              <input
+                id="total"
+                name="total"
+                type="number"
+                value={form.total}
+                readOnly
+                className={`flex-1 min-w-0 px-3 py-1 rounded-lg border ${errs_label.total ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small cursor-not-allowed`}
+                disabled={isLocked || submitting}
+              />
+            </div>
+          </div>
 
           {/* Elegant divider above Vendor Activity button for clarity */}
           <div className="w-full flex items-center">
             <div className="flex-grow h-0.5 rounded-full bg-gradient-to-r from-blue-200 via-blue-400 to-blue-200 opacity-80 shadow-sm"></div>
-            <span className="mx-3 text-blue-400 font-semibold text-xs tracking-widest select-none" style={{letterSpacing:2}}>FINAL CALCULATION SECTION</span>
+            <span
+              className="mx-3 text-blue-400 font-semibold text-xs tracking-widest select-none"
+              style={{ letterSpacing: 2 }}
+            >
+              FINAL CALCULATION SECTION
+            </span>
             <div className="flex-grow h-0.5 rounded-full bg-gradient-to-l from-blue-200 via-blue-400 to-blue-200 opacity-80 shadow-sm"></div>
           </div>
-                   {/* Vendor Cost and Dates */}
+          {/* Vendor Cost and Dates */}
 
           <div className="flex items-center w-full gap-6">
-              <div className="flex items-center w-1/2 gap-2">
+            <div className="flex items-center w-1/2 gap-2">
               <label
                 htmlFor="gst"
                 className="w-55 text-md font-medium text-gray-700"
@@ -897,7 +995,7 @@ const OutOfWarrantyUpdatePage = () => {
                   name="gst"
                   type="text"
                   value={form.gst}
-                  style={{ display: 'none' }}
+                  style={{ display: "none" }}
                   readOnly
                   tabIndex={-1}
                 />
@@ -909,141 +1007,141 @@ const OutOfWarrantyUpdatePage = () => {
               </div>
             </div>
 
-              <div className="flex items-center w-1/2 gap-2">
-                <label
-                  htmlFor="gst_amount"
-                  className={`w-50 text-md font-medium text-gray-700 gap-1`}
-                >
-                  GST Amount
-                </label>
-                <input
-                  id="gst_amount"
-                  name="gst_amount"
-                  type="number"
-                  readOnly
-                  value={form.gst_amount}
-                  onChange={handleChange}
-                  className={`flex-1 min-w-0 px-3 py-1 rounded-lg border ${errs_label.gst_amount ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small cursor-not-allowed`}
-                  disabled={isLocked || submitting}
-                />
-              </div>
+            <div className="flex items-center w-1/2 gap-2">
+              <label
+                htmlFor="gst_amount"
+                className={`w-50 text-md font-medium text-gray-700 gap-1`}
+              >
+                GST Amount
+              </label>
+              <input
+                id="gst_amount"
+                name="gst_amount"
+                type="number"
+                readOnly
+                value={form.gst_amount}
+                onChange={handleChange}
+                className={`flex-1 min-w-0 px-3 py-1 rounded-lg border ${errs_label.gst_amount ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small cursor-not-allowed`}
+                disabled={isLocked || submitting}
+              />
             </div>
-             <div className="flex items-center w-full gap-6">
-              <div className="flex items-center w-1/2 gap-2">
-                <label
-                  htmlFor="round_off"
-                  className="w-44 text-md font-medium text-gray-700"
-                >
-                  Round Off Amount
-                </label>
-                <input
-                  id="round_off"
-                  name="round_off"
-                  type="number" 
-                  value={form.round_off}
-                  readOnly
-                  className={`flex-1 min-w-0 w-full px-3 py-1 rounded-lg border ${errs_label.round_off ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small cursor-not-allowed`}
-                  disabled={isLocked || submitting}
-                />
-              </div>
-
-              <div className="flex items-center w-1/2 gap-2">
-                <label
-                  htmlFor="final_amount"
-                  className={`w-50 text-md font-medium text-gray-700 gap-1`}
-                >
-                  Final Amount
-                </label>
-                <input
-                  id="final_amount"
-                  name="final_amount"
-                  type="number"
-                  value={form.final_amount}
-                  readOnly
-                  className={`flex-1 min-w-0 px-3 py-1 rounded-lg border ${errs_label.final_amount ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small cursor-not-allowed`}
-                  disabled={isLocked || submitting}
-                />
-              </div>
-            </div>
-            <div className="flex items-center w-full gap-6">
-              <div className="flex items-center w-1/2 gap-2">
-                <label
-                  htmlFor="pc_number"
-                  className="w-34 text-md font-medium text-gray-700"
-                >
-                  PC Number
-                </label>
-                <input
-                  id="pc_number"
-                  name="pc_number"
-                  type="number"
-                  value={form.pc_number}
-                  onChange={handleChange}
-                  className={`flex-1 min-w-0 w-full px-3 py-1 rounded-lg border ${errs_label.pc_number ? "border-red-300" : "border-gray-300"} ${form.gst === "Y" ? "bg-gray-200 text-gray-600 cursor-not-allowed" : "bg-gray-50 text-gray-900"} focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
-                  disabled={isLocked || submitting || form.gst === "Y"}
-                  placeholder={form.gst === "Y" ? "Disabled" : undefined}
-                />
-              </div>
-
-              <div className="flex items-center w-1/2 gap-2">
-                <label
-                  htmlFor="receive_amount"
-                  className={`w-50 text-md font-medium text-gray-700 gap-1`}
-                >
-                  Amount Received
-                </label>
-                <input
-                  id="receive_amount"
-                  name="receive_amount"
-                  type="number"
-                  value={form.receive_amount}
-                  onChange={handleChange}
-                  className={`flex-1 min-w-0 px-3 py-1 rounded-lg border ${errs_label.receive_amount ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
-                  disabled={isLocked || submitting}
-                />
-              </div>
-            </div>
-            <div className="flex items-center w-full gap-6">
-              <div className="flex items-center w-1/2 gap-2">
-                <label
-                  htmlFor="invoice_number"
-                  className="w-34 text-md font-medium text-gray-700"
-                >
-                  Invoice Number
-                </label>
-                <input
-                  id="invoice_number"
-                  name="invoice_number"
-                  type="number"
-                  value={form.invoice_number}
-                  onChange={handleChange}
-                  className={`flex-1 min-w-0 w-full px-3 py-1 rounded-lg border ${errs_label.invoice_number ? "border-red-300" : "border-gray-300"} ${form.gst === "N" ? "bg-gray-200 text-gray-600 cursor-not-allowed" : "bg-gray-50 text-gray-900"} focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
-                  disabled={isLocked || submitting || form.gst === "N"}
-                  placeholder={form.gst === "N" ? "Disabled" : undefined}
-                />
-              </div>
-
-              <div className="flex items-center w-1/2 gap-2">
-                <label
-                  htmlFor="delivery_date"
-                  className={`w-123 text-md font-medium text-gray-700 gap-1`}
-                >
-                  Delivery Date
-                </label>
-                <input
-                  id="delivery_date"
-                  name="delivery_date"
-                  type="date"
-                  value={form.delivery_date}
-                  onChange={handleChange}
-                  max={new Date().toLocaleDateString("en-CA")}
-                  className={`w-full px-3 py-1 rounded-lg border ${errs_label.delivery_date ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
-                  disabled={isLocked || submitting}
-                />
-              </div>
+          </div>
+          <div className="flex items-center w-full gap-6">
+            <div className="flex items-center w-1/2 gap-2">
+              <label
+                htmlFor="round_off"
+                className="w-44 text-md font-medium text-gray-700"
+              >
+                Round Off Amount
+              </label>
+              <input
+                id="round_off"
+                name="round_off"
+                type="number"
+                value={form.round_off}
+                readOnly
+                className={`flex-1 min-w-0 w-full px-3 py-1 rounded-lg border ${errs_label.round_off ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small cursor-not-allowed`}
+                disabled={isLocked || submitting}
+              />
             </div>
 
-                  {/* Courier Number and Final Status - label beside input, w-1/2 each */}
+            <div className="flex items-center w-1/2 gap-2">
+              <label
+                htmlFor="final_amount"
+                className={`w-50 text-md font-medium text-gray-700 gap-1`}
+              >
+                Final Amount
+              </label>
+              <input
+                id="final_amount"
+                name="final_amount"
+                type="number"
+                value={form.final_amount}
+                readOnly
+                className={`flex-1 min-w-0 px-3 py-1 rounded-lg border ${errs_label.final_amount ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small cursor-not-allowed`}
+                disabled={isLocked || submitting}
+              />
+            </div>
+          </div>
+          <div className="flex items-center w-full gap-6">
+            <div className="flex items-center w-1/2 gap-2">
+              <label
+                htmlFor="pc_number"
+                className="w-34 text-md font-medium text-gray-700"
+              >
+                PC Number
+              </label>
+              <input
+                id="pc_number"
+                name="pc_number"
+                type="number"
+                value={form.pc_number}
+                onChange={handleChange}
+                className={`flex-1 min-w-0 w-full px-3 py-1 rounded-lg border ${errs_label.pc_number ? "border-red-300" : "border-gray-300"} ${form.gst === "Y" ? "bg-gray-200 text-gray-600 cursor-not-allowed" : "bg-gray-50 text-gray-900"} focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
+                disabled={isLocked || submitting || form.gst === "Y"}
+                placeholder={form.gst === "Y" ? "Disabled" : undefined}
+              />
+            </div>
+
+            <div className="flex items-center w-1/2 gap-2">
+              <label
+                htmlFor="receive_amount"
+                className={`w-50 text-md font-medium text-gray-700 gap-1`}
+              >
+                Amount Received
+              </label>
+              <input
+                id="receive_amount"
+                name="receive_amount"
+                type="number"
+                value={form.receive_amount}
+                onChange={handleChange}
+                className={`flex-1 min-w-0 px-3 py-1 rounded-lg border ${errs_label.receive_amount ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
+                disabled={isLocked || submitting}
+              />
+            </div>
+          </div>
+          <div className="flex items-center w-full gap-6">
+            <div className="flex items-center w-1/2 gap-2">
+              <label
+                htmlFor="invoice_number"
+                className="w-34 text-md font-medium text-gray-700"
+              >
+                Invoice Number
+              </label>
+              <input
+                id="invoice_number"
+                name="invoice_number"
+                type="number"
+                value={form.invoice_number}
+                onChange={handleChange}
+                className={`flex-1 min-w-0 w-full px-3 py-1 rounded-lg border ${errs_label.invoice_number ? "border-red-300" : "border-gray-300"} ${form.gst === "N" ? "bg-gray-200 text-gray-600 cursor-not-allowed" : "bg-gray-50 text-gray-900"} focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
+                disabled={isLocked || submitting || form.gst === "N"}
+                placeholder={form.gst === "N" ? "Disabled" : undefined}
+              />
+            </div>
+
+            <div className="flex items-center w-1/2 gap-2">
+              <label
+                htmlFor="delivery_date"
+                className={`w-123 text-md font-medium text-gray-700 gap-1`}
+              >
+                Delivery Date
+              </label>
+              <input
+                id="delivery_date"
+                name="delivery_date"
+                type="date"
+                value={form.delivery_date}
+                onChange={handleChange}
+                max={new Date().toLocaleDateString("en-CA")}
+                className={`w-full px-3 py-1 rounded-lg border ${errs_label.delivery_date ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
+                disabled={isLocked || submitting}
+              />
+            </div>
+          </div>
+
+          {/* Courier Number and Final Status - label beside input, w-1/2 each */}
           <div className="flex items-center w-full gap-6">
             <div className="flex items-center w-1/2 gap-2">
               <label

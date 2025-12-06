@@ -22,7 +22,7 @@ const columns = [
   { key: "model", label: "Model" },
   { key: "challan_number", label: "Challan No." },
   { key: "received_by", label: "Received By" },
-  { key: "vendor_bill_number", label: "Bill No."},
+  { key: "vendor_bill_number", label: "Bill No." },
   { key: "vendor_cost1", label: "Rewinding Cost" },
   { key: "vendor_cost2", label: "Other Cost" },
   { key: "amount", label: "Total Amount" },
@@ -281,7 +281,10 @@ const OutOfWarrantyVendorSettleAdminPage = () => {
                       />
                     </TableCell>
                     {columns.map((col) => {
-                      if (col.key === "vendor_cost1" || col.key === "vendor_cost2") {
+                      if (
+                        col.key === "vendor_cost1" ||
+                        col.key === "vendor_cost2"
+                      ) {
                         return (
                           <TableCell
                             key={col.key}
@@ -319,9 +322,20 @@ const OutOfWarrantyVendorSettleAdminPage = () => {
                                     [col.key]: value,
                                   };
                                   // Calculate new amount
-                                  const rewinding = col.key === "vendor_cost1" ? value : (newRow.vendor_cost1 !== undefined ? newRow.vendor_cost1 : row.vendor_cost1);
-                                  const other = col.key === "vendor_cost2" ? value : (newRow.vendor_cost2 !== undefined ? newRow.vendor_cost2 : row.vendor_cost2);
-                                  newRow.amount = Number(rewinding || 0) + Number(other || 0);
+                                  const rewinding =
+                                    col.key === "vendor_cost1"
+                                      ? value
+                                      : newRow.vendor_cost1 !== undefined
+                                        ? newRow.vendor_cost1
+                                        : row.vendor_cost1;
+                                  const other =
+                                    col.key === "vendor_cost2"
+                                      ? value
+                                      : newRow.vendor_cost2 !== undefined
+                                        ? newRow.vendor_cost2
+                                        : row.vendor_cost2;
+                                  newRow.amount =
+                                    Number(rewinding || 0) + Number(other || 0);
                                   return {
                                     ...prev,
                                     [idx]: newRow,
@@ -330,7 +344,9 @@ const OutOfWarrantyVendorSettleAdminPage = () => {
                               }}
                               InputProps={{
                                 startAdornment: (
-                                  <InputAdornment position="start">₹</InputAdornment>
+                                  <InputAdornment position="start">
+                                    ₹
+                                  </InputAdornment>
                                 ),
                               }}
                               aria-label={`Edit ${col.key} for row ${idx + 1}`}
@@ -345,9 +361,10 @@ const OutOfWarrantyVendorSettleAdminPage = () => {
                                 "&:hover .MuiOutlinedInput-notchedOutline": {
                                   borderColor: "#1976d2",
                                 },
-                                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                  borderColor: "#1976d2",
-                                },
+                                "&.Mui-focused .MuiOutlinedInput-notchedOutline":
+                                  {
+                                    borderColor: "#1976d2",
+                                  },
                               }}
                             />
                           </TableCell>
@@ -357,7 +374,8 @@ const OutOfWarrantyVendorSettleAdminPage = () => {
                         const amount =
                           editedValues[idx]?.amount !== undefined
                             ? editedValues[idx].amount
-                            : Number(row.vendor_cost1 || 0) + Number(row.vendor_cost2 || 0);
+                            : Number(row.vendor_cost1 || 0) +
+                              Number(row.vendor_cost2 || 0);
                         return (
                           <TableCell
                             key={col.key}
@@ -367,10 +385,11 @@ const OutOfWarrantyVendorSettleAdminPage = () => {
                               py: 0.5,
                             }}
                           >
-                              ₹ {Number(amount).toLocaleString(undefined, {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2,
-                              })}
+                            ₹{" "}
+                            {Number(amount).toLocaleString(undefined, {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            })}
                           </TableCell>
                         );
                       } else {
