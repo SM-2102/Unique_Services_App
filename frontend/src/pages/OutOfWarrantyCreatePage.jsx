@@ -13,7 +13,7 @@ const initialForm = {
   head: "",
   division: "",
   service_charge: "",
-  service_charge_waive: "",
+  service_charge_waive: "N", 
   collection_date: "",
   waive_details: "",
   model: "",
@@ -498,12 +498,14 @@ const OutOfWarrantyCreatePage = () => {
                 name="collection_date"
                 type="date"
                 onChange={handleChange}
-                value={form.collection_date}
-                className={`w-full px-3 py-1 rounded-lg border ${errs_label.collection_date ? "border-red-300" : "border-gray-300"} border-gray-300 text-gray-900 font-small focus:outline-none focus:ring-2 focus:ring-blue-400`}
-                required
-                disabled={submitting}
-                max={new Date().toLocaleDateString("en-CA")}
-                style={{ maxWidth: "calc(100% - 120px)" }}
+                 value={form.collection_date}
+                 className={`w-full px-3 py-1 rounded-lg border ${errs_label.collection_date ? "border-red-300" : "border-gray-300"} ${form.service_charge_waive === 'N' ? "bg-gray-200 text-gray-400 cursor-not-allowed" : "bg-gray-50 text-gray-900"} font-small focus:outline-none focus:ring-2 focus:ring-blue-400`}
+                 required
+                 disabled={form.service_charge_waive === 'N'}
+                 max={new Date().toLocaleDateString("en-CA")}
+                 style={{ maxWidth: "calc(100% - 120px)" }}
+                 placeholder={form.service_charge_waive === 'N' ? "Disabled when Not Collected" : ""}
+                 title={form.service_charge_waive === 'N' ? "Collection Date is disabled when Service Charge is Not Collected" : ""}
               />
             </div>
           </div>
@@ -519,11 +521,13 @@ const OutOfWarrantyCreatePage = () => {
               id="waive_details"
               name="waive_details"
               type="text"
-              value={form.waive_details}
-              onChange={handleChange}
-              className={`w-full px-3 py-1 rounded-lg border ${errs_label.waive_details ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
-              maxLength={40}
-              disabled={submitting}
+                value={form.waive_details}
+                onChange={handleChange}
+                className={`w-full px-3 py-1 rounded-lg border ${errs_label.waive_details ? "border-red-300" : "border-gray-300"} ${form.service_charge_waive === 'N' ? "bg-gray-200 text-gray-600 cursor-not-allowed" : "bg-gray-50 text-gray-900"} focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
+                maxLength={40}
+                disabled={form.service_charge_waive === 'N'}
+                placeholder={form.service_charge_waive === 'N' ? "Disabled when Service Charge is not Collected" : ""}
+                title={form.service_charge_waive === 'N' ? "Waive Details is disabled when Service Charge is Not Collected" : ""}
             />
           </div>
           {/* Model & Serial Number - same line */}

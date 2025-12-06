@@ -65,6 +65,7 @@ const API_ENDPOINTS = {
   WARRANTY_ENQUIRY: `${BASE_API_URL}warranty/enquiry`, //append params
   
   SERVICE_CENTER_LIST_NAMES: `${BASE_API_URL}service_center/list_names`,
+  SERVICE_CENTER_CREATE: `${BASE_API_URL}service_center/create`,
 
   SERVICE_CHARGE: `${BASE_API_URL}service_charge/service_charge`,
 

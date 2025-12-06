@@ -42,6 +42,8 @@ import OutOfWarrantySettleSRFAdminPage from "./pages/OutOfWarrantySRFSettleAdmin
 import OutOfWarrantyEnquiryPage from "./pages/OutOfWarrantyEnquiryPage.jsx";
 import OutOfWarrantyCreatePage from "./pages/OutOfWarrantyCreatePage.jsx";
 import OutOfWarrantyEstimatePrintPage from "./pages/OutOfWarrantyEstimatePrintPage.jsx";
+import ServiceCenterCreatePage from "./pages/ServiceCenterCreatePage.jsx";
+import OutOfWarrantyUpdatePage from "./pages/OutOfWarrantyUpdatePage.jsx";
 
 function AppRoutesWithNav() {
   return (
@@ -119,6 +121,14 @@ function AppRoutesWithNav() {
             element={
               <PrivateRoute>
                 <MasterUpdatePage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/CreateASCName"
+            element={
+              <PrivateRoute requiredRole="ADMIN">
+                <ServiceCenterCreatePage />
               </PrivateRoute>
             }
           />
@@ -278,7 +288,7 @@ function AppRoutesWithNav() {
             path="/UpdateOutOfWarrantySRF"
             element={
               <PrivateRoute>
-                <PageNotAvailable />
+                <OutOfWarrantyUpdatePage />
               </PrivateRoute>
             }
           />

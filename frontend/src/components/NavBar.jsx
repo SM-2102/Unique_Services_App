@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { FaChevronDown, FaChevronUp, FaBars } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { menuConfig } from "../config/menuConfig";
+import { useAuth } from "../context/AuthContext";
 
 // Define desired submenu order for each menu key
 const submenuOrder = {
@@ -17,21 +18,21 @@ const submenuOrder = {
     "Create SRF",
     "Update SRF",
     "Print SRF",
-    "Settle SRF - User",
-    "Settle SRF - Admin",
+    "Print Estimate",
     "Create Vendor Challan",
     "Print Vendor Challan",
-    "Print Estimate",
-    "Settle Vendor - User",
-    "Settle Vendor - Admin",
+    "Settle SRF",
+    "Settle Vendor",
+    "Settle Final SRF",
+    "Settle Final Vendor",
     "Enquiry",
   ],
   retail: [
     "Add Record",
     "Update Record",
     "Print Receipt",
-    "Settle Record - User",
-    "Settle Record - Admin",
+    "Settle Record",
+    "Settle Final Record",
     "Enquiry",
   ],
 };
@@ -45,18 +46,36 @@ function sortActions(key, actions) {
   );
 }
 
-// Convert menuConfig to menuItems for NavBar (submenus = actions, reordered)
-const menuItems = menuConfig.map(({ key, title, actions }) => ({
-  title,
-  submenus: sortActions(key, actions).map(({ label, path }) => ({
-    title: label,
-    path,
-  })),
-}));
+function filterActionsForRole(actions, isAdmin) {
+  if (isAdmin) return actions;
+  return actions.filter(
+    (a) =>
+      !(
+        a.path === "/CreateUser" ||
+        a.path === "/DeleteUser" ||
+        a.path === "/ShowAllUsers" ||
+        a.path === "/FinalSettlementRetailRecord" ||
+        a.path === "/FinalSettlementOutOfWarrantySRF" ||
+        a.path === "/FinalSettlementOutOfWarrantyVendor" ||
+        a.path === "/CreateASCName"
+      )
+  );
+}
 
 const NavBar = ({ open, setOpen }) => {
-  const [submenuOpen, setSubmenuOpen] = useState(null);
+  const [submenuOpen, setSubmenuOpen] = useState([]);
   const overlayRef = useRef(null);
+  const { user } = useAuth();
+  const isAdmin = user && user.role === "ADMIN";
+
+  // Convert menuConfig to menuItems for NavBar (submenus = actions, reordered, filtered)
+  const menuItems = menuConfig.map(({ key, title, actions }) => ({
+    title,
+    submenus: sortActions(key, filterActionsForRole(actions, isAdmin)).map(({ label, path }) => ({
+      title: label,
+      path,
+    })),
+  }));
 
   // Close on outside click
   useEffect(() => {
@@ -70,13 +89,19 @@ const NavBar = ({ open, setOpen }) => {
     return () => document.removeEventListener("mousedown", handleClick);
   }, [open, setOpen]);
 
-  // Close all submenus when NavBar is opened
+  // Close all submenus when NavBar is closed
   useEffect(() => {
-    if (open) setSubmenuOpen(null);
+    if (!open) setSubmenuOpen([]);
   }, [open]);
 
-  const handleSubmenu = (idx) =>
-    setSubmenuOpen(idx === submenuOpen ? null : idx);
+  // Open submenu on hover
+  const handleSubmenuEnter = (idx) => {
+    setSubmenuOpen((prev) => (prev.includes(idx) ? prev : [...prev, idx]));
+  };
+  // Close submenu on mouse leave
+  const handleSubmenuLeave = (idx) => {
+    setSubmenuOpen((prev) => prev.filter((i) => i !== idx));
+  };
 
   if (!open) return null;
 
@@ -100,19 +125,23 @@ const NavBar = ({ open, setOpen }) => {
       </div>
       <div className="flex-1 overflow-y-auto py-4">
         {menuItems.map((item, idx) => (
-          <div key={item.title} className="mb-2">
+          <div
+            key={item.title}
+            className="mb-2"
+            onMouseEnter={() => handleSubmenuEnter(idx)}
+            onMouseLeave={() => handleSubmenuLeave(idx)}
+          >
             <div
               className="flex items-center text-black text-base font-semibold px-6 py-3 rounded-md cursor-pointer hover:bg-blue-900/30 transition select-none"
-              onClick={() => handleSubmenu(idx)}
             >
               <span>{item.title}</span>
-              {submenuOpen === idx ? (
+              {submenuOpen.includes(idx) ? (
                 <FaChevronUp className="ml-2 text-blue-700" />
               ) : (
                 <FaChevronDown className="ml-2 text-blue-700" />
               )}
             </div>
-            {submenuOpen === idx && (
+            {submenuOpen.includes(idx) && item.submenus.length > 0 && (
               <div className="ml-4 mt-1 flex flex-col">
                 {item.submenus.map((sub) => (
                   <Link

@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FiBookOpen } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 /**
  * Reusable MenuCard component with action-overlay support.
@@ -24,6 +25,37 @@ const MenuCard = ({
   setOpenCardKey,
 }) => {
   const [showBook, setShowBook] = useState(false);
+  const { user } = useAuth();
+  const isAdmin = user && user.role === "ADMIN";
+  // Only show actions that do not require ADMIN, or all if admin
+  const filteredActions = isAdmin
+    ? actions
+    : actions.filter(
+        (a) =>
+          !(
+            a.path === "/CreateUser" ||
+            a.path === "/DeleteUser" ||
+            a.path === "/ShowAllUsers" ||
+            a.path === "/FinalSettlementRetailRecord" ||
+            a.path === "/FinalSettlementOutOfWarrantySRF" ||
+            a.path === "/FinalSettlementOutOfWarrantyVendor" ||
+            a.path === "/CreateASCName"
+          )
+      );
+  const filteredDashboardActions = isAdmin
+    ? dashboardActions
+    : dashboardActions.filter(
+        (a) =>
+          !(
+            a.path === "/CreateUser" ||
+            a.path === "/DeleteUser" ||
+            a.path === "/ShowAllUsers" ||
+            a.path === "/FinalSettlementRetailRecord" ||
+            a.path === "/FinalSettlementOutOfWarrantySRF" ||
+            a.path === "/FinalSettlementOutOfWarrantyVendor" ||
+            a.path === "/CreateASCName"
+          )
+      );
   useEffect(() => {
     if (!shouldShowEnquiry(title)) return;
     const interval = setInterval(() => setShowBook((v) => !v), 1500);
@@ -44,8 +76,8 @@ const MenuCard = ({
 
   // Get the enquiry action path if available
   const getEnquiryPath = () => {
-    if (actions && actions.length > 0) {
-      const enquiryAction = actions.find(
+    if (filteredActions && filteredActions.length > 0) {
+      const enquiryAction = filteredActions.find(
         (a) => a.label.toLowerCase() === "enquiry" && a.path,
       );
       return enquiryAction ? enquiryAction.path : null;
@@ -65,7 +97,7 @@ const MenuCard = ({
 
   const handleCardClick = (e) => {
     // If actions exist, toggle the overlay instead of invoking onClick
-    if (actions && actions.length > 0) {
+    if (filteredActions && filteredActions.length > 0) {
       if (!isOpen) {
         setOpenCardKey(cardKey);
       } else {
@@ -103,21 +135,21 @@ const MenuCard = ({
       />
 
       {/* overlay that contains action buttons when open */}
-      {isOpen && dashboardActions && dashboardActions.length > 0 && (
+      {isOpen && filteredDashboardActions && filteredDashboardActions.length > 0 && (
         <div className="absolute inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-10 px-4">
           {(() => {
             let containerClass = "";
             const buttonClass =
               "px-3 py-2 w-[172px] text-sm gap-1.5 flex items-center justify-center border border-transparent shadow-sm";
 
-            if (dashboardActions.length === 1) {
+            if (filteredDashboardActions.length === 1) {
               // Single button centered
               containerClass = "flex justify-center items-center w-full";
-            } else if (dashboardActions.length === 2) {
+            } else if (filteredDashboardActions.length === 2) {
               // Two buttons stacked vertically
               containerClass =
                 "grid grid-cols-1 max-w-[200px] w-full gap-2.5 place-items-center";
-            } else if (dashboardActions.length === 3) {
+            } else if (filteredDashboardActions.length === 3) {
               // Three buttons stacked vertically
               containerClass =
                 "grid grid-cols-1 max-w-[350px] w-full gap-2.5 place-items-center";
@@ -129,10 +161,10 @@ const MenuCard = ({
 
             return (
               <div className={containerClass}>
-                {dashboardActions.map((a, idx) => {
+                {filteredDashboardActions.map((a, idx) => {
                   // For the 5-button case: center the last one
                   const specialClass =
-                    dashboardActions.length === 5 && idx === 4
+                    filteredDashboardActions.length === 5 && idx === 4
                       ? "col-span-2 justify-self-center"
                       : "";
 

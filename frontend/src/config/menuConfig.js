@@ -17,6 +17,7 @@ export const menuConfig = [
     actions: [
       { label: "Add Record", path: "/CreateCustomerRecord" },
       { label: "Update Record", path: "/UpdateCustomerRecord" },
+      { label: "Add ASC Name", path: "/CreateASCName" },
     ],
   },
   {
@@ -45,10 +46,10 @@ export const menuConfig = [
       { label: "Print Vendor Challan", path: "/PrintOutOfWarrantyVendorChallan" },
       { label: "Print SRF", path: "/PrintOutOfWarrantySRF" },
       { label: "Print Estimate", path: "/PrintOutOfWarrantyEstimate" },
-      { label: "Settle SRF - User", path: "/ProposeToSettleOutOfWarrantySRF" },
-      { label: "Settle Vendor - User", path: "/ProposeToSettleOutOfWarrantyVendor" },
-      { label: "Settle SRF - Admin", path: "/FinalSettlementOutOfWarrantySRF" },
-      { label: "Settle Vendor - Admin", path: "/FinalSettlementOutOfWarrantyVendor" },
+      { label: "Settle SRF", path: "/ProposeToSettleOutOfWarrantySRF" },
+      { label: "Settle Vendor", path: "/ProposeToSettleOutOfWarrantyVendor" },
+      { label: "Settle Final SRF", path: "/FinalSettlementOutOfWarrantySRF" },
+      { label: "Settle Final Vendor", path: "/FinalSettlementOutOfWarrantyVendor" },
       { label: "Enquiry", path: "/OutOfWarrantyEnquiry", showInDashboard: false },
     ],
   },
@@ -84,10 +85,10 @@ export const menuConfig = [
     bgColor: "#e7d7f8ff",
     actions: [
       { label: "Add Record", path: "/CreateRetailRecord" },
-      { label: "Settle Record - User", path: "/ProposeToSettleRetailRecord" },
       { label: "Update Record", path: "/UpdateRetailRecord" },
-      { label: "Settle Record - Admin", path: "/FinalSettlementRetailRecord" },
       { label: "Print Receipt", path: "/PrintRetailReceipt" },
+      { label: "Settle Record", path: "/ProposeToSettleRetailRecord" },
+      { label: "Settle Final Record", path: "/FinalSettlementRetailRecord" },
       {
         label: "Enquiry",
         path: "/RetailRecordEnquiry",

@@ -44,7 +44,7 @@ export const DashboardDataProvider = ({ children }) => {
     } catch (err) {
       setError(err);
       setData({
-        customer: { number_of_customers: 0, top_customers: [] },
+        customer: { number_of_customers: 0, number_of_asc_names: 0, top_customers: [] },
         challan: { number_of_challans: 0, number_of_items: 0 },
         retail: { division_wise_donut: [], settled_vs_unsettled_pie_chart: [] },
         market: { status_per_division_stacked_bar_chart: [] },

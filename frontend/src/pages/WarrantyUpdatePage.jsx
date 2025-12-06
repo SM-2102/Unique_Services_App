@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import Toast from "../components/Toast";
-import { validateWarrantyUpdate } from "../utils/warrantyUpdateValidation";
+import { validateWarrantyUpdate } from "../utils/warrantySRFUpdateValidation";
 import { updateWarranty } from "../services/warrantyUpdateService";
 import { FiSearch } from "react-icons/fi";
 import FinalStatusToggle from "../components/FinalStatus";
@@ -97,7 +97,7 @@ const WarrantyUpdatePage = () => {
       // Handle locked state
       if (data.settlement === "Y") {
         setError({
-          message: "Already settled",
+          message: "Already completed",
           resolution: "This record is not editable",
           type: "info",
         });
