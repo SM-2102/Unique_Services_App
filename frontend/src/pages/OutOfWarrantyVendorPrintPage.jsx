@@ -2,11 +2,8 @@ import React, { useState, useEffect } from "react";
 import {
   Container,
   Paper,
-  Typography,
   InputBase,
   IconButton,
-  Modal,
-  Box,
 } from "@mui/material";
 import { AiOutlinePrinter } from "react-icons/ai";
 import Toast from "../components/Toast";

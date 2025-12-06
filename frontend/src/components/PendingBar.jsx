@@ -12,13 +12,11 @@ const PendingBar = ({ pendingData = [], onSelect }) => {
 
   return (
     <>
-      {/* Sliding Panel (keeps out of header/footer via top/bottom offsets) */}
       <div
         className={`fixed right-0 w-70 max-w-[90vw] z-[1200] transition-transform duration-300
           ${open ? "translate-x-0" : "translate-x-full"} bg-black/10 backdrop-blur-sm shadow-2xl
            top-[88px] bottom-[0px] rounded-l-md overflow-hidden flex flex-col animate-fade-in`}
       >
-        {/* List (no separate header/footer inside - uses surrounding layout offsets) */}
         <ul
           className="flex-1 overflow-y-auto py-3 px-3 space-y-2 font-sans"
           style={{ fontFamily: "Montserrat, Arial, sans-serif" }}
@@ -70,7 +68,6 @@ const PendingBar = ({ pendingData = [], onSelect }) => {
           )}
         </ul>
       </div>
-      {/* Handle (longer, with label) */}
       <div
         onClick={() => setOpen(!open)}
         className={`fixed top-1/5 -translate-y-1/2 z-[3000] flex items-center gap-2 bg-blue-900 text-white shadow-lg cursor-pointer

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { FaUserFriends, FaPlusCircle } from "react-icons/fa";
 import Toast from "../components/Toast";
 import { createMaster } from "../services/masterCreateService";
 import { getNextMasterCode } from "../services/masterCodeService";

@@ -2,7 +2,7 @@ import API_ENDPOINTS from "../config/api";
 import { authFetch } from "./authFetchService";
 
 /**
- * @returns {Promise<string[]>} List of customer names
+ * @returns {Promise<string[]>} 
  */
 async function fetchMarketDeliveredBy() {
   const response = await authFetch(API_ENDPOINTS.MARKET_DELIVERED_BY, {

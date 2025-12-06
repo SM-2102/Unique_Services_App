@@ -1,6 +1,5 @@
 /**
- * Validate change password form fields
- * @param {object} form - { old_password, new_password, confirm_password }
+ * @param {object} form
  * @returns {object} errors object
  */
 function validateChangePassword(form) {

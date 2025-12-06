@@ -3,7 +3,6 @@ import API_ENDPOINTS from "../config/api";
 import { authFetch } from "./authFetchService";
 
 /**
- * Fetch all users (for ShowUsers component)
  * @returns {Promise<Array>} List of users
  */
 async function fetchRetailFinalSettlement() {

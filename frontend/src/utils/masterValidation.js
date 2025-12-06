@@ -1,6 +1,5 @@
 /**
- * Validate change password form fields
- * @param {object} form - { name, address, city, pin, contact1, contact2, gst }
+ * @param {object} form
  * @returns {object} errors object
  */
 function validateMaster(form, showContact2) {

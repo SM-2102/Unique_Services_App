@@ -28,7 +28,6 @@ const Header = () => {
           className="relative flex items-center"
           style={{ minWidth: 190, minHeight: 48 }}
         >
-          {/* Reserve space for NavBar icon, absolutely position icon so logo never shifts */}
           <div className="absolute left-0 top-1/2 -translate-y-1/2">
             {showNavIcon && (
               <div className="flex items-center space-x-2">
@@ -73,7 +72,6 @@ const Header = () => {
           <Logout />
         </div>
       )}
-      {/* NavBar overlay, controlled by state */}
       {showNavIcon && <NavBar open={navOpen} setOpen={setNavOpen} />}
     </header>
   );

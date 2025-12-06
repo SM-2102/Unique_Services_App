@@ -238,7 +238,6 @@ const MenuCard = ({
           `}</style>
           <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-blue-400 group-hover:w-full transition-all duration-300"></div>
         </div>
-        {/* Integrated icon with enquiry flash/alternate */}
         <div
           className="inline-flex items-center justify-center h-12 w-12 rounded-full shadow-inner cursor-pointer relative border border-white"
           style={{

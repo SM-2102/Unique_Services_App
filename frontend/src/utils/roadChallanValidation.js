@@ -1,5 +1,4 @@
 /**
- * Validate change password form fields
  * @param {object} form
  * @param {object} items
  * @returns {object} errors object

@@ -2,10 +2,8 @@ import React, { useState, useEffect } from "react";
 import {
   Container,
   Paper,
-  Typography,
   InputBase,
   IconButton,
-  Modal,
   Box,
 } from "@mui/material";
 import { BiSearch } from "react-icons/bi";

@@ -78,11 +78,11 @@ const UserMenu = () => {
   };
 
   const handleCreateUser = () => {
-    navigate("/CreateUser"); // Update this when the create user page is ready
+    navigate("/CreateUser"); 
   };
 
   const handleDeleteUser = () => {
-    navigate("/DeleteUser"); // Update this when the delete user page is ready
+    navigate("/DeleteUser"); 
   };
 
   const handleShowUsers = () => {

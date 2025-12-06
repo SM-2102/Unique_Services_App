@@ -1,6 +1,5 @@
 /**
- * Validate change password form fields
- * @param {object} form - { username, password, phone_number }
+ * @param {object} form
  * @returns {object} errors object
  */
 function validateCreateUser(form) {

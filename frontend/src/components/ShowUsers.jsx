@@ -79,7 +79,6 @@ const ShowUsers = ({ users = [], title = "List of Registered Users" }) => {
           </TableBody>
         </Table>
       </TableContainer>
-      {/* Loading and error states are now handled by parent components */}
     </Paper>
   );
 };
