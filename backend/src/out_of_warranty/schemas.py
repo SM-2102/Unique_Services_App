@@ -43,43 +43,87 @@ class OutOfWarrantyPending(BaseModel):
     name: str
 
 
-class OutOfWarrantySrfNumber(BaseModel):
+class OutOfWarrantySRFNumber(BaseModel):
     srf_number: str
 
 
-# class OutOfWarrantyUpdateResponse(BaseModel):
-#     srf_number: str
-#     name: str
-#     division: str
-#     model: str
-#     challan_number: Optional[str]
-#     challan_date: Optional[str]
-#     head: str
-#     repair_date: Optional[date]
-#     receive_date: Optional[date]
-#     invoice_number: Optional[str]
-#     invoice_date: Optional[date]
-#     delivery_date: Optional[date]
-#     delivered_by: Optional[str]
-#     status: Optional[str]
-#     settlement: str
-#     srf_date: str
-#     courier: Optional[str]
-#     complaint_number: Optional[str]
+class OutOfWarrantyUpdateResponse(BaseModel):
+    srf_number: str
+    name: str
+    model: str
+    srf_date: str
+    serial_number: str
+    service_charge: int
+    received_by: Optional[str]
+    vendor_date1: Optional[date]
+    vendor_cost1: Optional[float]
+    vendor_date2: Optional[date]
+    vendor_cost2: Optional[float]
+    estimate_date: Optional[date]
+    repair_date: Optional[date]
+    rewinding_cost: Optional[float]
+    other_cost: Optional[float]
+    work_done: Optional[str]
+    spare1: Optional[str]
+    cost1: Optional[float]
+    spare2: Optional[str]
+    cost2: Optional[float]
+    spare3: Optional[str]
+    cost3: Optional[float]
+    spare4: Optional[str]
+    cost4: Optional[float]
+    spare5: Optional[str]
+    cost5: Optional[float]
+    spare6: Optional[str]
+    cost6: Optional[float]
+    spare_cost: Optional[float]
+    godown_cost: Optional[float]
+    discount: Optional[float]
+    total: Optional[float]
+    gst: str
+    gst_amount: Optional[float]
+    round_off: Optional[float]
+    final_amount: Optional[float]
+    receive_amount: Optional[float]
+    delivery_date: Optional[date]
+    pc_number: Optional[int]
+    invoice_number: Optional[int]
+    final_status: str
 
-
-# class OutOfWarrantyUpdate(BaseModel):
-#     repair_date: Optional[date]
-#     receive_date: Optional[date]
-#     invoice_number: Optional[str] = Field(None, max_length=16)
-#     invoice_date: Optional[date]
-#     delivery_date: Optional[date]
-#     delivered_by: Optional[str] = Field(None, max_length=20)
-#     status: Optional[str] = Field(None, max_length=40)
-#     courier: Optional[str] = Field(None, max_length=15)
-#     complaint_number: Optional[str] = Field(None, max_length=20)
-#     settlement: Optional[str] = Field(None, max_length=1)
-
+class OutOfWarrantyUpdate(BaseModel):
+    vendor_date2: Optional[date]
+    vendor_cost1: Optional[float]
+    vendor_cost2: Optional[float]
+    estimate_date: Optional[date]
+    repair_date: Optional[date]
+    rewinding_cost: Optional[float]
+    other_cost: Optional[float]
+    work_done: Optional[str] = Field(None, max_length=50)
+    spare1: Optional[str] = Field(None, max_length=20)
+    cost1: Optional[float]
+    spare2: Optional[str] = Field(None, max_length=20)
+    cost2: Optional[float]
+    spare3: Optional[str] = Field(None, max_length=20)
+    cost3: Optional[float]
+    spare4: Optional[str] = Field(None, max_length=20)
+    cost4: Optional[float]
+    spare5: Optional[str] = Field(None, max_length=20)
+    cost5: Optional[float]
+    spare6: Optional[str] = Field(None, max_length=20)
+    cost6: Optional[float]
+    spare_cost: Optional[float]
+    godown_cost: Optional[float]
+    discount: Optional[float]
+    total: Optional[float]
+    gst: str = Field(..., max_length=1)
+    gst_amount: Optional[float]
+    round_off: Optional[float]
+    final_amount: Optional[float]
+    receive_amount: Optional[float]
+    delivery_date: Optional[date]
+    pc_number: Optional[int]
+    invoice_number: Optional[int]
+    final_status: str = Field(..., max_length=1)
 
 class OutOfWarrantyVendorChallanDetails(BaseModel):
     srf_number: str
@@ -172,5 +216,5 @@ class OutOfWarrantyEstimatePrintResponse(BaseModel):
     total: str
 
 
-class OutOfWarrantySRFNumber(BaseModel):
+class OutOfWarrantySRFNumberList(BaseModel):
     srf_number: List[str]

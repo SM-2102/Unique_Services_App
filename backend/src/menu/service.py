@@ -9,12 +9,18 @@ from master.models import Master
 from out_of_warranty.models import OutOfWarranty
 from retail.models import Retail
 from warranty.models import Warranty
+from service_center.models import ServiceCentre
 
 
 class MenuService:
 
     async def number_of_masters(self, session: AsyncSession):
         statement = select(func.count(Master.code))
+        result = await session.execute(statement)
+        return result.scalar()
+    
+    async def number_of_asc_names(self, session: AsyncSession):
+        statement = select(func.count(ServiceCentre.asc_name))
         result = await session.execute(statement)
         return result.scalar()
 

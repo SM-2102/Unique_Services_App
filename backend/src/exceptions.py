@@ -80,6 +80,9 @@ class WarrantyNotFound(BaseException):
 class OutOfWarrantyNotFound(BaseException):
     """Out Of Warranty Not Found"""
 
+class ServiceCenterAlreadyExists(BaseException):
+    """Service Center Already Exists"""
+
 
 def create_exception_handler(
     status_code: int, initial_detail: Any
@@ -291,6 +294,18 @@ def register_exceptions(app: FastAPI):
                 "message": "Out Of Warranty Not Found",
                 "resolution": "Please check the SRF number",
                 "error_code": "out_of_warranty_not_found",
+            },
+        ),
+    )
+
+    app.add_exception_handler(
+        ServiceCenterAlreadyExists,
+        create_exception_handler(
+            status_code=status.HTTP_409_CONFLICT,
+            initial_detail={
+                "message": "Service Center Already Exists",
+                "resolution": "Choose a different service center name",
+                "error_code": "service_center_already_exists",
             },
         ),
     )

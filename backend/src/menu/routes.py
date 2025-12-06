@@ -38,6 +38,7 @@ async def get_dashboard_data(
     session: AsyncSession = Depends(get_session), _=Depends(access_token_bearer)
 ):
     number_of_customers = await menu_service.number_of_masters(session)
+    number_of_asc_names = await menu_service.number_of_asc_names(session)
     top_customers = await menu_service.top_customers(session)
 
     retail_division_wise_data = (
@@ -66,6 +67,7 @@ async def get_dashboard_data(
     dashboard_data = {
         "customer": {
             "number_of_customers": ((number_of_customers // 10) * 10),
+            "number_of_asc_names": ((number_of_asc_names // 10) * 10),
             "top_customers": top_customers,
         },
         "challan": {

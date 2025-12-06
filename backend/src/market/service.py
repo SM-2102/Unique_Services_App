@@ -104,8 +104,7 @@ class MarketService:
         if not existing_market:
             raise MarketNotFound()
         for var, value in vars(market).items():
-            if value is not None:
-                setattr(existing_market, var, value)
+            setattr(existing_market, var, value)
         existing_market.updated_by = token["user"]["username"]
         session.add(existing_market)
         await session.commit()

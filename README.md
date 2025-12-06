@@ -2,65 +2,74 @@
 ## Unique Services App - Developer Guide
 
 ---
+### To Do List 
+ - Comments
+ - Function name
+ - File Names
+ - Unused imports
+ - Pretty print
+  - print and console
+
 
 ## Frontend Pages Progress
 
 ### Auth Module
-- [x] **LoginPage** – User authentication
+- [ ] **LoginPage** – User authentication
 
 ### User Module
-- [x] **CreateUserPage** – Create User [ADMIN]
-- [x] **DeleteUserPage** – Delete User [ADMIN]
-- [x] **ShowAllUsersPage** – View All Users [ADMIN]
-- [x] **ShowStandardUsersPage** - View Standard Users
-- [x] **ChangePasswordPage** – Change password
+- [ ] **CreateUserPage** – Create User [ADMIN]
+- [ ] **DeleteUserPage** – Delete User [ADMIN]
+- [ ] **ShowAllUsersPage** – View All Users [ADMIN]
+- [ ] **ShowStandardUsersPage** - View Standard Users
+- [ ] **ChangePasswordPage** – Change password
 
 ### Dashboard Module
-- [x] **MenuDashboardPage** – Main dashboard for menu navigation
-- [x] **PageNotFound** – 404 error page
-- [x] **PageNotAvailable** – Maintenance/feature unavailable page
+- [ ] **MenuDashboardPage** – Main dashboard for menu navigation
+- [ ] **PageNotFound** – 404 error page
+- [ ] **PageNotAvailable** – Maintenance/feature unavailable page
 
 ### Master Module
-- [x] **MasterCreatePage** - Create Master record
-- [x] **MasterUpdatePage** - Update Master record
+- [ ] **MasterCreatePage** - Create Master record
+- [ ] **MasterUpdatePage** - Update Master record
+- [ ] **ServiceCenterCreatePage** - Add Service Center
 
 ### Road Challan Module
-- [x] **RoadChallanCreatePage** - Create Road Challan record
-- [x] **RoadChallanPrintPage** - Print Road Challan record
+- [ ] **RoadChallanCreatePage** - Create Road Challan record
+- [ ] **RoadChallanPrintPage** - Print Road Challan record
 
 ### Market Module
-- [x] **MarketCreatePage** - Create Market record
-- [x] **MarketUpdatePage** - Update Market record
-- [x] **MarketEnquiryPage** - Market Enquiry
+- [ ] **MarketCreatePage** - Create Market record
+- [ ] **MarketUpdatePage** - Update Market record
+- [ ] **MarketEnquiryPage** - Market Enquiry
 
 ### Retail Module
-- [x] **RetailCreatePage** - Create Retail record
-- [x] **RetailUpdatePage** - Update Retail record
-- [x] **RetailEnquiryPage** - Retail Enquiry
-- [x] **RetailPrintPage** - Retail Print Receipt
-- [x] **RetailSettleUserPage** - Proposed For Settlement
-- [x] **RetailSettleAdminPage** - Settled Retail Record [ADMIN]
+- [ ] **RetailCreatePage** - Create Retail record
+- [ ] **RetailUpdatePage** - Update Retail record
+- [ ] **RetailEnquiryPage** - Retail Enquiry
+- [ ] **RetailPrintPage** - Retail Print Receipt
+- [ ] **RetailSettleUserPage** - Proposed For Settlement
+- [ ] **RetailSettleAdminPage** - Settled Retail Record [ADMIN]
 
 ### Warranty Module
-- [x] **WarrantyCreatePage** - Create Warranty record
-- [x] **WarrantyUpdatePage** - Update Warranty record
-- [x] **WarrantySRFPrintPage** - Warranty SRF Print
-- [x] **WarrantyChallanPage** - Warranty Challan
-- [x] **WarrantyChallanPrintPage** - Warranty Challan Print
-- [x] **WarrantyEnquiryPage** - Warranty Enquiry Page
+- [ ] **WarrantyCreatePage** - Create Warranty record
+- [ ] **WarrantyUpdatePage** - Update Warranty record
+- [ ] **WarrantySRFPrintPage** - Warranty SRF Print
+- [ ] **WarrantyChallanPage** - Warranty Challan
+- [ ] **WarrantyChallanPrintPage** - Warranty Challan Print
+- [ ] **WarrantyEnquiryPage** - Warranty Enquiry Page
 
 ### OutOfWarranty Module
-- [x] **OutOFWarrantyCreatePage** - Create Out Of Warranty record
+- [ ] **OutOFWarrantyCreatePage** - Create Out Of Warranty record
 - [ ] **OutOFWarrantyUpdatePage** - Update Out Of Warranty record
-- [x] **OutOFWarrantySRFPrintPage** - Out Of Warranty SRF Print
-- [x] **OutOFWarrantySRFSettleUserPage** - Out Of Warranty SRF Propose to Settle
-- [x] **OutOFWarrantySRFSettleAdminPage** - Out Of Warranty SRF Settlement [ADMIN]
+- [ ] **OutOFWarrantySRFPrintPage** - Out Of Warranty SRF Print
+- [ ] **OutOFWarrantySRFSettleUserPage** - Out Of Warranty SRF Propose to Settle
+- [ ] **OutOFWarrantySRFSettleAdminPage** - Out Of Warranty SRF Settlement [ADMIN]
 - [ ] **OutOfWarrantyEstimatePrintPage** - Out Of Warranty Estimate Print
-- [x] **OutOFWarrantyCreateVendorPage** - Out Of Warranty Vendor Challan
-- [x] **OutOFWarrantyChallanPrintPage** - Out Of Warranty Vendor Challan Print
-- [x] **OutOFWarrantyChallanSettleUserPage** - Out Of Warranty Challan Propose to Settle
-- [x] **OutOFWarrantyChallanSettleAdminPage** - Out Of Warranty Challan Settlement [ADMIN]
-- [x] **OutOFWarrantyEnquiryPage** - Out Of Warranty Enquiry Page
+- [ ] **OutOFWarrantyCreateVendorPage** - Out Of Warranty Vendor Challan
+- [ ] **OutOFWarrantyChallanPrintPage** - Out Of Warranty Vendor Challan Print
+- [ ] **OutOFWarrantyChallanSettleUserPage** - Out Of Warranty Challan Propose to Settle
+- [ ] **OutOFWarrantyChallanSettleAdminPage** - Out Of Warranty Challan Settlement [ADMIN]
+- [ ] **OutOFWarrantyEnquiryPage** - Out Of Warranty Enquiry Page
 
 ---
 
@@ -68,122 +77,123 @@
 ## Backend Routes Progress
 
 ### Auth Module
-- [x] **/auth/login**
-- [x] **/auth/logout**
-- [x] **/auth/me**
+- [ ] **/auth/login**
+- [ ] **/auth/logout**
+- [ ] **/auth/me**
 
 ### User Module
-- [x] **/user/all_users** - [ADMIN]
-- [x] **/user/standard_users** 
-- [x] **/user/create_user** - [ADMIN]
-- [x] **/user/delete_user** - [ADMIN]
-- [x] **/user/reset_password**
+- [ ] **/user/all_users** - [ADMIN]
+- [ ] **/user/standard_users** 
+- [ ] **/user/create_user** - [ADMIN]
+- [ ] **/user/delete_user** - [ADMIN]
+- [ ] **/user/reset_password**
 
 ### Menu Module
-- [x] **/menu/dashboard**
+- [ ] **/menu/dashboard**
 
 ### Master Module
-- [x] **/master/create**
-- [x] **/master/next_code**
-- [x] **/master/list_names** 
-- [x] **/master/by_code** 
-- [x] **/master/by_name**
-- [x] **/master/update{code}**
-- [x] **/master/fetch_address**
+- [ ] **/master/create**
+- [ ] **/master/next_code**
+- [ ] **/master/list_names** 
+- [ ] **/master/by_code** 
+- [ ] **/master/by_name**
+- [ ] **/master/update{code}**
+- [ ] **/master/fetch_address**
 
 ### Challan Module
-- [x] **/road_challan/next_code**
-- [x] **/road_challan/create**
-- [x] **/road_challan/last_challan_code**
-- [x] **/road_challan/print**
+- [ ] **/road_challan/next_code**
+- [ ] **/road_challan/create**
+- [ ] **/road_challan/last_challan_code**
+- [ ] **/road_challan/print**
 
 ### Market Module
-- [x] **/market/next_code** 
-- [x] **/market/pending**
-- [x] **/market/create**
-- [x] **/market/by_code** 
-- [x] **/market/update{code}**
-- [x] **/market/enquiry{params}**
-- [x] **/market/list_delivered_by**
-- [x] **/market/list_invoice_number**
+- [ ] **/market/next_code** 
+- [ ] **/market/pending**
+- [ ] **/market/create**
+- [ ] **/market/by_code** 
+- [ ] **/market/update{code}**
+- [ ] **/market/enquiry{params}**
+- [ ] **/market/list_delivered_by**
+- [ ] **/market/list_invoice_number**
 
 ### Retail Module
-- [x] **/retail/next_code**
-- [x] **/retail/create**
-- [x] **/retail/list_of_not_received**
-- [x] **/retail/update_received**
-- [x] **/retail/list_of_unsettled**
-- [x] **/retail/update_unsettled**
-- [x] **/retail/list_of_final_settlement** - [ADMIN]
-- [x] **/retail/update_final_settlement** - [ADMIN]
-- [x] **/retail/show_receipt_names**
-- [x] **/reetail/print**
-- [x] **/retail/enquiry{params}**
+- [ ] **/retail/next_code**
+- [ ] **/retail/create**
+- [ ] **/retail/list_of_not_received**
+- [ ] **/retail/update_received**
+- [ ] **/retail/list_of_unsettled**
+- [ ] **/retail/update_unsettled**
+- [ ] **/retail/list_of_final_settlement** - [ADMIN]
+- [ ] **/retail/update_final_settlement** - [ADMIN]
+- [ ] **/retail/show_receipt_names**
+- [ ] **/reetail/print**
+- [ ] **/retail/enquiry{params}**
 
 ### Warranty Module
-- [x] **warranty/next_srf_number**
-- [x] **warranty/create**
-- [x] **warranty/list_pending**
-- [x] **warranty/by_srf_number**
-- [x] **warranty/update/{srf_number}**
-- [x] **warranty/list_delivered_by**
-- [x] **warranty/last_srf_number**
-- [x] **warranty/srf_print**
-- [x] **warranty/next_cnf_challan_code**
-- [x] **warranty/last_cnf_challan_code**
-- [x] **warranty/list_cnf_challan**
-- [x] **warranty/create_cnf_challan**
-- [x] **warranty/cnf_challan_print**
-- [x] **warranty/enquiry{params}**
+- [ ] **warranty/next_srf_number**
+- [ ] **warranty/create**
+- [ ] **warranty/list_pending**
+- [ ] **warranty/by_srf_number**
+- [ ] **warranty/update/{srf_number}**
+- [ ] **warranty/list_delivered_by**
+- [ ] **warranty/last_srf_number**
+- [ ] **warranty/srf_print**
+- [ ] **warranty/next_cnf_challan_code**
+- [ ] **warranty/last_cnf_challan_code**
+- [ ] **warranty/list_cnf_challan**
+- [ ] **warranty/create_cnf_challan**
+- [ ] **warranty/cnf_challan_print**
+- [ ] **warranty/enquiry{params}**
 
 ### Service Center Module
-- [x] **/service_center/list_names**
+- [ ] **/service_center/list_names**
+- [ ] **/service_center/create**
 
 ### OutOfWarranty Module - [ADMIN]
-- [x] **out_of_warranty/next_srf_number**
-- [x] **out_of_warranty/create**
-- [x] **out_of_warranty/list_pending**
+- [ ] **out_of_warranty/next_srf_number**
+- [ ] **out_of_warranty/create**
+- [ ] **out_of_warranty/list_pending**
 - [ ] **out_of_warranty/by_srf_number**
 - [ ] **out_of_warranty/update/{srf_number}**
-- [x] **out_of_warranty/last_srf_number**
-- [x] **out_of_warranty/srf_print**
-- [x] **out_of_warranty/next_vendor_challan_code**
-- [x] **out_of_warranty/last_vendor_challan_code**
-- [x] **out_of_warranty/list_vendor_challan**
-- [x] **out_of_warranty/create_vendor_challan**
-- [x] **out_of_warranty/vendor_challan_print**
-- [x] **out_of_warranty/enquiry{params}**
-- [x] **out_of_warranty/list_received_by**
-- [x] **out_of_warranty/vendor_not_settled**
-- [x] **out_of_warranty/update_vendor_unsettled**
-- [x] **out_of_warranty/list_of_final_vendor_settlement**
-- [x] **out_of_warranty/update_final_vendor_settlement**
-- [x] **out_of_warranty/srf_not_settled**
-- [x] **out_of_warranty/update_srf_unsettled**
-- [x] **out_of_warranty/list_of_final_srf_settlement**
-- [x] **out_of_warranty/update_final_srf_settlement**
-- [x] **out_of_warranty/show_receipt_names**
+- [ ] **out_of_warranty/last_srf_number**
+- [ ] **out_of_warranty/srf_print**
+- [ ] **out_of_warranty/next_vendor_challan_code**
+- [ ] **out_of_warranty/last_vendor_challan_code**
+- [ ] **out_of_warranty/list_vendor_challan**
+- [ ] **out_of_warranty/create_vendor_challan**
+- [ ] **out_of_warranty/vendor_challan_print**
+- [ ] **out_of_warranty/enquiry{params}**
+- [ ] **out_of_warranty/list_received_by**
+- [ ] **out_of_warranty/vendor_not_settled**
+- [ ] **out_of_warranty/update_vendor_unsettled**
+- [ ] **out_of_warranty/list_of_final_vendor_settlement**
+- [ ] **out_of_warranty/update_final_vendor_settlement**
+- [ ] **out_of_warranty/srf_not_settled**
+- [ ] **out_of_warranty/update_srf_unsettled**
+- [ ] **out_of_warranty/list_of_final_srf_settlement**
+- [ ] **out_of_warranty/update_final_srf_settlement**
+- [ ] **out_of_warranty/show_receipt_names**
 - [ ] **out_of_warranty/estimate_print**
 
 ### ServiceCharge Module
-- [x] **service_charge/service_charge**
+- [ ] **service_charge/service_charge**
 
 
 ---
 
 ## Application Development Progress
 
-- [x] **Authorization**
-- [x] **Database Schema**
-- [x] **Initial Deployment**
-- [x] **Backup**
-- [x] **Login & Menu**
-- [x] **User**
-- [x] **Master**
-- [x] **Retail**
-- [x] **Market**
-- [x] **Challan**
-- [x] **Warranty**
+- [ ] **Authorization**
+- [ ] **Database Schema**
+- [ ] **Initial Deployment**
+- [ ] **Backup**
+- [ ] **Login & Menu**
+- [ ] **User**
+- [ ] **Master**
+- [ ] **Retail**
+- [ ] **Market**
+- [ ] **Challan**
+- [ ] **Warranty**
 - [ ] **Out of Warranty**
 - [ ] **Final Deployment**
 

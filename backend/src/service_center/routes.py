@@ -1,12 +1,13 @@
 from typing import List
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, Body
 from fastapi.responses import JSONResponse
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from auth.dependencies import AccessTokenBearer, RoleChecker
 from db.db import get_session
 from service_center.service import ServiceCenterService
+from service_center.schemas import ServiceCenterCreate
 
 service_center_router = APIRouter()
 service_center_service = ServiceCenterService()
@@ -35,11 +36,11 @@ Create a new service_center.
 @service_center_router.post(
     "/create", status_code=status.HTTP_201_CREATED, dependencies=[role_checker],)
 async def create_service_center(
-    name: str,
+    data : ServiceCenterCreate,
     session: AsyncSession = Depends(get_session),
     _=Depends(access_token_bearer),
 ):
-    await service_center_service.create_service_center(session, name)
+    await service_center_service.create_service_center(session, data.asc_name)
     return JSONResponse(
         content={
             "message": f"Service center created",

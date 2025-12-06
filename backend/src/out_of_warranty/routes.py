@@ -14,7 +14,6 @@ from out_of_warranty.schemas import (
     OutOfWarrantyVendorChallanCreate,
     OutOfWarrantyVendorNotSettledRecord,
     OutOfWarrantyPending,
-    OutOfWarrantySrfNumber,
     UpdateVendorUnsettled,
     UpdateVendorFinalSettlement,
     OutOfWarrantyVendorFinalSettlementRecord,
@@ -24,8 +23,12 @@ from out_of_warranty.schemas import (
     OutOfWarrantyCreate,
     OutOfWarrantyEstimatePrintResponse,
     OutOfWarrantySRFNumber,
+    OutOfWarrantySRFNumberList,
+    OutOfWarrantyUpdateResponse,
+    OutOfWarrantyUpdate,
 )
 from out_of_warranty.service import OutOfWarrantyService
+from exceptions import OutOfWarrantyNotFound
 
 out_of_warranty_router = APIRouter()
 out_of_warranty_service = OutOfWarrantyService()
@@ -83,53 +86,52 @@ async def list_out_of_warranty_pending(
     return pending
 
 
-# """
-# Get OutOfWarranty details by srf_number.
-# """
+"""
+Get Out Of Warranty details by srf_number.
+"""
 
 
-# @out_of_warranty_router.post(
-#     "/by_srf_number",
-#     response_model=WarrantyUpdateResponse,
-#     status_code=status.HTTP_200_OK,
-# )
-# async def get_warranty_by_srf_number(
-#     data: WarrantySrfNumber,
-#     session: AsyncSession = Depends(get_session),
-#     _=Depends(access_token_bearer),
-# ):
-#     OutOfWarranty = await out_of_warranty_service.get_warranty_by_srf_number(
-#         data.srf_number, session
-#     )
-#     return OutOfWarranty
+@out_of_warranty_router.post(
+    "/by_srf_number",
+    response_model=OutOfWarrantyUpdateResponse,
+    status_code=status.HTTP_200_OK,
+)
+async def get_out_of_warranty_by_srf_number(
+    data: OutOfWarrantySRFNumber,
+    session: AsyncSession = Depends(get_session),
+    _=Depends(access_token_bearer),
+):
+    out_of_warranty = await out_of_warranty_service.get_out_of_warranty_by_srf_number(
+        data.srf_number, session
+    )
+    return out_of_warranty
 
 
-# """
-# Update OutOfWarranty details by srf_number.
-# """
+"""
+Update Out Of Warranty details by srf_number.
+"""
 
 
-# @out_of_warranty_router.patch(
-#     "/update/{srf_number:path}", status_code=status.HTTP_202_ACCEPTED
-# )
-# async def update_warranty(
-#     srf_number: str,
-#     OutOfWarranty: WarrantyUpdate,
-#     session: AsyncSession = Depends(get_session),
-#     token=Depends(access_token_bearer),
-# ):
-#     print(OutOfWarranty)
-#     existing_warranty = await out_of_warranty_service.get_warranty_by_srf_number(
-#         srf_number, session
-#     )
-#     if not existing_warranty:
-#         raise WarrantyNotFound()
-#     new_warranty = await out_of_warranty_service.update_warranty(
-#         srf_number, OutOfWarranty, session, token
-#     )
-#     return JSONResponse(
-#         content={"message": f"OutOfWarranty Updated : {new_warranty.srf_number}"}
-#     )
+@out_of_warranty_router.patch(
+    "/update/{srf_number:path}", status_code=status.HTTP_202_ACCEPTED
+)
+async def update_out_of_warranty(
+    srf_number: str,
+    out_of_warranty: OutOfWarrantyUpdate,
+    session: AsyncSession = Depends(get_session),
+    token=Depends(access_token_bearer),
+):
+    existing_out_of_warranty = await out_of_warranty_service.get_out_of_warranty_by_srf_number(
+        srf_number, session
+    )
+    if not existing_out_of_warranty:
+        raise OutOfWarrantyNotFound()
+    new_out_of_warranty = await out_of_warranty_service.update_out_of_warranty(
+        srf_number, out_of_warranty, session, token
+    )
+    return JSONResponse(
+        content={"message": f"Out Of Warranty Updated : {new_out_of_warranty.srf_number}"}
+    )
 
 
 """
@@ -152,7 +154,7 @@ Print srf by srf number.
 
 @out_of_warranty_router.post("/srf_print", status_code=status.HTTP_200_OK)
 async def print_srf(
-    data: OutOfWarrantySrfNumber,
+    data: OutOfWarrantySRFNumberList,
     session: AsyncSession = Depends(get_session),
     token=Depends(access_token_bearer),
 ):
@@ -458,7 +460,7 @@ Print estimate receipt by srf number.
 
 @out_of_warranty_router.post("/estimate_print", status_code=status.HTTP_200_OK)
 async def print_estimate(
-    data: OutOfWarrantySRFNumber,
+    data: OutOfWarrantySRFNumberList,
     session: AsyncSession = Depends(get_session),
     _=Depends(access_token_bearer),
 ):

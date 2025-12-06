@@ -194,8 +194,7 @@ class WarrantyService:
         if not existing_warranty:
             raise WarrantyNotFound()
         for var, value in vars(warranty).items():
-            if value is not None:
-                setattr(existing_warranty, var, value)
+            setattr(existing_warranty, var, value)
         existing_warranty.updated_by = token["user"]["username"]
         session.add(existing_warranty)
         await session.commit()
