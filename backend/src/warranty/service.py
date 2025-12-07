@@ -124,7 +124,7 @@ class WarrantyService:
         statement = (
             select(Warranty, Master)
             .join(Master, Warranty.code == Master.code)
-            .where(Warranty.settlement == "N")
+            .where(Warranty.final_status == "N")
             .order_by(Warranty.srf_number)
         )
         result = await session.execute(statement)
@@ -173,8 +173,8 @@ class WarrantyService:
                 invoice_number=row.Warranty.invoice_number,
                 invoice_date=row.Warranty.invoice_date,
                 delivered_by=row.Warranty.delivered_by,
-                status=row.Warranty.status,
-                settlement=row.Warranty.settlement,
+                remark=row.Warranty.remark,
+                final_status=row.Warranty.final_status,
                 courier=row.Warranty.courier,
                 complaint_number=row.Warranty.complaint_number,
             )
@@ -626,7 +626,7 @@ class WarrantyService:
         statement = select(Warranty, Master).join(Master, Warranty.code == Master.code)
 
         if final_status:
-            statement = statement.where(Warranty.settlement == final_status)
+            statement = statement.where(Warranty.final_status == final_status)
 
         if name:
             statement = statement.where(Master.name.ilike(f"%{name}%"))
@@ -660,9 +660,13 @@ class WarrantyService:
 
         if repaired:
             if repaired == "Y":
-                statement = statement.where(Warranty.repair_date.isnot(None) & (Warranty.head == "REPAIR"))
+                statement = statement.where(
+                    Warranty.repair_date.isnot(None) & (Warranty.head == "REPAIR")
+                )
             else:
-                statement = statement.where(Warranty.repair_date.is_(None) & (Warranty.head == "REPAIR"))
+                statement = statement.where(
+                    Warranty.repair_date.is_(None) & (Warranty.head == "REPAIR")
+                )
         if head:
             statement = statement.where(Warranty.head == head)
         statement = statement.order_by(Warranty.srf_number)
@@ -691,7 +695,7 @@ class WarrantyService:
                     if row.Warranty.delivery_date
                     else ""
                 ),
-                settlement=row.Warranty.settlement,
+                final_status=row.Warranty.final_status,
                 head=row.Warranty.head,
                 contact_number=row.Master.contact1,
             )

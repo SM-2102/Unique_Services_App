@@ -9,7 +9,7 @@ import { retailEnquiry } from "../services/retailEnquiryService";
 
 const columns = [
   { key: "rcode", label: "Receipt Number" },
-  { key: "rdate", label: "Retail Date" },
+  { key: "retail_date", label: "Retail Date" },
   { key: "name", label: "Name" },
   { key: "division", label: "Division" },
   { key: "details", label: "Details" },
@@ -462,8 +462,8 @@ const RetailEnquiryPage = () => {
       if (finalStatus) params.final_status = finalStatus;
       if (name) params.name = name;
       if (division) params.division = division;
-      if (fromRetailDate) params.from_rdate = fromRetailDate;
-      if (toRetailDate) params.to_rdate = toRetailDate;
+      if (fromRetailDate) params.from_retail_date = fromRetailDate;
+      if (toRetailDate) params.to_retail_date = toRetailDate;
       if (received) params.received = received;
       if (finalStatus) params.final_status = finalStatus;
       const res = await retailEnquiry(params);

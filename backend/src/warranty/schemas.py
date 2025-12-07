@@ -54,8 +54,8 @@ class WarrantyUpdateResponse(BaseModel):
     invoice_date: Optional[date]
     delivery_date: Optional[date]
     delivered_by: Optional[str]
-    status: Optional[str]
-    settlement: str
+    remark: Optional[str]
+    final_status: str
     srf_date: str
     courier: Optional[str]
     complaint_number: Optional[str]
@@ -68,10 +68,10 @@ class WarrantyUpdate(BaseModel):
     invoice_date: Optional[date]
     delivery_date: Optional[date]
     delivered_by: Optional[str] = Field(None, max_length=20)
-    status: Optional[str] = Field(None, max_length=40)
+    remark: Optional[str] = Field(None, max_length=40)
     courier: Optional[str] = Field(None, max_length=15)
     complaint_number: Optional[str] = Field(None, max_length=20)
-    settlement: Optional[str] = Field(None, max_length=1)
+    final_status: Optional[str] = Field(None, max_length=1)
 
 
 class WarrantyCNFChallanDetails(BaseModel):

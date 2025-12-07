@@ -25,9 +25,9 @@ const initialForm = {
   delivered_by: "",
   delivery_date: "",
   complaint_number: "",
-  status: "",
+  remark: "",
   courier: "",
-  settlement: "Pending",
+  final_status: "Pending",
 };
 
 const WarrantyUpdatePage = () => {
@@ -89,13 +89,13 @@ const WarrantyUpdatePage = () => {
         delivered_by: data.delivered_by ?? "",
         delivery_date: data.delivery_date ?? "",
         complaint_number: data.complaint_number ?? "",
-        status: data.status ?? "",
+        remark: data.remark ?? "",
         courier: data.courier ?? "",
-        final_status: data.settlement ?? "Pending",
+        final_status: data.final_status ?? "Pending",
       });
 
       // Handle locked state
-      if (data.settlement === "Y") {
+      if (data.final_status === "Y") {
         setError({
           message: "Already completed",
           resolution: "This record is not editable",
@@ -161,8 +161,8 @@ const WarrantyUpdatePage = () => {
     const rawPayload = {
       delivery_date: form.delivery_date,
       delivered_by: form.delivered_by,
-      settlement: form.final_status,
-      status: form.status,
+      final_status: form.final_status,
+      remark: form.remark,
       repair_date: form.repair_date,
       receive_date: form.receive_date,
       invoice_number: form.invoice_number,
@@ -620,7 +620,7 @@ const WarrantyUpdatePage = () => {
             style={{ position: "relative" }}
           >
             <label
-              htmlFor="status"
+              htmlFor="remark"
               className="w-33.5 text-md font-medium text-gray-700"
             >
               Remark
@@ -628,14 +628,14 @@ const WarrantyUpdatePage = () => {
             <div className="flex-1 flex items-center gap-2">
               <div style={{ position: "relative", width: "100%" }}>
                 <input
-                  id="status"
-                  name="status"
+                  id="remark"
+                  name="remark"
                   type="text"
-                  value={form.status}
+                  value={form.remark}
                   onChange={handleChange}
-                  className={`w-full px-3 py-1 rounded-lg border ${errs_label.status ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
+                  className={`w-full px-3 py-1 rounded-lg border ${errs_label.remark ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
                   disabled={isLocked || submitting}
-                  autoComplete="status"
+                  autoComplete="remark"
                 ></input>
               </div>
             </div>

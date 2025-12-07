@@ -779,7 +779,6 @@ const OutOfWarrantyUpdatePage = () => {
             </div>
           </div>
 
-          {/* Remark - mapped to status*/}
           <div
             className="flex items-center gap-2 w-full"
             style={{ position: "relative" }}

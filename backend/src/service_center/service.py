@@ -2,7 +2,7 @@ from sqlalchemy import func, select, union_all
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
-from exceptions import ServiceCenterNotFound, ServiceCenterAlreadyExists
+from exceptions import ServiceCenterAlreadyExists, ServiceCenterNotFound
 
 from .models import ServiceCentre
 
@@ -24,7 +24,7 @@ class ServiceCenterService:
         result = await session.execute(statement)
         names = result.scalars().all()
         return names
-    
+
     async def create_service_center(self, session: AsyncSession, name: str):
         try:
             existing_asc = await self.check_service_center_name_available(name, session)
@@ -34,4 +34,3 @@ class ServiceCenterService:
             new_service_center = ServiceCentre(asc_name=name)
             session.add(new_service_center)
             await session.commit()
-        

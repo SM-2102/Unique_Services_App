@@ -77,8 +77,10 @@ class ServiceCenterNotFound(BaseException):
 class WarrantyNotFound(BaseException):
     """Warranty Not Found"""
 
+
 class OutOfWarrantyNotFound(BaseException):
     """Out Of Warranty Not Found"""
+
 
 class ServiceCenterAlreadyExists(BaseException):
     """Service Center Already Exists"""

@@ -123,7 +123,9 @@ class MarketService:
         invoice_number: Optional[str] = None,
     ) -> List[MarketEnquiry]:
         # Check if master name exists
-        statement = select(Market, Master.name, Master.contact1).join(Master, Master.code == Market.code)
+        statement = select(Market, Master.name, Master.contact1).join(
+            Master, Master.code == Market.code
+        )
         # Apply filters dynamically
         if final_status:
             statement = statement.where(Market.final_status == final_status)

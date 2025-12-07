@@ -1,12 +1,9 @@
 from datetime import date
+from email.policy import default
 from typing import List, Optional
 
-from pydantic import BaseModel, Field
-
-from datetime import date
-from email.policy import default
-
 import sqlalchemy.dialects.postgresql as pg
+from pydantic import BaseModel, Field
 from sqlalchemy import ForeignKey
 from sqlmodel import Column, Field, SQLModel
 
@@ -25,6 +22,7 @@ class OutOfWarrantyCreate(BaseModel):
     service_charge_waive: str = Field(..., max_length=1)
     collection_date: Optional[date]
     waive_details: Optional[str] = Field(None, max_length=40)
+
 
 class OutOfWarrantyEnquiry(BaseModel):
     srf_number: str
@@ -90,6 +88,7 @@ class OutOfWarrantyUpdateResponse(BaseModel):
     invoice_number: Optional[int]
     final_status: str
 
+
 class OutOfWarrantyUpdate(BaseModel):
     vendor_date2: Optional[date]
     vendor_cost1: Optional[float]
@@ -125,6 +124,7 @@ class OutOfWarrantyUpdate(BaseModel):
     invoice_number: Optional[int]
     final_status: str = Field(..., max_length=1)
 
+
 class OutOfWarrantyVendorChallanDetails(BaseModel):
     srf_number: str
     division: str
@@ -154,10 +154,12 @@ class OutOfWarrantyVendorNotSettledRecord(BaseModel):
     vendor_bill_number: Optional[str]
     received_by: str
 
+
 class UpdateVendorUnsettled(BaseModel):
     srf_number: str
     vendor_bill_number: str = Field(..., max_length=8)
     vendor_settlement_date: date
+
 
 class OutOfWarrantyVendorFinalSettlementRecord(BaseModel):
     srf_number: str
@@ -170,10 +172,11 @@ class OutOfWarrantyVendorFinalSettlementRecord(BaseModel):
     received_by: str
     amount: float
 
+
 class UpdateVendorFinalSettlement(BaseModel):
     srf_number: str
-    vendor_cost1:float
-    vendor_cost2:float
+    vendor_cost1: float
+    vendor_cost2: float
     vendor_settled: str = Field(..., max_length=1)
 
 
@@ -189,13 +192,16 @@ class OutOfWarrantySRFSettleRecord(BaseModel):
     service_charge: Optional[float]
     waive_details: Optional[str]
 
+
 class UpdateSRFUnsettled(BaseModel):
     srf_number: str
     settlement_date: date
 
+
 class UpdateSRFFinalSettlement(BaseModel):
     srf_number: str
     final_settled: str = Field(..., max_length=1)
+
 
 class OutOfWarrantyEnquiry(BaseModel):
     srf_number: str
@@ -209,8 +215,9 @@ class OutOfWarrantyEnquiry(BaseModel):
     final_amount: Optional[float]
     contact_number: Optional[str]
 
+
 class OutOfWarrantyEstimatePrintResponse(BaseModel):
-    srf_number:str
+    srf_number: str
     srf_date: str
     model: str
     total: str

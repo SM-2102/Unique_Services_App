@@ -9,7 +9,7 @@ const initialForm = {
   rcode: "",
   name: "",
   division: "",
-  rdate: new Date().toLocaleDateString("en-CA"),
+  retail_date: new Date().toLocaleDateString("en-CA"),
   details: "",
   amount: "",
   received: "N",
@@ -129,7 +129,7 @@ const RetailCreatePage = () => {
     const rawPayload = {
       name: form.name,
       division: form.division,
-      rdate: form.rdate,
+      retail_date: form.retail_date,
       details: form.details,
       amount: form.amount,
       received: form.received,
@@ -301,19 +301,19 @@ const RetailCreatePage = () => {
 
             <div className="flex items-center w-1/2 gap-2">
               <label
-                htmlFor="rdate"
+                htmlFor="retail_date"
                 className={`w-50 text-md font-medium text-gray-700`}
               >
                 Retail Date<span className="text-red-500">*</span>
               </label>
               <input
-                id="rdate"
-                name="rdate"
+                id="retail_date"
+                name="retail_date"
                 type="date"
                 required
-                value={form.rdate}
+                value={form.retail_date}
                 onChange={handleChange}
-                className={`w-full px-3 py-1 rounded-lg border ${errs_label.rdate ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
+                className={`w-full px-3 py-1 rounded-lg border ${errs_label.retail_date ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
                 disabled={submitting}
                 max={new Date().toLocaleDateString("en-CA")}
                 min={new Date().toLocaleDateString("en-CA")}

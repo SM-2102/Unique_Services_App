@@ -5,7 +5,7 @@ from pydantic import BaseModel, Field
 
 
 class RetailCreate(BaseModel):
-    rdate: date
+    retail_date: date
     name: str = Field(..., min_length=3, max_length=40)
     division: str = Field(..., max_length=20)
     details: str = Field(..., max_length=40)
@@ -44,7 +44,7 @@ class UpdateRetailUnsettled(BaseModel):
 class RetailFinalSettlementResponse(BaseModel):
     rcode: str
     name: str
-    rdate: str
+    retail_date: str
     details: str
     amount: int
 
@@ -58,7 +58,7 @@ class UpdateRetailFinalSettlement(BaseModel):
 class RetailEnquiry(BaseModel):
     rcode: str
     name: str
-    rdate: str
+    retail_date: str
     division: str
     details: str
     amount: int
@@ -68,7 +68,7 @@ class RetailEnquiry(BaseModel):
 
 class RetailPrintResponse(BaseModel):
     rcode: str
-    rdate: str
+    retail_date: str
     details: str
     amount: int
 

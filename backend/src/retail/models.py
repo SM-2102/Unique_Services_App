@@ -8,7 +8,7 @@ from sqlmodel import Column, Field, SQLModel
 class Retail(SQLModel, table=True):
     __tablename__ = "retail"
     rcode: str = Field(primary_key=True, index=True)
-    rdate: date = Field(sa_column=Column(pg.DATE, nullable=False))
+    retail_date: date = Field(sa_column=Column(pg.DATE, nullable=False))
     division: str = Field(sa_column=Column(pg.VARCHAR(20), nullable=False))
     # 'FANS','PUMP','LIGHT','SDA','IWH','SWH','COOLER','OTHERS'
     code: str = Field(

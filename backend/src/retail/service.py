@@ -45,7 +45,7 @@ class RetailService:
             retail_data_dict["created_by"] = token["user"]["username"]
             retail_data_dict["code"] = master.code
             # Convert date fields to date objects
-            for date_field in ["rdate"]:
+            for date_field in ["retail_date"]:
                 if date_field in retail_data_dict:
                     retail_data_dict[date_field] = parse_date(
                         retail_data_dict[date_field]
@@ -149,7 +149,7 @@ class RetailService:
             RetailFinalSettlementResponse(
                 rcode=row.Retail.rcode,
                 name=row.Master.name,
-                rdate=format_date_ddmmyyyy(row.Retail.rdate),
+                retail_date=format_date_ddmmyyyy(row.Retail.retail_date),
                 details=row.Retail.details,
                 amount=row.Retail.amount,
             )
@@ -173,8 +173,8 @@ class RetailService:
         session: AsyncSession,
         name: Optional[str] = None,
         division: Optional[str] = None,
-        from_rdate: Optional[date] = None,
-        to_rdate: Optional[date] = None,
+        from_retail_date: Optional[date] = None,
+        to_retail_date: Optional[date] = None,
         received: Optional[str] = None,
         final_status: Optional[str] = None,
     ) -> List[RetailEnquiry]:
@@ -191,10 +191,10 @@ class RetailService:
         if division:
             statement = statement.where(Retail.division == division)
 
-        if from_rdate:
-            statement = statement.where(Retail.rdate >= from_rdate)
-        if to_rdate:
-            statement = statement.where(Retail.rdate <= to_rdate)
+        if from_retail_date:
+            statement = statement.where(Retail.retail_date >= from_retail_date)
+        if to_retail_date:
+            statement = statement.where(Retail.retail_date <= to_retail_date)
 
         if received:
             statement = statement.where(Retail.received == received)
@@ -207,7 +207,7 @@ class RetailService:
             RetailEnquiry(
                 rcode=row.Retail.rcode,
                 name=row.name,
-                rdate=format_date_ddmmyyyy(row.Retail.rdate),
+                retail_date=format_date_ddmmyyyy(row.Retail.retail_date),
                 division=row.Retail.division,
                 details=row.Retail.details,
                 amount=row.Retail.amount,
@@ -238,7 +238,7 @@ class RetailService:
         return [
             RetailPrintResponse(
                 rcode=row.rcode,
-                rdate=format_date_ddmmyyyy(row.rdate),
+                retail_date=format_date_ddmmyyyy(row.retail_date),
                 details=row.details,
                 amount=row.amount,
             )
@@ -248,7 +248,7 @@ class RetailService:
     async def print_retail(
         self, codes: RetailRcode, session: AsyncSession
     ) -> io.BytesIO:
-        
+
         # Query retail and master info for all codes
         statement = (
             select(Retail, Master)
@@ -277,8 +277,10 @@ class RetailService:
             division = retail.division or ""
             details = retail.details or ""
             amount = float(retail.amount) if retail.amount else 0.0
-            rdate = format_date_ddmmyyyy(retail.rdate) if retail.rdate else ""
-            retail_rows.append([rcode, rdate, division, details, f"{amount:.2f}"])
+            retail_date = (
+                format_date_ddmmyyyy(retail.retail_date) if retail.retail_date else ""
+            )
+            retail_rows.append([rcode, retail_date, division, details, f"{amount:.2f}"])
             grand_total += amount
         grand_total_str = f"{grand_total:.2f}"
 

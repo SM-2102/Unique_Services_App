@@ -27,7 +27,7 @@ class OutOfWarranty(SQLModel, table=True):
     waive_details: str = Field(sa_column=Column(pg.VARCHAR(40), nullable=True))
     model: str = Field(sa_column=Column(pg.VARCHAR(30), nullable=False))
     serial_number: str = Field(sa_column=Column(pg.VARCHAR(15), nullable=False))
-    problem: str = Field(sa_column=Column(pg.VARCHAR(30), nullable=True)) 
+    problem: str = Field(sa_column=Column(pg.VARCHAR(30), nullable=True))
     remark: str = Field(sa_column=Column(pg.VARCHAR(40), nullable=True))
     challan_number: str = Field(sa_column=Column(pg.VARCHAR(6), nullable=True))
     # V00001, V0002
@@ -72,7 +72,9 @@ class OutOfWarranty(SQLModel, table=True):
     pc_number: int = Field(sa_column=Column(pg.INTEGER, nullable=True))
     invoice_number: int = Field(sa_column=Column(pg.INTEGER, nullable=True))
     vendor_bill_number: str = Field(sa_column=Column(pg.VARCHAR(8), nullable=True))
-    final_status: str = Field(sa_column=Column(pg.VARCHAR(1), nullable=False, default="N"))
+    final_status: str = Field(
+        sa_column=Column(pg.VARCHAR(1), nullable=False, default="N")
+    )
     settlement_date: date = Field(sa_column=Column(pg.DATE, nullable=True))
     final_settled: str = Field(
         sa_column=Column(pg.VARCHAR(1), nullable=False, default="N")

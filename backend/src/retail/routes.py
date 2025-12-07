@@ -142,7 +142,11 @@ Update final settlement records - List of Records
 """
 
 
-@retail_router.patch("/update_final_settlement", status_code=status.HTTP_202_ACCEPTED, dependencies=[role_checker])
+@retail_router.patch(
+    "/update_final_settlement",
+    status_code=status.HTTP_202_ACCEPTED,
+    dependencies=[role_checker],
+)
 async def update_final_settlement(
     list_retail: List[UpdateRetailFinalSettlement],
     session: AsyncSession = Depends(get_session),
@@ -161,8 +165,8 @@ Filter retail enquiry records
 async def retail_enquiry(
     name: Optional[str] = None,
     division: Optional[str] = None,
-    from_rdate: Optional[date] = None,
-    to_rdate: Optional[date] = None,
+    from_retail_date: Optional[date] = None,
+    to_retail_date: Optional[date] = None,
     received: Optional[str] = None,
     final_status: Optional[str] = None,
     session: AsyncSession = Depends(get_session),
@@ -170,7 +174,13 @@ async def retail_enquiry(
 ):
     try:
         enquiry_list = await retail_service.get_retail_enquiry(
-            session, name, division, from_rdate, to_rdate, received, final_status
+            session,
+            name,
+            division,
+            from_retail_date,
+            to_retail_date,
+            received,
+            final_status,
         )
         return enquiry_list
     except:

@@ -11,30 +11,30 @@ from sqlalchemy import case, func, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
-from exceptions import IncorrectCodeFormat, OutOfWarrantyNotFound, MasterNotFound
+from exceptions import IncorrectCodeFormat, MasterNotFound, OutOfWarrantyNotFound
 from master.models import Master
 from master.service import MasterService
-from utils.date_utils import format_date_ddmmyyyy, parse_date
-from utils.file_utils import safe_join, split_text_to_lines
 from out_of_warranty.models import OutOfWarranty
 from out_of_warranty.schemas import (
+    OutOfWarrantyCreate,
     OutOfWarrantyEnquiry,
+    OutOfWarrantyEstimatePrintResponse,
+    OutOfWarrantyPending,
+    OutOfWarrantySRFNumberList,
     OutOfWarrantySRFSettleRecord,
+    OutOfWarrantyUpdate,
+    OutOfWarrantyUpdateResponse,
     OutOfWarrantyVendorChallanCreate,
     OutOfWarrantyVendorChallanDetails,
-    OutOfWarrantyVendorNotSettledRecord,
-    OutOfWarrantyPending,
-    UpdateVendorUnsettled,
-    UpdateVendorFinalSettlement,
     OutOfWarrantyVendorFinalSettlementRecord,
-    UpdateSRFUnsettled,
+    OutOfWarrantyVendorNotSettledRecord,
     UpdateSRFFinalSettlement,
-    OutOfWarrantyCreate,
-    OutOfWarrantyEstimatePrintResponse,
-    OutOfWarrantyUpdateResponse,
-    OutOfWarrantySRFNumberList,
-    OutOfWarrantyUpdate,
+    UpdateSRFUnsettled,
+    UpdateVendorFinalSettlement,
+    UpdateVendorUnsettled,
 )
+from utils.date_utils import format_date_ddmmyyyy, parse_date
+from utils.file_utils import safe_join, split_text_to_lines
 
 master_service = MasterService()
 
@@ -80,7 +80,9 @@ class OutOfWarrantyService:
                 srf_number = f"S{str(next_base).zfill(5)}/1"
                 out_of_warranty_dict = out_of_warranty.model_dump()
                 out_of_warranty_dict["srf_number"] = srf_number
-                master = await master_service.get_master_by_name(out_of_warranty.name, session)
+                master = await master_service.get_master_by_name(
+                    out_of_warranty.name, session
+                )
                 out_of_warranty_dict["created_by"] = token["user"]["username"]
                 out_of_warranty_dict["code"] = master.code
                 for date_field in ["srf_date", "collection_date"]:
@@ -99,7 +101,9 @@ class OutOfWarrantyService:
         else:
             # Use the base provided by frontend, just validate sub-number
             out_of_warranty_dict = out_of_warranty.model_dump()
-            master = await master_service.get_master_by_name(out_of_warranty.name, session)
+            master = await master_service.get_master_by_name(
+                out_of_warranty.name, session
+            )
             out_of_warranty_dict["created_by"] = token["user"]["username"]
             out_of_warranty_dict["code"] = master.code
             for date_field in ["srf_date", "collection_date"]:
@@ -135,7 +139,9 @@ class OutOfWarrantyService:
             for row in rows
         ]
 
-    async def get_out_of_warranty_by_srf_number(self, srf_number: str, session: AsyncSession):
+    async def get_out_of_warranty_by_srf_number(
+        self, srf_number: str, session: AsyncSession
+    ):
         if len(srf_number) != 8:
             if srf_number.__contains__("/"):
                 srf_number = "S" + srf_number.zfill(7)
@@ -177,7 +183,7 @@ class OutOfWarrantyService:
                 cost3=row.OutOfWarranty.cost3,
                 spare4=row.OutOfWarranty.spare4,
                 cost4=row.OutOfWarranty.cost4,
-                spare5=row.OutOfWarranty.spare5,    
+                spare5=row.OutOfWarranty.spare5,
                 cost5=row.OutOfWarranty.cost5,
                 spare6=row.OutOfWarranty.spare6,
                 cost6=row.OutOfWarranty.cost6,
@@ -197,7 +203,6 @@ class OutOfWarrantyService:
             )
         else:
             raise OutOfWarrantyNotFound()
-
 
     async def update_out_of_warranty(
         self,
@@ -220,10 +225,11 @@ class OutOfWarrantyService:
         await session.refresh(existing_out_of_warranty)
         return existing_out_of_warranty
 
-
     async def last_srf_number(self, session: AsyncSession):
         statement = (
-            select(OutOfWarranty.srf_number).order_by(OutOfWarranty.srf_number.desc()).limit(1)
+            select(OutOfWarranty.srf_number)
+            .order_by(OutOfWarranty.srf_number.desc())
+            .limit(1)
         )
         result = await session.execute(statement)
         last_srf_number = result.scalar()
@@ -265,13 +271,15 @@ class OutOfWarrantyService:
         srf_date = rows[0][1].strftime("%d-%m-%Y") if rows[0][1] else ""
         code = rows[0][7]
         name = rows[0][8]
-        pin = ', ' + rows[0][13] if rows[0][13] else ""
-        address = rows[0][9] + ', ' + rows[0][12] + pin
+        pin = ", " + rows[0][13] if rows[0][13] else ""
+        address = rows[0][9] + ", " + rows[0][12] + pin
         contact1 = rows[0][10]
         gst = rows[0][11] if rows[0][11] else ""
         received_by = token["user"]["username"]
 
-        def generate_overlay(rows, srf_no, srf_date, code, name, address, contact1, gst, received_by):
+        def generate_overlay(
+            rows, srf_no, srf_date, code, name, address, contact1, gst, received_by
+        ):
             packet = io.BytesIO()
             can = canvas.Canvas(packet, pagesize=A4)
             width, height = A4
@@ -304,15 +312,23 @@ class OutOfWarrantyService:
             can.setFont("Helvetica", 9)
 
             for idx, row in enumerate(rows, 1):
-                division = row[2] or ''
-                model = row[3] or ''
-                slno = row[4] or ''
-                remark = row[5] or ''
+                division = row[2] or ""
+                model = row[3] or ""
+                slno = row[4] or ""
+                remark = row[5] or ""
                 service_charge_raw = row[6]
                 service_charge = f"{service_charge_raw:.2f}"
-                problem = row[14] or ''
+                problem = row[14] or ""
 
-                row_data = [str(idx), division, model, str(slno), problem, remark, str(service_charge)]
+                row_data = [
+                    str(idx),
+                    division,
+                    model,
+                    str(slno),
+                    problem,
+                    remark,
+                    str(service_charge),
+                ]
 
                 row_lines = []
                 for col, text in zip(columns, row_data):
@@ -355,8 +371,12 @@ class OutOfWarrantyService:
             return PdfReader(packet)
 
         # Create overlays
-        overlay_customer = generate_overlay(rows, srf_no, srf_date, code, name, address, contact1, gst, received_by)
-        overlay_asc = generate_overlay(rows, srf_no, srf_date, code, name, address, contact1, gst, received_by)
+        overlay_customer = generate_overlay(
+            rows, srf_no, srf_date, code, name, address, contact1, gst, received_by
+        )
+        overlay_asc = generate_overlay(
+            rows, srf_no, srf_date, code, name, address, contact1, gst, received_by
+        )
 
         # Path to the static PDF template (use absolute path for portability, with path injection protection)
         base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -402,7 +422,6 @@ class OutOfWarrantyService:
         next_challan_number = "V" + str(next_challan_number).zfill(5)
         return next_challan_number
 
-    
     async def last_vendor_challan_code(self, session: AsyncSession):
         statement = (
             select(OutOfWarranty.challan_number)
@@ -418,7 +437,7 @@ class OutOfWarrantyService:
         statement = (
             select(OutOfWarranty)
             .where(
-                 (OutOfWarranty.repair_date.is_(None))
+                (OutOfWarranty.repair_date.is_(None))
                 & (OutOfWarranty.vendor_date1.is_(None))
             )
             .order_by(OutOfWarranty.srf_number)
@@ -442,7 +461,9 @@ class OutOfWarrantyService:
         session: AsyncSession,
     ):
         for record in list_vendor_challan:
-            statement = select(OutOfWarranty).where(OutOfWarranty.srf_number == record.srf_number)
+            statement = select(OutOfWarranty).where(
+                OutOfWarranty.srf_number == record.srf_number
+            )
             result = await session.execute(statement)
             existing_warranty = result.scalar_one_or_none()
             if existing_warranty:
@@ -453,24 +474,20 @@ class OutOfWarrantyService:
                 session.add(existing_warranty)
         await session.commit()
 
-
     async def print_vendor_challan(
         self, challan_number: str, token: dict, session: AsyncSession
     ) -> io.BytesIO:
         # Query out_of_warranty data for challan_number
-        statement = (
-            select(
-                OutOfWarranty.challan_number,
-                OutOfWarranty.vendor_date1,
-                OutOfWarranty.received_by,
-                OutOfWarranty.srf_number,
-                OutOfWarranty.division,
-                OutOfWarranty.model,
-                OutOfWarranty.serial_number,
-                OutOfWarranty.remark,
-            )
-            .where(OutOfWarranty.challan_number == challan_number)
-        )
+        statement = select(
+            OutOfWarranty.challan_number,
+            OutOfWarranty.vendor_date1,
+            OutOfWarranty.received_by,
+            OutOfWarranty.srf_number,
+            OutOfWarranty.division,
+            OutOfWarranty.model,
+            OutOfWarranty.serial_number,
+            OutOfWarranty.remark,
+        ).where(OutOfWarranty.challan_number == challan_number)
         result = await session.execute(statement)
         rows = result.fetchall()
 
@@ -499,9 +516,9 @@ class OutOfWarrantyService:
                 row_padding = 0.2
 
                 columns = [
-                    {"x": 21,  "width": 21},   # Sl No
-                    {"x": 46,  "width": 74},   # SRF No
-                    {"x": 125, "width": 85},   # Division
+                    {"x": 21, "width": 21},  # Sl No
+                    {"x": 46, "width": 74},  # SRF No
+                    {"x": 125, "width": 85},  # Division
                     {"x": 220, "width": 100},  # Model
                     {"x": 330, "width": 100},  # Serial No
                     {"x": 440, "width": 135},  # Remark
@@ -510,11 +527,11 @@ class OutOfWarrantyService:
                 can.setFont("Helvetica", 8)
 
                 for idx, row in enumerate(rows, 1):
-                    srf = row[3] or ''
-                    division = row[4] or ''
-                    model = row[5] or ''
-                    slno = row[6] or ''
-                    remark = row[7] or ''
+                    srf = row[3] or ""
+                    division = row[4] or ""
+                    model = row[5] or ""
+                    slno = row[6] or ""
+                    remark = row[7] or ""
 
                     row_data = [str(idx), srf, division, model, str(slno), remark]
 
@@ -549,8 +566,8 @@ class OutOfWarrantyService:
                     y -= row_height + row_padding
 
             # Draw both blocks
-            draw_block(start_y_offset=0)      # First copy
-            draw_block(start_y_offset=393)    # Second copy lower
+            draw_block(start_y_offset=0)  # First copy
+            draw_block(start_y_offset=393)  # Second copy lower
 
             can.save()
             packet.seek(0)
@@ -601,7 +618,9 @@ class OutOfWarrantyService:
         repaired: Optional[str] = None,
     ):
 
-        statement = select(OutOfWarranty, Master).join(Master, OutOfWarranty.code == Master.code)
+        statement = select(OutOfWarranty, Master).join(
+            Master, OutOfWarranty.code == Master.code
+        )
 
         if final_status:
             statement = statement.where(OutOfWarranty.final_status == final_status)
@@ -617,44 +636,33 @@ class OutOfWarrantyService:
 
         if to_srf_date:
             statement = statement.where(OutOfWarranty.srf_date <= to_srf_date)
-            
+
         if final_settled:
             statement = statement.where(OutOfWarranty.final_settled == final_settled)
-    
+
         if vendor_settled:
             statement = statement.where(OutOfWarranty.vendor_settled == vendor_settled)
 
         from sqlalchemy import or_
+
         if delivered:
             if delivered == "Y":
-                statement = statement.where(
-                    OutOfWarranty.delivery_date.isnot(None)
-                )
+                statement = statement.where(OutOfWarranty.delivery_date.isnot(None))
             else:
-                statement = statement.where(
-                    OutOfWarranty.delivery_date.is_(None)
-                )
+                statement = statement.where(OutOfWarranty.delivery_date.is_(None))
 
         if estimated:
             if estimated == "Y":
-                statement = statement.where(
-                    OutOfWarranty.estimate_date.isnot(None)
-                )
+                statement = statement.where(OutOfWarranty.estimate_date.isnot(None))
             else:
-                statement = statement.where(
-                    OutOfWarranty.estimate_date.is_(None)
-                )
+                statement = statement.where(OutOfWarranty.estimate_date.is_(None))
 
         if repaired:
             if repaired == "Y":
-                statement = statement.where(
-                    OutOfWarranty.repair_date.isnot(None)
-                )
+                statement = statement.where(OutOfWarranty.repair_date.isnot(None))
             else:
-                statement = statement.where(
-                    OutOfWarranty.repair_date.is_(None)
-                )
-        
+                statement = statement.where(OutOfWarranty.repair_date.is_(None))
+
         if challaned:
             if challaned == "Y":
                 statement = statement.where(OutOfWarranty.vendor_date1.isnot(None))
@@ -672,11 +680,31 @@ class OutOfWarrantyService:
                 srf_date=format_date_ddmmyyyy(row.OutOfWarranty.srf_date),
                 name=row.Master.name,
                 model=row.OutOfWarranty.model,
-                estimate_date=format_date_ddmmyyyy(row.OutOfWarranty.estimate_date) if row.OutOfWarranty.estimate_date else "",
-                repair_date=format_date_ddmmyyyy(row.OutOfWarranty.repair_date) if row.OutOfWarranty.repair_date else "",
-                vendor_date1=format_date_ddmmyyyy(row.OutOfWarranty.vendor_date1) if row.OutOfWarranty.vendor_date1 else "",
-                delivery_date=format_date_ddmmyyyy(row.OutOfWarranty.delivery_date) if row.OutOfWarranty.delivery_date else "",
-                final_amount=row.OutOfWarranty.final_amount if row.OutOfWarranty.final_amount else 0,
+                estimate_date=(
+                    format_date_ddmmyyyy(row.OutOfWarranty.estimate_date)
+                    if row.OutOfWarranty.estimate_date
+                    else ""
+                ),
+                repair_date=(
+                    format_date_ddmmyyyy(row.OutOfWarranty.repair_date)
+                    if row.OutOfWarranty.repair_date
+                    else ""
+                ),
+                vendor_date1=(
+                    format_date_ddmmyyyy(row.OutOfWarranty.vendor_date1)
+                    if row.OutOfWarranty.vendor_date1
+                    else ""
+                ),
+                delivery_date=(
+                    format_date_ddmmyyyy(row.OutOfWarranty.delivery_date)
+                    if row.OutOfWarranty.delivery_date
+                    else ""
+                ),
+                final_amount=(
+                    row.OutOfWarranty.final_amount
+                    if row.OutOfWarranty.final_amount
+                    else 0
+                ),
                 contact_number=row.Master.contact1,
             )
             for row in rows
@@ -691,11 +719,14 @@ class OutOfWarrantyService:
         result = await session.execute(statement)
         names = result.scalars().all()
         return names
-    
+
     async def list_vendor_not_settled(self, session: AsyncSession):
         statement = (
             select(OutOfWarranty)
-            .where(OutOfWarranty.vendor_date2.isnot(None) & (OutOfWarranty.vendor_settlement_date.is_(None)))
+            .where(
+                OutOfWarranty.vendor_date2.isnot(None)
+                & (OutOfWarranty.vendor_settlement_date.is_(None))
+            )
             .order_by(OutOfWarranty.srf_number)
         )
         result = await session.execute(statement)
@@ -706,7 +737,8 @@ class OutOfWarrantyService:
                 division=row.OutOfWarranty.division,
                 model=row.OutOfWarranty.model,
                 challan_number=row.OutOfWarranty.challan_number,
-                amount=(row.OutOfWarranty.vendor_cost1 or 0) + (row.OutOfWarranty.vendor_cost2 or 0),
+                amount=(row.OutOfWarranty.vendor_cost1 or 0)
+                + (row.OutOfWarranty.vendor_cost2 or 0),
                 vendor_bill_number=row.OutOfWarranty.vendor_bill_number,
                 received_by=row.OutOfWarranty.received_by,
             )
@@ -717,7 +749,9 @@ class OutOfWarrantyService:
         self, list_vendor: List[UpdateVendorUnsettled], session: AsyncSession
     ):
         for vendor in list_vendor:
-            statement = select(OutOfWarranty).where(OutOfWarranty.srf_number == vendor.srf_number)
+            statement = select(OutOfWarranty).where(
+                OutOfWarranty.srf_number == vendor.srf_number
+            )
             result = await session.execute(statement)
             existing_vendor = result.scalar_one_or_none()
             if existing_vendor:
@@ -728,7 +762,10 @@ class OutOfWarrantyService:
     async def list_final_vendor_settlement(self, session: AsyncSession):
         statement = (
             select(OutOfWarranty)
-            .where((OutOfWarranty.vendor_settlement_date.isnot(None)) & (OutOfWarranty.vendor_settled == "N"))
+            .where(
+                (OutOfWarranty.vendor_settlement_date.isnot(None))
+                & (OutOfWarranty.vendor_settled == "N")
+            )
             .order_by(OutOfWarranty.srf_number)
         )
         result = await session.execute(statement)
@@ -743,7 +780,8 @@ class OutOfWarrantyService:
                 vendor_cost2=row.OutOfWarranty.vendor_cost2 or 0,
                 vendor_bill_number=row.OutOfWarranty.vendor_bill_number,
                 received_by=row.OutOfWarranty.received_by,
-                amount=(row.OutOfWarranty.vendor_cost1 or 0) + (row.OutOfWarranty.vendor_cost2 or 0),
+                amount=(row.OutOfWarranty.vendor_cost1 or 0)
+                + (row.OutOfWarranty.vendor_cost2 or 0),
             )
             for row in rows
         ]
@@ -752,7 +790,9 @@ class OutOfWarrantyService:
         self, list_vendor: List[UpdateVendorFinalSettlement], session: AsyncSession
     ):
         for vendor in list_vendor:
-            statement = select(OutOfWarranty).where(OutOfWarranty.srf_number == vendor.srf_number)
+            statement = select(OutOfWarranty).where(
+                OutOfWarranty.srf_number == vendor.srf_number
+            )
             result = await session.execute(statement)
             existing_vendor = result.scalar_one_or_none()
             if existing_vendor:
@@ -765,7 +805,10 @@ class OutOfWarrantyService:
         statement = (
             select(OutOfWarranty, Master)
             .join(Master, OutOfWarranty.code == Master.code)
-            .where(OutOfWarranty.settlement_date.is_(None) & (OutOfWarranty.final_status == "Y"))
+            .where(
+                OutOfWarranty.settlement_date.is_(None)
+                & (OutOfWarranty.final_status == "Y")
+            )
             .order_by(OutOfWarranty.srf_number)
         )
         result = await session.execute(statement)
@@ -790,7 +833,9 @@ class OutOfWarrantyService:
         self, list_srf: List[UpdateSRFUnsettled], session: AsyncSession
     ):
         for srf in list_srf:
-            statement = select(OutOfWarranty).where(OutOfWarranty.srf_number == srf.srf_number)
+            statement = select(OutOfWarranty).where(
+                OutOfWarranty.srf_number == srf.srf_number
+            )
             result = await session.execute(statement)
             existing_srf = result.scalar_one_or_none()
             if existing_srf:
@@ -801,7 +846,10 @@ class OutOfWarrantyService:
         statement = (
             select(OutOfWarranty, Master)
             .join(Master, OutOfWarranty.code == Master.code)
-            .where(OutOfWarranty.settlement_date.isnot(None) & (OutOfWarranty.final_settled == "N"))
+            .where(
+                OutOfWarranty.settlement_date.isnot(None)
+                & (OutOfWarranty.final_settled == "N")
+            )
             .order_by(OutOfWarranty.srf_number)
         )
         result = await session.execute(statement)
@@ -826,7 +874,9 @@ class OutOfWarrantyService:
         self, list_srf: List[UpdateSRFFinalSettlement], session: AsyncSession
     ):
         for srf in list_srf:
-            statement = select(OutOfWarranty).where(OutOfWarranty.srf_number == srf.srf_number)
+            statement = select(OutOfWarranty).where(
+                OutOfWarranty.srf_number == srf.srf_number
+            )
             result = await session.execute(statement)
             existing_srf = result.scalar_one_or_none()
             if existing_srf:
@@ -859,11 +909,9 @@ class OutOfWarrantyService:
             )
             for row in rows
         ]
-    
+
     async def print_estimate(
-        self,
-        codes: OutOfWarrantySRFNumberList,
-        session: AsyncSession
+        self, codes: OutOfWarrantySRFNumberList, session: AsyncSession
     ) -> io.BytesIO:
 
         # Query out_of_warranty + master
@@ -874,7 +922,7 @@ class OutOfWarrantyService:
             .order_by(OutOfWarranty.srf_number)
         )
 
-        result = await session.execute(statement)   
+        result = await session.execute(statement)
         rows = result.all()
 
         # Extract header fields
@@ -904,16 +952,18 @@ class OutOfWarrantyService:
             discount = float(ow.discount or 0)
             total_amount = float(ow.total or 0)
 
-            table_rows.append([
-                srf,
-                f"{service_charge:.2f}",
-                f"{rewinding_cost:.2f}",
-                f"{spare_cost:.2f}",
-                f"{other_cost:.2f}",
-                f"{godown_cost:.2f}",
-                f"{discount:.2f}",
-                f"{total_amount:.2f}",
-            ])
+            table_rows.append(
+                [
+                    srf,
+                    f"{service_charge:.2f}",
+                    f"{rewinding_cost:.2f}",
+                    f"{spare_cost:.2f}",
+                    f"{other_cost:.2f}",
+                    f"{godown_cost:.2f}",
+                    f"{discount:.2f}",
+                    f"{total_amount:.2f}",
+                ]
+            )
 
             grand_total += total_amount
 
@@ -945,7 +995,7 @@ class OutOfWarrantyService:
             row_padding = 0.2
 
             columns = [
-                {"x": 50,  "width": 90},  # SRF No
+                {"x": 50, "width": 90},  # SRF No
                 {"x": 145, "width": 65},  # Service Charge
                 {"x": 220, "width": 40},  # Rewinding Cost
                 {"x": 265, "width": 40},  # Spare Cost

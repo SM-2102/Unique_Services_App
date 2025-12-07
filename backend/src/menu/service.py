@@ -8,8 +8,8 @@ from market.models import Market
 from master.models import Master
 from out_of_warranty.models import OutOfWarranty
 from retail.models import Retail
-from warranty.models import Warranty
 from service_center.models import ServiceCentre
+from warranty.models import Warranty
 
 
 class MenuService:
@@ -18,7 +18,7 @@ class MenuService:
         statement = select(func.count(Master.code))
         result = await session.execute(statement)
         return result.scalar()
-    
+
     async def number_of_asc_names(self, session: AsyncSession):
         statement = select(func.count(ServiceCentre.asc_name))
         result = await session.execute(statement)
@@ -152,13 +152,13 @@ class MenuService:
 
     async def warranty_pending_completed_per_division(self, session: AsyncSession):
         statement = select(
-            Warranty.division, Warranty.settlement, func.count().label("count")
-        ).group_by(Warranty.division, Warranty.settlement)
+            Warranty.division, Warranty.final_status, func.count().label("count")
+        ).group_by(Warranty.division, Warranty.final_status)
         result = await session.execute(statement)
         rows = result.all()
         return [
-            {"division": division, "settlement": settlement, "count": count}
-            for division, settlement, count in rows
+            {"division": division, "final_status": final_status, "count": count}
+            for division, final_status, count in rows
         ]
 
     async def warranty_srf_vs_delivery(self, session: AsyncSession):
