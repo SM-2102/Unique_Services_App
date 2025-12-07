@@ -15,6 +15,7 @@ backend/src/**/__pycache__/
 backend/src/__pycache__/
 backend/.venv/
 backend/migrations/__pycache__/
+backend\migrations\__pycache__
 backend/migrations/versions/__pycache__/
 *.py[codz]
 *$py.class

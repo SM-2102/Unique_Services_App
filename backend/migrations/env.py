@@ -8,8 +8,8 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 from alembic import context
 from src.auth.models import User
 from src.master.models import Master
-from src.service_center.models import Service_Centre
-from src.service_charge.models import OW_Service_Charge
+from src.service_center.models import ServiceCentre
+from src.service_charge.models import ServiceCharge
 from src.retail.models import Retail
 from src.market.models import Market
 from src.challan.models import Challan
