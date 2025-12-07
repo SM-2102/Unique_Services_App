@@ -12,7 +12,20 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 const columns = [
   { key: "mcode", label: "Receipt No." },
   { key: "name", label: "Name" },
-  { key: "contact_number", label: "Contact" },
+  {
+    key: "contact1",
+    label: "Contact",
+    render: (contact1, row) => (
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "4px" }}>
+        <div>{contact1}</div>
+        {row.contact2 && (
+          <div>
+            {row.contact2}
+          </div>
+        )}
+      </div>
+    ),
+  },
   { key: "division", label: "Division" },
   { key: "invoice_number", label: "Invoice No." },
   { key: "invoice_date", label: "Invoice Date" },

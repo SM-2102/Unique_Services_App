@@ -160,7 +160,7 @@ Print srf by srf number.
 
 @out_of_warranty_router.post("/srf_print", status_code=status.HTTP_200_OK)
 async def print_srf(
-    data: OutOfWarrantySRFNumberList,
+    data: OutOfWarrantySRFNumber,
     session: AsyncSession = Depends(get_session),
     token=Depends(access_token_bearer),
 ):

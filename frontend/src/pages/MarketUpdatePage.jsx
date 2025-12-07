@@ -354,7 +354,7 @@ const MarketUpdatePage = () => {
                   type="text"
                   value={form.delivery_by}
                   onChange={handleChange}
-                  className="w-full px-3 py-1 rounded-lg border border-gray-300 bg-gray-50 text-gray-900"
+                  className={`w-full px-3 py-1 rounded-lg border ${errs_label.delivery_by ? "border-red-300" : "border-gray-300"} border-gray-300 bg-gray-50 text-gray-900`}
                   maxLength={20}
                   disabled={isLocked || submitting}
                   autoComplete="off"

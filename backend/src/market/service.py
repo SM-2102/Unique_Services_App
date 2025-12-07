@@ -123,7 +123,7 @@ class MarketService:
         invoice_number: Optional[str] = None,
     ) -> List[MarketEnquiry]:
         # Check if master name exists
-        statement = select(Market, Master.name, Master.contact1).join(
+        statement = select(Market, Master).join(
             Master, Master.code == Market.code
         )
         # Apply filters dynamically
@@ -156,8 +156,9 @@ class MarketService:
         return [
             MarketEnquiry(
                 mcode=row.Market.mcode,
-                name=row.name,
-                contact_number=row.contact1,
+                name=row.Master.name,
+                contact1=row.Master.contact1,
+                contact2=row.Master.contact2,
                 division=row.Market.division,
                 invoice_number=row.Market.invoice_number,
                 invoice_date=format_date_ddmmyyyy(row.Market.invoice_date),

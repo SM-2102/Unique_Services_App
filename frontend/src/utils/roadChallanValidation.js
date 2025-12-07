@@ -15,7 +15,7 @@ function validateChallan(form, items) {
     errs.push("Challan date is required");
     errs_label.challan_date = true;
   }
-  if (!items || !items[0] || !items[0].desc) {
+  if (!items[0].desc) {
     errs.push("Description 1 is required");
     errs_label.desc1 = true;
   }

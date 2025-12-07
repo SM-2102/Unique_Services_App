@@ -7,24 +7,24 @@ import { useAuth } from "../context/AuthContext";
 // Define desired submenu order for each menu key
 const submenuOrder = {
   warranty: [
-    "Create SRF",
-    "Update SRF",
-    "Print SRF",
+    "Create SRF Record",
+    "Update SRF Record",
+    "Print SRF Record",
     "Create CNF Challan",
     "Print CNF Challan",
     "Enquiry",
   ],
   out_of_warranty: [
-    "Create SRF",
-    "Update SRF",
-    "Print SRF",
-    "Print Estimate",
+    "Create SRF Record",
+    "Update SRF Record",
+    "Print SRF Record",
+    "Print Estimate Receipt",
     "Create Vendor Challan",
     "Print Vendor Challan",
-    "Settle SRF",
-    "Settle Vendor",
-    "Settle Final SRF",
+    "Settle Vendor Record",
+    "Settle SRF Record",
     "Settle Final Vendor",
+    "Settle Final SRF",
     "Enquiry",
   ],
   retail: [
@@ -32,7 +32,7 @@ const submenuOrder = {
     "Update Record",
     "Print Receipt",
     "Settle Record",
-    "Settle Final Record",
+    "Final Settlement",
     "Enquiry",
   ],
 };

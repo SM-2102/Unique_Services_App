@@ -697,7 +697,8 @@ class WarrantyService:
                 ),
                 final_status=row.Warranty.final_status,
                 head=row.Warranty.head,
-                contact_number=row.Master.contact1,
+                contact1=row.Master.contact1,
+                contact2=row.Master.contact2,
             )
             for row in rows
         ]

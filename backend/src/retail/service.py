@@ -81,7 +81,8 @@ class RetailService:
             RetailNotReceivedResponse(
                 rcode=row.Retail.rcode,
                 name=row.Master.name,
-                contact=row.Master.contact1,
+                contact1=row.Master.contact1,
+                contact2=row.Master.contact2,
                 details=row.Retail.details,
                 amount=row.Retail.amount,
                 received=row.Retail.received,

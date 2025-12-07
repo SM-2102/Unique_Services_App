@@ -28,7 +28,8 @@ class WarrantyEnquiry(BaseModel):
     receive_date: Optional[str]
     repair_date: Optional[str]
     delivery_date: Optional[str]
-    contact_number: Optional[str]
+    contact1: str
+    contact2: Optional[str]
 
 
 class WarrantyPending(BaseModel):

@@ -421,7 +421,7 @@ const OutOfWarrantyCreatePage = () => {
             <div className="flex items-center w-1/2 gap-2">
               <label
                 htmlFor="head"
-                className="w-55 text-md font-medium text-gray-700"
+                className="w-53.5 text-md font-medium text-gray-700"
               >
                 Head
               </label>
@@ -456,7 +456,8 @@ const OutOfWarrantyCreatePage = () => {
                 type="number"
                 value={serviceChargeLoading ? "" : form.service_charge}
                 onChange={handleChange}
-                className={`w-full px-3 py-1 rounded-lg border ${errs_label.service_charge ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
+                className={`w-full px-3 py-1 rounded-lg border ${errs_label.service_charge ? "border-red-300" : "border-gray-300"} ${form.division === "OTHERS" ? "bg-gray-50 text-gray-900" : "cursor-not-allowed"} focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
+                readOnly={form.division !== "OTHERS"}
                 disabled={submitting || serviceChargeLoading}
                 placeholder={serviceChargeLoading ? "Loading..." : ""}
               />
@@ -555,7 +556,7 @@ const OutOfWarrantyCreatePage = () => {
             <div className="flex items-center w-1/2 gap-2">
               <label
                 htmlFor="model"
-                className="w-55 text-md font-medium text-gray-700"
+                className="w-53 text-md font-medium text-gray-700"
               >
                 Model<span className="text-red-500">*</span>
               </label>
@@ -576,7 +577,7 @@ const OutOfWarrantyCreatePage = () => {
                 htmlFor="serial_number"
                 className="w-70 text-md font-medium text-gray-700 ml-6"
               >
-                Serial No.<span className="text-red-500">*</span>
+                Serial Number<span className="text-red-500">*</span>
               </label>
               <input
                 id="serial_number"

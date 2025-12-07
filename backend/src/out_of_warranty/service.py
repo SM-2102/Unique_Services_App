@@ -32,6 +32,7 @@ from out_of_warranty.schemas import (
     UpdateSRFUnsettled,
     UpdateVendorFinalSettlement,
     UpdateVendorUnsettled,
+    OutOfWarrantySRFNumber,
 )
 from utils.date_utils import format_date_ddmmyyyy, parse_date
 from utils.file_utils import safe_join, split_text_to_lines
@@ -237,7 +238,7 @@ class OutOfWarrantyService:
         return last_srf_number
 
     async def print_srf(
-        self, srf_number: OutOfWarrantySRFNumberList, token: dict, session: AsyncSession
+        self, srf_number: OutOfWarrantySRFNumber, token: dict, session: AsyncSession
     ) -> io.BytesIO:
         # Query out_of_warranty and master data for SRF
         statement = (
@@ -705,7 +706,8 @@ class OutOfWarrantyService:
                     if row.OutOfWarranty.final_amount
                     else 0
                 ),
-                contact_number=row.Master.contact1,
+                contact1=row.Master.contact1,
+                contact2=row.Master.contact2,
             )
             for row in rows
         ]

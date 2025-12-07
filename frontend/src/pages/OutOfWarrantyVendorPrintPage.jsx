@@ -128,7 +128,7 @@ const OutOfWarrantyVendorPrintPage = () => {
                     setError({
                       message: "Popup blocked",
                       resolution: "Enable popups and try again",
-                      type: "info",
+                      type: "warning",
                     });
                     setShowToast(true);
                   }

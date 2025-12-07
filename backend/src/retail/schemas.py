@@ -16,7 +16,8 @@ class RetailCreate(BaseModel):
 class RetailNotReceivedResponse(BaseModel):
     rcode: str
     name: str
-    contact: str
+    contact1: str
+    contact2: Optional[str] = None
     details: str
     amount: int
     received: str

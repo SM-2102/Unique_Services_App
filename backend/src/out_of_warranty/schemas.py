@@ -24,18 +24,6 @@ class OutOfWarrantyCreate(BaseModel):
     waive_details: Optional[str] = Field(None, max_length=40)
 
 
-class OutOfWarrantyEnquiry(BaseModel):
-    srf_number: str
-    srf_date: str
-    name: str
-    model: str
-    head: str
-    receive_date: Optional[str]
-    repair_date: Optional[str]
-    delivery_date: Optional[str]
-    contact_number: Optional[str]
-
-
 class OutOfWarrantyPending(BaseModel):
     srf_number: str
     name: str
@@ -213,7 +201,8 @@ class OutOfWarrantyEnquiry(BaseModel):
     vendor_date1: Optional[str]
     delivery_date: Optional[str]
     final_amount: Optional[float]
-    contact_number: Optional[str]
+    contact1: str
+    contact2: Optional[str]
 
 
 class OutOfWarrantyEstimatePrintResponse(BaseModel):

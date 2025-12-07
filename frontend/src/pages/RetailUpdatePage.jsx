@@ -17,7 +17,20 @@ import Toast from "../components/Toast";
 const columns = [
   { key: "rcode", label: "Receipt Number" },
   { key: "name", label: "Customer Name" },
-  { key: "contact", label: "Contact" },
+  {
+    key: "contact1",
+    label: "Contact",
+    render: (contact1, row) => (
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "4px" }}>
+        <div>{contact1}</div>
+        {row.contact2 && (
+          <div>
+            {row.contact2}
+          </div>
+        )}
+      </div>
+    ),
+  },
   { key: "details", label: "Details" },
   { key: "amount", label: "Amount" },
   { key: "received", label: "Received" },
@@ -242,6 +255,8 @@ const RetailUpdatePage = () => {
                           >
                             {row.received === "Y" ? "Yes" : "No"}
                           </button>
+                        ) : typeof col.render === "function" ? (
+                          col.render(row[col.key], row)
                         ) : row[col.key] !== null &&
                           row[col.key] !== undefined ? (
                           row[col.key]

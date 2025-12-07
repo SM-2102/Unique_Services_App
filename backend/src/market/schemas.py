@@ -48,7 +48,8 @@ class MarketCode(BaseModel):
 class MarketEnquiry(BaseModel):
     mcode: str
     name: str
-    contact_number: str
+    contact1: str
+    contact2: Optional[str] = None
     division: str
     invoice_number: str
     invoice_date: str
