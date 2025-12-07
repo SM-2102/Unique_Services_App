@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   Paper,
   Typography,
@@ -16,11 +16,6 @@ const roleLabels = {
   USER: "Standard User",
 };
 
-/**
- * ShowUsers is a reusable component to display a list of users in a table.
- * @param {Array} users - The list of users to display.
- * @param {string} [title] - Optional title for the table.
- */
 const ShowUsers = ({ users = [], title = "List of Registered Users" }) => {
   return (
     <Paper
@@ -42,16 +37,13 @@ const ShowUsers = ({ users = [], title = "List of Registered Users" }) => {
       >
         {title}
       </Typography>
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        mb={2}
-      >
+
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <Typography variant="subtitle1" color="text.secondary">
           Total Users: <b>{users.length}</b>
         </Typography>
       </Box>
+
       <TableContainer component={Paper} sx={{ borderRadius: 3, boxShadow: 2 }}>
         <Table>
           <TableHead>
@@ -59,12 +51,23 @@ const ShowUsers = ({ users = [], title = "List of Registered Users" }) => {
               <TableCell sx={{ fontWeight: 700, fontSize: 16 }}>
                 Username
               </TableCell>
-              <TableCell sx={{ fontWeight: 700, fontSize: 16 }}>Role</TableCell>
-              <TableCell sx={{ fontWeight: 700, fontSize: 16 }}>
+
+              {/* Centered Header */}
+              <TableCell
+                sx={{ fontWeight: 700, fontSize: 16, textAlign: "center" }}
+              >
+                Role
+              </TableCell>
+
+              {/* Centered Header */}
+              <TableCell
+                sx={{ fontWeight: 700, fontSize: 16, textAlign: "center" }}
+              >
                 Phone Number
               </TableCell>
             </TableRow>
           </TableHead>
+
           <TableBody>
             {users.map((u, idx) => (
               <TableRow
@@ -72,8 +75,16 @@ const ShowUsers = ({ users = [], title = "List of Registered Users" }) => {
                 sx={{ background: idx % 2 === 0 ? "#f4f8ff" : "#fff" }}
               >
                 <TableCell sx={{ fontWeight: 600 }}>{u.username}</TableCell>
-                <TableCell>{roleLabels[u.role] || u.role}</TableCell>
-                <TableCell>{u.phone_number}</TableCell>
+
+                {/* Role aligned normally */}
+                <TableCell sx={{ textAlign: "center" }}>
+                  {roleLabels[u.role] || u.role}
+                </TableCell>
+
+                {/* Phone Number centered */}
+                <TableCell sx={{ textAlign: "center" }}>
+                  {u.phone_number}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

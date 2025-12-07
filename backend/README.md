@@ -8,6 +8,7 @@
 - `samesite` of `set.cookie` has to be set to `none`
 - `secure` of `set.cookie` has to be set to `true`
 - In `requirements.txt` - remove `psycopg2` 
+- Hide `/redoc`, `/docs`, `/openapi`
 
 ### Alembic Database Migrations
 1. Initialize Alembic (run once):
