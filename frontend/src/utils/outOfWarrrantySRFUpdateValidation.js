@@ -143,6 +143,14 @@ function validateOutOfWarrantyUpdate(form) {
       errs.push("Invoice Number is required");
       errs_label["invoice_number"] = true;
     }
+    if (form.vendor_cost1 && !form.rewinding_cost) {
+      errs.push("Rewinding Cost is required");
+      errs_label["rewinding_cost"] = true;
+    }
+    if (form.vendor_cost2 && !form.other_cost) {
+      errs.push("Other Cost is required");
+      errs_label["other_cost"] = true;
+    }
   }
 
   return [errs, errs_label];
