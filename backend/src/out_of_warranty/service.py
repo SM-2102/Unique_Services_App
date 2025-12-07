@@ -20,6 +20,7 @@ from out_of_warranty.schemas import (
     OutOfWarrantyEnquiry,
     OutOfWarrantyEstimatePrintResponse,
     OutOfWarrantyPending,
+    OutOfWarrantySRFNumber,
     OutOfWarrantySRFNumberList,
     OutOfWarrantySRFSettleRecord,
     OutOfWarrantyUpdate,
@@ -32,7 +33,6 @@ from out_of_warranty.schemas import (
     UpdateSRFUnsettled,
     UpdateVendorFinalSettlement,
     UpdateVendorUnsettled,
-    OutOfWarrantySRFNumber,
 )
 from utils.date_utils import format_date_ddmmyyyy, parse_date
 from utils.file_utils import safe_join, split_text_to_lines

@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Container,
-  Paper,
-  InputBase,
-  IconButton,
-  Box,
-} from "@mui/material";
+import { Container, Paper, InputBase, IconButton, Box } from "@mui/material";
 import { BiSearch } from "react-icons/bi";
 import Toast from "../components/Toast";
 import { fetchMasterNames } from "../services/masterNamesService";

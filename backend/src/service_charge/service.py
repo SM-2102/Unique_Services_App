@@ -8,9 +8,7 @@ from .schemas import ServiceCharge
 class ServiceChargeService:
 
     async def get_service_charge(self, data: ServiceCharge, session: AsyncSession):
-        statement = select(ServiceCharge).where(
-            ServiceCharge.division == data.division
-        )
+        statement = select(ServiceCharge).where(ServiceCharge.division == data.division)
         if data.head:
             statement = statement.where(ServiceCharge.head == data.head)
         result = await session.execute(statement)

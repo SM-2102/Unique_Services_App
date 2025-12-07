@@ -394,20 +394,20 @@ const OutOfWarrantyUpdatePage = () => {
     const rawFinal = totalVal + gstVal;
     const roundedFinal = Math.round(rawFinal);
     const round_off = Math.round((roundedFinal - rawFinal) * 100) / 100;
-    
+
     // Clear invoice_number when GST is "N" and pc_number when GST is "Y"
     let newForm = {
       gst_amount,
       final_amount: roundedFinal,
       round_off,
     };
-    
+
     if (form.gst === "N") {
       newForm.invoice_number = "";
     } else if (form.gst === "Y") {
       newForm.pc_number = "";
     }
-    
+
     if (
       form.gst_amount !== gst_amount ||
       form.final_amount !== roundedFinal ||
@@ -430,7 +430,7 @@ const OutOfWarrantyUpdatePage = () => {
     const godown_cost = parseFloat(form.godown_cost) || 0;
     const service_charge = parseFloat(form.service_charge) || 0;
     const discount = parseFloat(form.discount) || 0;
-    
+
     const calculatedTotal =
       rewinding_cost +
       other_cost +
@@ -438,15 +438,26 @@ const OutOfWarrantyUpdatePage = () => {
       godown_cost +
       service_charge -
       discount;
-    
+
     // Only update if total is null/empty or if there's an actual difference
-    if (form.total === "" || form.total === null || parseFloat(form.total) !== calculatedTotal) {
+    if (
+      form.total === "" ||
+      form.total === null ||
+      parseFloat(form.total) !== calculatedTotal
+    ) {
       setForm((prev) => ({
         ...prev,
         total: calculatedTotal,
       }));
     }
-  }, [form.rewinding_cost, form.other_cost, form.spare_cost, form.godown_cost, form.service_charge, form.discount]); // Trigger when any cost component changes
+  }, [
+    form.rewinding_cost,
+    form.other_cost,
+    form.spare_cost,
+    form.godown_cost,
+    form.service_charge,
+    form.discount,
+  ]); // Trigger when any cost component changes
 
   return (
     <div className="flex min-h-[80vh] mt-6 justify-center items-center">

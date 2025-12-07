@@ -21,13 +21,16 @@ const columns = [
     key: "contact1",
     label: "Contact",
     render: (contact1, row) => (
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "4px" }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "4px",
+        }}
+      >
         <div>{contact1}</div>
-        {row.contact2 && (
-          <div>
-            {row.contact2}
-          </div>
-        )}
+        {row.contact2 && <div>{row.contact2}</div>}
       </div>
     ),
   },
