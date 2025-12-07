@@ -42,7 +42,7 @@ function validateOutOfWarrantyUpdate(form) {
     errs.push("Repair Date Required");
     errs_label["repair_date"] = true;
   }
-  if (form.vendor_cost1 > 0 && (!form.vendor_date1 || !form.vendor_date2)) {
+  if (form.vendor_cost1 > 0 && (!form.vendor_date1)) {
     errs.push("Vendor Dates Required");
     errs_label["vendor_date2"] = true;
   }
