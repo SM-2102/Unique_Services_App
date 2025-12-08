@@ -46,6 +46,26 @@ const MarketStatusChart = ({ data }) => {
     });
   };
   const handleMouseOut = () => setTooltip({ ...tooltip, show: false });
+  const StylishCounter = ({ total }) => {
+  return (
+    <div className="w-full flex justify-center">
+      <div
+        className="
+          flex items-center gap-2
+        "
+      >
+        <span className="text-2xl font-extrabold text-yellow-500 tracking-tight">
+          {total} +
+        </span>
+
+        <span className="text-md font-semibold text-purple-800 tracking-wide">
+          Products Replaced
+        </span>
+      </div>
+    </div>
+  );
+};
+
 
   // Animation state for each bar: animate green first, then red
   const [barStates, setBarStates] = useState([]);
@@ -74,7 +94,7 @@ const MarketStatusChart = ({ data }) => {
   }, [chartData]);
 
   return (
-    <div className="bg-[#f0f4f8] p-3 rounded-lg relative w-full max-w-full overflow-x-auto">
+    <div className="bg-[#f0f4f8] p-1 rounded-lg relative w-full max-w-full overflow-x-auto">
       {/* Tooltip */}
       {tooltip.show && (
         <div
@@ -96,7 +116,11 @@ const MarketStatusChart = ({ data }) => {
           </span>
         </div>
       )}
-      <div className="flex flex-row items-center justify-center gap-8 w-full">
+   {data?.market?.total_markets !== undefined && (
+  <StylishCounter total={data.market.total_markets} />
+)}
+
+              <div className="flex flex-row items-center justify-center gap-8 w-full">
         {/* Horizontal bars and labels */}
         <div
           className="flex flex-row gap-2 w-full items-center mt-5"
@@ -113,7 +137,7 @@ const MarketStatusChart = ({ data }) => {
                 className="flex flex-col items-center w-12 mx-auto"
               >
                 {/* Stacked vertical bar: green bottom, red top */}
-                <div className="relative flex flex-col-reverse h-35 w-9 rounded overflow-hidden border border-gray-200 bg-gray-100">
+                <div className="relative flex flex-col-reverse h-30 w-9 rounded overflow-hidden border border-gray-200 bg-gray-100">
                   {/* Completed (Y) - purple bottom */}
                   <div
                     className="bg-purple-500 w-full transition-all duration-700 cursor-pointer relative"
@@ -169,6 +193,15 @@ const MarketStatusChart = ({ data }) => {
             width: 32px !important;
           }
         }
+          @keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
       `}</style>
     </div>
   );

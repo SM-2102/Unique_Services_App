@@ -84,7 +84,48 @@ const OutOfWarrantyStatusChart = ({ data, loading, error }) => {
     );
 
   return (
+    
+  <div className="w-full">
+{/* Frosted Card */}
+{data?.out_of_warranty?.out_of_warranty_count !== undefined && (
+  <div className="w-full flex justify-center ml-2 mt-1">
+    <div
+      className="
+        px-1 py-1.5
+        rounded-xl
+        bg-white/60
+        backdrop-blur-2xl
+        shadow-[0_10px_35px_rgba(0,0,0,0.18)]
+        border border-white/70
+        text-center
+      "
+      style={{
+        backgroundImage:
+          "linear-gradient(to bottom right, rgba(255,255,255,0.7), rgba(245,245,245,0.6))",
+      }}
+    >
+      <div className="text-lg font-extrabold text-gray-900 tracking-wide drop-shadow-sm">
+        {data.out_of_warranty.out_of_warranty_count}+ Products
+      </div>
+
+      <div className="text-sm font-medium text-gray-700 tracking-wide">
+        Repaired
+      </div>
+    </div>
+  </div>
+)}
+
+{/* Chart container (unchanged) */}
+<div className="flex flex-row items-start justify-end gap-0 w-full max-w-[350px] pt-1">
+  {/* bars here */}
+</div>
+
+
+
+
+
     <div className="flex justify-center">
+
       {/* Tooltip */}
       {tooltip.show && (
         <div
@@ -105,7 +146,8 @@ const OutOfWarrantyStatusChart = ({ data, loading, error }) => {
             )}
           </span>
         </div>
-      )}
+      )}      
+          
       <div className="flex flex-row items-start justify-end gap-0 w-full max-w-[350px] pt-2">
         {/* Horizontal bars and labels */}
         <div className="flex flex-col gap-2 w-full min-w-0 overflow-y-auto">
@@ -189,6 +231,7 @@ const OutOfWarrantyStatusChart = ({ data, loading, error }) => {
         }
       `}</style>
     </div>
+  </div>
   );
 };
 

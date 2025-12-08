@@ -29,7 +29,6 @@ Returns dashboard data:
 - srf_vs_delivery_month_wise_bar_graph_warranty,
 - srf_receive_vs_delivery_bar_graph_out_of_warranty,
 - final_status_bar_graph_out_of_warranty.
-
 """
 
 
@@ -37,33 +36,37 @@ Returns dashboard data:
 async def get_dashboard_data(
     session: AsyncSession = Depends(get_session), _=Depends(access_token_bearer)
 ):
-    number_of_customers = await menu_service.number_of_masters(session)
-    number_of_asc_names = await menu_service.number_of_asc_names(session)
-    top_customers = await menu_service.top_customers(session)
+    # Use the grouped service methods (these each make multiple internal queries
+    # but significantly reduce number of round-trips overall).
+    master = await menu_service.master_overview(session)
+    retail = await menu_service.retail_overview(session)
+    challan = await menu_service.challan_overview(session)
+    warranty = await menu_service.warranty_overview(session)
+    ow = await menu_service.out_of_warranty_overview(session)
+    market = await menu_service.market_overview(session)
 
-    retail_division_wise_data = (
-        await menu_service.retail_number_of_records_per_division(session)
-    )
-    retail_received_settled_unsettled = await menu_service.retail_pie_chart_counts(
-        session
-    )
+    number_of_customers = master["master_count"]
+    number_of_asc_names = master["asc_count"]
+    top_customers = master["top_customers"]
 
-    number_of_challan = await menu_service.number_of_challan(session)
+    retail_division_wise_data = retail["division_counts"]
+    retail_received_settled_unsettled = retail["pie"]
 
-    challan_number_of_items = await menu_service.challan_number_of_items(session)
-    challan_rolling_months = await menu_service.challan_counts_rolling_months(session)
+    number_of_challan = challan["challan_count"]
+    challan_number_of_items = challan["items_count"]
+    challan_rolling_months = challan["rolling"]
 
-    market_status_per_division = await menu_service.market_status_division_wise(session)
+    market_status_per_division = market["status_list"]
+    total_markets = market["total_markets"]
 
-    warranty_pending_completed_per_division = (
-        await menu_service.warranty_pending_completed_per_division(session)
-    )
-    warranty_srf_delivery = await menu_service.warranty_srf_vs_delivery(session)
+    warranty_pending_completed_per_division = warranty["pending_completed"]
+    warranty_srf_delivery = warranty["srf_delivery"]
+    warranty_heads = warranty["heads"]
 
-    ow_srf_repair_delivery = await menu_service.ow_srf_vs_repair_vs_delivery(session)
-    ow_pending_completed_per_division = (
-        await menu_service.ow_pending_completed_per_division(session)
-    )
+    ow_srf_repair_delivery = ow["srf_repair_delivery"]
+    ow_pending_completed_per_division = ow["pending_completed"]
+    ow_count = ow["count"]
+
     dashboard_data = {
         "customer": {
             "number_of_customers": ((number_of_customers // 10) * 10),
@@ -81,14 +84,17 @@ async def get_dashboard_data(
         },
         "market": {
             "status_per_division_stacked_bar_chart": market_status_per_division,
+            "total_markets": ((total_markets // 10) * 10),
         },
         "warranty": {
             "division_wise_pending_completed_bar_graph": warranty_pending_completed_per_division,
             "srf_vs_delivery_month_wise_bar_graph": warranty_srf_delivery,
+            "warranty_heads": warranty_heads,
         },
         "out_of_warranty": {
             "srf_receive_vs_delivery_bar_graph": ow_srf_repair_delivery,
             "final_status_bar_graph": ow_pending_completed_per_division,
+            "out_of_warranty_count": ((ow_count // 10) * 10),
         },
     }
     return JSONResponse(content=dashboard_data)

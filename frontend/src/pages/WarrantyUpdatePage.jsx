@@ -25,7 +25,7 @@ const initialForm = {
   delivered_by: "",
   delivery_date: "",
   complaint_number: "",
-  remark: "",
+  final_remark: "",
   courier: "",
   final_status: "Pending",
 };
@@ -89,7 +89,7 @@ const WarrantyUpdatePage = () => {
         delivered_by: data.delivered_by ?? "",
         delivery_date: data.delivery_date ?? "",
         complaint_number: data.complaint_number ?? "",
-        remark: data.remark ?? "",
+        final_remark: data.final_remark ?? "",
         courier: data.courier ?? "",
         final_status: data.final_status ?? "Pending",
       });
@@ -162,7 +162,7 @@ const WarrantyUpdatePage = () => {
       delivery_date: form.delivery_date,
       delivered_by: form.delivered_by,
       final_status: form.final_status,
-      remark: form.remark,
+      final_remark: form.final_remark,
       repair_date: form.repair_date,
       receive_date: form.receive_date,
       invoice_number: form.invoice_number,
@@ -620,7 +620,7 @@ const WarrantyUpdatePage = () => {
             style={{ position: "relative" }}
           >
             <label
-              htmlFor="remark"
+              htmlFor="final_remark"
               className="w-33.5 text-md font-medium text-gray-700"
             >
               Remark
@@ -628,14 +628,14 @@ const WarrantyUpdatePage = () => {
             <div className="flex-1 flex items-center gap-2">
               <div style={{ position: "relative", width: "100%" }}>
                 <input
-                  id="remark"
-                  name="remark"
+                  id="final_remark"
+                  name="final_remark"
                   type="text"
-                  value={form.remark}
+                  value={form.final_remark}
                   onChange={handleChange}
-                  className={`w-full px-3 py-1 rounded-lg border ${errs_label.remark ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
+                  className={`w-full px-3 py-1 rounded-lg border ${errs_label.final_remark ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
                   disabled={isLocked || submitting}
-                  autoComplete="remark"
+                  autoComplete="final_remark"
                 ></input>
               </div>
             </div>

@@ -80,7 +80,6 @@ const ShowUsers = ({ users = [], title = "List of Registered Users" }) => {
                 <TableCell sx={{ textAlign: "center" }}>
                   {roleLabels[u.role] || u.role}
                 </TableCell>
-
                 {/* Phone Number centered */}
                 <TableCell sx={{ textAlign: "center" }}>
                   {u.phone_number}

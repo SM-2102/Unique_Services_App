@@ -16,26 +16,31 @@ const RetailSettledPieChart = ({ data }) => {
   }, [data]);
 
   const total = Object.values(chartData).reduce((sum, value) => sum + value, 0);
+
+  const settledValue = chartData.settled || 0;
+  const settledPercent =
+    total > 0 ? ((settledValue / total) * 100).toFixed(1) : 0;
+
   const statusData = [
     {
       label: "Not Received",
       value: chartData.not_received || 0,
-      color: "#d50505ff", // red
+      color: "#d50505ff",
     },
     {
       label: "Not Settled",
       value: chartData.received_not_settled || 0,
-      color: "#f5e20bff", // yellow
+      color: "#f5e20bff",
     },
     {
       label: "To Settle",
       value: chartData.propose_for_settlement || 0,
-      color: "#4c08eaff", // blue
+      color: "#4c08eaff",
     },
     {
       label: "Settled",
       value: chartData.settled || 0,
-      color: "#22c55e", // green
+      color: "#22c55e",
     },
   ];
 
@@ -52,6 +57,45 @@ const RetailSettledPieChart = ({ data }) => {
     ],
   };
 
+const centerTextPlugin = {
+  id: "centerTextPlugin",
+  afterDraw(chart) {
+    const active = chart.getActiveElements();
+
+    // Hide text when user hovers any slice
+    if (active && active.length > 0) {
+      return;
+    }
+
+    const { ctx, chartArea } = chart;
+    const { left, right, top, bottom } = chartArea;
+
+    const dataset = chart.data.datasets[0].data;
+
+    const settledValue = dataset[3] || 0; // Settled slice
+    const totalValue = dataset.reduce((a, b) => a + b, 0);
+
+    const settledPercent =
+      totalValue > 0 ? ((settledValue / totalValue) * 100).toFixed(1) : 0;
+
+    const xCenter = (left + right) / 2;
+    const yPosition = top + (bottom - top) * 0.75; // 75% vertical
+
+    ctx.save();
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    ctx.font = "bold 16px sans-serif";
+    ctx.fillText(`${settledPercent}%`, xCenter, yPosition - 10);
+
+    ctx.font = "400 14px sans-serif";
+    ctx.fillText("Settled", xCenter, yPosition + 10);
+
+    ctx.restore();
+  },
+};
+
+
   const options = {
     responsive: true,
     plugins: {
@@ -60,9 +104,7 @@ const RetailSettledPieChart = ({ data }) => {
       },
       tooltip: {
         callbacks: {
-          title: function (context) {
-            return "";
-          },
+          title: () => "",
           label: function (context) {
             const label = context.label || "";
             const value = context.parsed || 0;
@@ -83,28 +125,7 @@ const RetailSettledPieChart = ({ data }) => {
         },
       },
       datalabels: {
-        display: function (context) {
-          // Only show label for the "Settled" part
-          return (
-            context.dataIndex === 3 && total > 0 && context.dataset.data[3] > 0
-          );
-        },
-        formatter: function (value, context) {
-          // Show settled percentage only
-          const percent = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
-          return percent > 0 ? percent + "%" : "";
-        },
-        color: "#fff",
-        font: {
-          weight: "bold",
-          size: 14,
-        },
-        align: "center",
-        anchor: "center",
-        backgroundColor: "#22c55e",
-        borderRadius: 6,
-        padding: 4,
-        clip: true,
+        display: false, // handled via center plugin
       },
     },
     animation: {
@@ -127,6 +148,7 @@ const RetailSettledPieChart = ({ data }) => {
         <Pie
           data={pieData}
           options={options}
+          plugins={[centerTextPlugin]}
           style={{
             width: "100%",
             height: "100%",

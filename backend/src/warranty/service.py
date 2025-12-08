@@ -173,7 +173,7 @@ class WarrantyService:
                 invoice_number=row.Warranty.invoice_number,
                 invoice_date=row.Warranty.invoice_date,
                 delivered_by=row.Warranty.delivered_by,
-                remark=row.Warranty.remark,
+                final_remark=row.Warranty.final_remark,
                 final_status=row.Warranty.final_status,
                 courier=row.Warranty.courier,
                 complaint_number=row.Warranty.complaint_number,

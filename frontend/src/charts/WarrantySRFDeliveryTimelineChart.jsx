@@ -43,7 +43,7 @@ const WarrantySRFDeliveryTimelineChart = ({ data }) => {
       const deliveryDate = formatDMY(item.delivery_date);
       return (
         <div
-          className="px-3 py-2 rounded-lg shadow-xl text-xs font-semibold bg-white text-gray-900 border border-gray-200"
+          className="px-3 py-2 rounded-lg shadow-xl text-xs bg-white font-semibold text-gray-900 border border-gray-200"
           style={{
             minWidth: 120,
             textAlign: "center",
@@ -106,14 +106,19 @@ const WarrantySRFDeliveryTimelineChart = ({ data }) => {
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={chartData}
-          margin={{ top: 10, right: 3, left: 0, bottom: 10 }}
+          margin={{ top: 10, right: 4, left: 0, bottom: 10 }}
         >
           <YAxis
             tick={{ fontSize: 12 }}
             allowDataOverflow={true}
             width={22}
-            domain={[0, (dataMax) => Math.ceil((dataMax || 10) / 5) * 5]}
+            padding={{ top: 0, bottom: 5 }}
+            domain={[
+              () => 0,
+              (dataMax) => dataMax + 1,
+            ]}
           />
+
           <Tooltip content={<CustomTooltip />} />
           <Line
             type="monotone"

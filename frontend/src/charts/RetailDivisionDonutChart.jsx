@@ -110,19 +110,15 @@ const RetailDivisionDonutChart = ({ data }) => {
 
   return (
     <div
-      style={{ background: "#e7d7f8ff" }}
-      className="p-2 md:p-3 rounded-lg flex flex-col items-center w-full h-full min-h-0 min-w-0 overflow-hidden"
+className="p-2 md:p-3 rounded-lg flex flex-col items-center w-full min-w-0 overflow-hidden max-h-full"
     >
       <div
-        ref={chartRef}
-        className="relative w-full aspect-square max-w-full flex items-center justify-center mb-2 md:mb-4 overflow-hidden"
-        style={{
-          height: "auto",
-          minHeight: 0,
-          minWidth: 0,
-          maxWidth: "100%",
-          maxHeight: "100%",
-        }}
+  ref={chartRef}
+  className="relative w-full aspect-square flex items-center justify-center overflow-hidden min-w-0 min-h-0"
+  style={{
+    maxWidth: "100%",
+    maxHeight: "100%",
+  }}
       >
         <Doughnut
           data={chartDataObj}
@@ -135,15 +131,18 @@ const RetailDivisionDonutChart = ({ data }) => {
           }}
         />
         {!isHovering && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none">
-            <span className="text-[15px] font-semibold text-gray-800">
-              Total
-            </span>
-            <span className="font-bold text-sm md:text-2xl text-blue-800">
-              {total}
-            </span>
-          </div>
-        )}
+  <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none">
+    {/* Rounded number */}
+    <span className="font-bold text-xl md:text-2xl text-blue-800 ml-1">
+      {Math.floor(total / 10) * 10}+ 
+    </span>
+
+    {/* Subtext */}
+    <span className="text-sm md:text-base font-medium text-gray-600 tracking-wider">
+      Records
+    </span>
+  </div>
+)}
       </div>
     </div>
   );

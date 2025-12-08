@@ -1,5 +1,5 @@
 // Chart for Challan Card
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 
 import {
   ResponsiveContainer,
@@ -135,69 +135,9 @@ const labelStyle = {
 };
 
 const ChallanChart = ({ data }) => {
-  const [count, setCount] = useState(0);
-  const [itemCount, setItemCount] = useState(0);
-  const challanIntervalRef = useRef(null);
-  const itemIntervalRef = useRef(null);
-  const target = data?.challan?.number_of_challans || 0;
-  const itemsTarget = data?.challan?.number_of_items || 0;
+  const totalChallans = data?.challan?.number_of_challans || 0;
+  const totalItems = data?.challan?.number_of_items || 0;
   const months = data?.challan?.challan_rolling_months || [];
-
-  // Animation for challan count
-  useEffect(() => {
-    if (target > 0) {
-      let start = 0;
-      const duration = 500; // ms
-      const step = Math.ceil(target / (duration / 20));
-      if (challanIntervalRef.current) {
-        clearInterval(challanIntervalRef.current);
-      }
-      challanIntervalRef.current = setInterval(() => {
-        start += step;
-        if (start >= target) {
-          setCount(target);
-          clearInterval(challanIntervalRef.current);
-        } else {
-          setCount(start);
-        }
-      }, 20);
-    } else {
-      setCount(0);
-    }
-    return () => {
-      if (challanIntervalRef.current) {
-        clearInterval(challanIntervalRef.current);
-      }
-    };
-  }, [target]);
-
-  // Animation for items dispatched count
-  useEffect(() => {
-    if (itemsTarget > 0) {
-      let start = 0;
-      const duration = 500; // ms
-      const step = Math.ceil(itemsTarget / (duration / 20));
-      if (itemIntervalRef.current) {
-        clearInterval(itemIntervalRef.current);
-      }
-      itemIntervalRef.current = setInterval(() => {
-        start += step;
-        if (start >= itemsTarget) {
-          setItemCount(itemsTarget);
-          clearInterval(itemIntervalRef.current);
-        } else {
-          setItemCount(start);
-        }
-      }, 20);
-    } else {
-      setItemCount(0);
-    }
-    return () => {
-      if (itemIntervalRef.current) {
-        clearInterval(itemIntervalRef.current);
-      }
-    };
-  }, [itemsTarget]);
 
   return (
     <div style={{ width: "100%", maxWidth: 900, margin: "0.5rem auto" }}>
@@ -214,11 +154,11 @@ const ChallanChart = ({ data }) => {
         }}
       >
         <div style={{ ...cardStyle, flex: 1 }}>
-          <div style={numberStyle}>{count}+</div>
+          <div style={numberStyle}>{totalChallans}+</div>
           <div style={labelStyle}>Total Challans</div>
         </div>
         <div style={{ ...cardStyle, flex: 1 }}>
-          <div style={numberStyle}>{itemCount}+</div>
+          <div style={numberStyle}>{totalItems}+</div>
           <div style={labelStyle}>Total Items Dispatched</div>
         </div>
       </div>
@@ -228,7 +168,7 @@ const ChallanChart = ({ data }) => {
         style={{
           background: "#faf6c0ff",
           margin: "0 0.5rem",
-          minWidth: 0, // allow shrinking
+          minWidth: 0,
         }}
       >
         <ResponsiveContainer width="100%" height={140}>
@@ -238,7 +178,6 @@ const ChallanChart = ({ data }) => {
               tick={{ fontSize: 14 }}
               tickFormatter={formatShortMonth}
             />
-
             <Tooltip content={<CustomTooltip />} />
             <Legend
               verticalAlign="middle"

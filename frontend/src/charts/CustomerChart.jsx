@@ -1,6 +1,6 @@
 // Chart for Customer Card
 
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -13,7 +13,6 @@ import {
 } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 
-// Register Chart.js elements at the top-level (best practice)
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -40,84 +39,21 @@ const gradientTextStyle = {
   transition: "transform 0.2s",
 };
 
-const listEntryAnim = {
-  animation: "fadeInName 0.5s ease forwards",
-  opacity: 0,
-};
-
 function toTitleCase(str) {
   return str.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
 const CustomerChart = ({ data }) => {
-  // Animated metric for number_of_customers
-  const [customerCount, setCustomerCount] = useState(0);
-  const customerIntervalRef = useRef(null);
-  const customerTarget = data?.customer?.number_of_customers || 0;
+  // Static values (no animation)
+  const customerCount = data?.customer?.number_of_customers || 0;
+  const ascCount = data?.customer?.number_of_asc_names || 0;
 
-  // Animated metric for number_of_asc_names
-  const [ascCount, setAscCount] = useState(0);
-  const ascIntervalRef = useRef(null);
-  const ascTarget = data?.customer?.number_of_asc_names || 0;
-
-  // Convert top_customers object to array of { name, value }
+  // Prepare top customers
   const topCustomersObj = data?.customer?.top_customers || {};
   const topCustomersArr = Object.entries(topCustomersObj)
     .map(([name, value]) => ({ name: toTitleCase(name), value }))
     .sort((a, b) => b.value - a.value)
     .slice(0, 5);
-
-  // Animate customer count
-  useEffect(() => {
-    if (customerTarget > 0) {
-      let start = 0;
-      const duration = 500;
-      const step = Math.ceil(customerTarget / (duration / 20));
-      if (customerIntervalRef.current) {
-        clearInterval(customerIntervalRef.current);
-      }
-      customerIntervalRef.current = setInterval(() => {
-        start += step;
-        if (start >= customerTarget) {
-          setCustomerCount(customerTarget);
-          clearInterval(customerIntervalRef.current);
-        } else {
-          setCustomerCount(start);
-        }
-      }, 20);
-    }
-    return () => {
-      if (customerIntervalRef.current) {
-        clearInterval(customerIntervalRef.current);
-      }
-    };
-  }, [customerTarget]);
-
-  // Animate ASC count
-  useEffect(() => {
-    if (ascTarget > 0) {
-      let start = 0;
-      const duration = 500;
-      const step = Math.ceil(ascTarget / (duration / 20));
-      if (ascIntervalRef.current) {
-        clearInterval(ascIntervalRef.current);
-      }
-      ascIntervalRef.current = setInterval(() => {
-        start += step;
-        if (start >= ascTarget) {
-          setAscCount(ascTarget);
-          clearInterval(ascIntervalRef.current);
-        } else {
-          setAscCount(start);
-        }
-      }, 20);
-    }
-    return () => {
-      if (ascIntervalRef.current) {
-        clearInterval(ascIntervalRef.current);
-      }
-    };
-  }, [ascTarget]);
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center">
@@ -153,7 +89,7 @@ const CustomerChart = ({ data }) => {
         </span>
       </div>
 
-      {/* ASC Names Metric - below Customers */}
+      {/* ASC Names Metric */}
       <div
         className="flex flex-row flex-nowrap items-end group transition-transform duration-200 hover:scale-100 ml-8 w-full max-w-[700px] px-2 whitespace-nowrap"
         style={{ minWidth: 0 }}
@@ -188,26 +124,19 @@ const CustomerChart = ({ data }) => {
         </span>
       </div>
 
-      {/* Vertical Bar Chart for Top Customers beside label */}
+      {/* Top Customers Bar Chart */}
       {topCustomersArr.length > 0 && (
         <div className="w-full flex flex-col items-center justify-center">
           <div
             style={{
               width: "100%",
-              minWidth: 0,
-              maxWidth: "100%",
               height: 160,
               background: "#ffe4ec",
               borderRadius: 16,
               overflow: "hidden",
-              display: "block",
               position: "relative",
-              margin: 0,
-              padding: 0,
-              boxSizing: "border-box",
             }}
           >
-            {/* Watermark background */}
             <div
               style={{
                 position: "absolute",
@@ -223,30 +152,18 @@ const CustomerChart = ({ data }) => {
                 opacity: 0.7,
                 fontSize: "2.5rem",
                 fontWeight: 900,
-                fontFamily: "Poppins, Montserrat, Segoe UI, Arial, sans-serif",
+                fontFamily:
+                  "Poppins, Montserrat, Segoe UI, Arial, sans-serif",
                 color: "#3a7bd5",
                 textAlign: "center",
                 userSelect: "none",
-                whiteSpace: "pre-line",
-                textShadow: "0 2px 12px #ff416c, 0 0 2px #fff",
-                background: "none",
                 transform: "translate(-50%, -50%) rotate(-24deg)",
               }}
             >
               Top Customers
             </div>
-            <div
-              style={{
-                width: "100%",
-                height: "100%",
-                minWidth: 0,
-                position: "relative",
-                zIndex: 2,
-                margin: 0,
-                padding: 0,
-                overflow: "hidden",
-              }}
-            >
+
+            <div style={{ width: "100%", height: "100%", position: "relative", zIndex: 2 }}>
               <Bar
                 data={{
                   labels: topCustomersArr.map((c) => c.name),
@@ -268,41 +185,34 @@ const CustomerChart = ({ data }) => {
                   ],
                 }}
                 options={{
-                  indexAxis: "y", // vertical bars
+                  indexAxis: "y",
                   responsive: true,
                   maintainAspectRatio: false,
                   animation: {
                     duration: 1200,
                     easing: "easeOutQuart",
-                    delay: (context) => context.dataIndex * 180,
+                    delay: (ctx) => ctx.dataIndex * 180,
                   },
                   plugins: {
                     legend: { display: false },
-                    datalabels: {
-                      display: false,
-                    },
+                    datalabels: { display: false },
                     tooltip: {
                       enabled: true,
                       callbacks: {
                         label: (ctx) => `${ctx.parsed.x} Records`,
                       },
-                      backgroundColor: "rgba(246, 250, 255, 0.95)",
+                      backgroundColor: "rgba(246,250,255,0.95)",
                       titleColor: "#021bacff",
                       bodyColor: "#203cdbff",
                       borderColor: "#0e095fff",
                       borderWidth: 1,
                       padding: 8,
-                      caretSize: 8,
                     },
                   },
                   scales: {
-                    x: {
-                      display: false, // Hide x axis labels
-                      grid: { display: false, drawBorder: false },
-                    },
+                    x: { display: false, grid: { display: false } },
                     y: {
-                      display: true,
-                      grid: { display: false, drawBorder: false },
+                      grid: { display: false },
                       ticks: {
                         color: "#01010aff",
                         font: {
@@ -313,7 +223,7 @@ const CustomerChart = ({ data }) => {
                         },
                       },
                       afterFit: (axis) => {
-                        axis.width += 20; // Shift y-axis labels 20px to the right
+                        axis.width += 20;
                       },
                     },
                   },
@@ -324,7 +234,6 @@ const CustomerChart = ({ data }) => {
         </div>
       )}
 
-      {/* Keyframes for fade-in names */}
       <style>{`
         .main-metric { text-shadow: 0 2px 12px rgba(255, 65, 108, 0.10); }
         .group:hover .main-metric { transform: scale(1.08); }

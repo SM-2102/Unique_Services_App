@@ -51,14 +51,19 @@ export const DashboardDataProvider = ({ children }) => {
         },
         challan: { number_of_challans: 0, number_of_items: 0 },
         retail: { division_wise_donut: [], settled_vs_unsettled_pie_chart: [] },
-        market: { status_per_division_stacked_bar_chart: [] },
+        market: { status_per_division_stacked_bar_chart: [],
+          total_markets: 0,
+         },
         warranty: {
           division_wise_pending_completed_bar_graph: [],
           srf_vs_delivery_month_wise_bar_graph: [],
+          warranty_heads: 0,
         },
         out_of_warranty: {
           srf_receive_vs_delivery_bar_graph: [],
           final_status_bar_graph: [],
+          out_of_warranty_count: 0,
+
         },
       });
     } finally {

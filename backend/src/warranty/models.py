@@ -34,6 +34,7 @@ class Warranty(SQLModel, table=True):
     repair_date: date = Field(sa_column=Column(pg.DATE, nullable=True))
     delivery_date: date = Field(sa_column=Column(pg.DATE, nullable=True))
     delivered_by: str = Field(sa_column=Column(pg.VARCHAR(20), nullable=True))
+    final_remark: str = Field(sa_column=Column(pg.VARCHAR(40), nullable=True))
     final_status: str = Field(sa_column=Column(pg.CHAR(1), nullable=False, default="N"))
     created_by: str = Field(
         sa_column=Column(pg.VARCHAR(15), ForeignKey("users.username"), nullable=False)

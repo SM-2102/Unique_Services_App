@@ -14,45 +14,73 @@ from warranty.models import Warranty
 
 class MenuService:
 
-    async def number_of_masters(self, session: AsyncSession):
-        statement = select(func.count(Master.code))
-        result = await session.execute(statement)
-        return result.scalar()
-
-    async def number_of_asc_names(self, session: AsyncSession):
-        statement = select(func.count(ServiceCentre.asc_name))
-        result = await session.execute(statement)
-        return result.scalar()
-
-    async def top_customers(self, session: AsyncSession):
-        select_statement = (
+    # ---------------------------
+    # GROUP 1 — MASTER + ASC + TOP CUSTOMERS
+    # ---------------------------
+    async def master_overview(self, session: AsyncSession):
+        """
+        Returns:
+        {
+            "master_count": int,
+            "asc_count": int,
+            "top_customers": {name: count, ...}
+        }
+        """
+        # build combined CTE used for top customers
+        combined_cte = union_all(
             select(Master.code),
             select(Retail.code),
             select(Challan.code),
             select(Market.code),
             select(Warranty.code),
             select(OutOfWarranty.code),
-        )
-        combined_cte = union_all(*select_statement).cte("combined_cte")
-        statement = (
+        ).cte("combined_cte")
+
+        # top customers aggregation
+        top_stmt = (
             select(Master.name, func.count().label("total_count"))
             .join(combined_cte, Master.code == combined_cte.c.code)
             .group_by(Master.name)
             .order_by(func.count().desc())
             .limit(5)
         )
-        result = await session.execute(statement)
-        top_customers = result.all()
-        return {row.name: row.total_count for row in top_customers}
 
-    async def retail_number_of_records_per_division(self, session: AsyncSession):
-        statement = select(Retail.division, func.count()).group_by(Retail.division)
-        result = await session.execute(statement)
-        rows = result.all()
-        return [{"division": division, "count": count} for division, count in rows]
+        # scalar counts
+        master_count_stmt = select(func.count(Master.code))
+        asc_count_stmt = select(func.count(ServiceCentre.asc_name))
 
-    async def retail_pie_chart_counts(self, session: AsyncSession):
-        statement = select(
+        # Execute: note these are executed sequentially on the same session
+        master_count = (await session.execute(master_count_stmt)).scalar()
+        asc_count = (await session.execute(asc_count_stmt)).scalar()
+        top_rows = (await session.execute(top_stmt)).all()
+
+        top_customers = {row.name: row.total_count for row in top_rows}
+
+        return {
+            "master_count": master_count or 0,
+            "asc_count": asc_count or 0,
+            "top_customers": top_customers,
+        }
+
+    # ---------------------------
+    # GROUP 2 — RETAIL
+    # ---------------------------
+    async def retail_overview(self, session: AsyncSession):
+        """
+        Returns:
+        {
+            "division_counts": [{"division":..., "count":...}, ...],
+            "pie": {
+                "not_received": int,
+                "received_not_settled": int,
+                "propose_for_settlement": int,
+                "settled": int
+            }
+        }
+        """
+        division_stmt = select(Retail.division, func.count()).group_by(Retail.division)
+
+        pie_stmt = select(
             func.count(
                 case(((Retail.received == "N") & (Retail.settlement_date.is_(None)), 1))
             ).label("not_received"),
@@ -61,31 +89,41 @@ class MenuService:
             ).label("received_not_settled"),
             func.count(
                 case(
-                    (
-                        (Retail.settlement_date.is_not(None))
-                        & (Retail.final_status == "N"),
-                        1,
-                    )
+                    ((Retail.settlement_date.is_not(None)) & (Retail.final_status == "N"), 1)
                 )
             ).label("propose_for_settlement"),
             func.count(case((Retail.final_status == "Y", 1))).label("settled"),
         )
-        result = await session.execute(statement)
-        data = result.mappings().first()
+
+        div_rows = (await session.execute(division_stmt)).all()
+        pie_row = (await session.execute(pie_stmt)).mappings().first() or {}
+
         return {
-            "not_received": data["not_received"],
-            "received_not_settled": data["received_not_settled"],
-            "propose_for_settlement": data["propose_for_settlement"],
-            "settled": data["settled"],
+            "division_counts": [
+                {"division": division, "count": count}
+                for division, count in div_rows
+            ],
+            "pie": {
+                "not_received": pie_row.get("not_received", 0),
+                "received_not_settled": pie_row.get("received_not_settled", 0),
+                "propose_for_settlement": pie_row.get("propose_for_settlement", 0),
+                "settled": pie_row.get("settled", 0),
+            },
         }
 
-    async def number_of_challan(self, session: AsyncSession):
-        statement = select(func.count(Challan.challan_number))
-        result = await session.execute(statement)
-        return result.scalar()
-
-    async def challan_number_of_items(self, session: AsyncSession):
-        statement = select(
+    # ---------------------------
+    # GROUP 3 — CHALLAN
+    # ---------------------------
+    async def challan_overview(self, session: AsyncSession):
+        """
+        Returns:
+        {
+            "challan_count": int,
+            "items_count": int,
+            "rolling": [{"month": "YYYY-MM", "total_challans": int, "total_quantity": int}, ...]
+        }
+        """
+        qty_total = (
             func.coalesce(func.sum(Challan.qty1), 0)
             + func.coalesce(func.sum(Challan.qty2), 0)
             + func.coalesce(func.sum(Challan.qty3), 0)
@@ -95,77 +133,82 @@ class MenuService:
             + func.coalesce(func.sum(Challan.qty7), 0)
             + func.coalesce(func.sum(Challan.qty8), 0)
         )
-        result = await session.execute(statement)
-        return result.scalar()
 
-    async def challan_counts_rolling_months(self, session: AsyncSession):
+        challan_count_stmt = select(func.count(Challan.challan_number))
+        items_stmt = select(qty_total)
+
         cutoff_date = date.today().replace(day=1) - timedelta(days=150)
-
-        total_qty = (
-            func.coalesce(Challan.qty1, 0)
-            + func.coalesce(Challan.qty2, 0)
-            + func.coalesce(Challan.qty3, 0)
-            + func.coalesce(Challan.qty4, 0)
-            + func.coalesce(Challan.qty5, 0)
-            + func.coalesce(Challan.qty6, 0)
-            + func.coalesce(Challan.qty7, 0)
-            + func.coalesce(Challan.qty8, 0)
-        )
-
-        month_expr = func.to_char(
-            func.date_trunc("month", Challan.challan_date), "YYYY-MM"
-        )
-
-        statement = (
+        month_expr = func.to_char(func.date_trunc("month", Challan.challan_date), "YYYY-MM")
+        rolling_stmt = (
             select(
                 month_expr.label("month"),
                 func.count().label("total_challans"),
-                func.coalesce(func.sum(total_qty), 0).label("total_quantity"),
+                func.coalesce(func.sum(
+                    func.coalesce(Challan.qty1, 0) + func.coalesce(Challan.qty2, 0) +
+                    func.coalesce(Challan.qty3, 0) + func.coalesce(Challan.qty4, 0) +
+                    func.coalesce(Challan.qty5, 0) + func.coalesce(Challan.qty6, 0) +
+                    func.coalesce(Challan.qty7, 0) + func.coalesce(Challan.qty8, 0)
+                ), 0).label("total_quantity"),
             )
             .where(Challan.challan_date >= cutoff_date)
             .group_by(month_expr)
             .order_by(month_expr)
         )
 
-        result = await session.execute(statement)
-        rows = result.fetchall()
+        challan_count = (await session.execute(challan_count_stmt)).scalar() or 0
+        items_count = (await session.execute(items_stmt)).scalar() or 0
+        rolling_rows = (await session.execute(rolling_stmt)).all()
 
-        return [
-            {
-                "month": row.month,
-                "total_challans": row.total_challans,
-                "total_quantity": row.total_quantity,
-            }
-            for row in rows
-        ]
+        return {
+            "challan_count": challan_count,
+            "items_count": items_count,
+            "rolling": [
+                {
+                    "month": r.month,
+                    "total_challans": r.total_challans,
+                    "total_quantity": r.total_quantity,
+                }
+                for r in rolling_rows
+            ],
+        }
 
-    async def market_status_division_wise(self, session: AsyncSession):
-        statement = select(
-            Market.division, Market.final_status, func.count().label("count")
-        ).group_by(Market.division, Market.final_status)
-        result = await session.execute(statement)
-        rows = result.all()
-        return [
-            {"division": division, "final_status": final_status, "count": count}
-            for division, final_status, count in rows
-        ]
+    # ---------------------------
+    # GROUP 4 — WARRANTY
+    # ---------------------------
+    async def warranty_overview(self, session: AsyncSession):
+        """
+        Returns:
+        {
+            "pending_completed": [{"division":..., "final_status":..., "count":...}, ...],
+            "heads": {"replace": int, "repair": int},
+            "srf_delivery": [{"srf_number":..., "srf_date":..., "delivery_date":...}, ...]
+        }
+        """
+        appl_divisions = ["SDA", "IWH", "SWH", "COOLER"]
 
-    async def warranty_pending_completed_per_division(self, session: AsyncSession):
-        statement = select(
-            Warranty.division, Warranty.final_status, func.count().label("count")
-        ).group_by(Warranty.division, Warranty.final_status)
-        result = await session.execute(statement)
-        rows = result.all()
-        return [
-            {"division": division, "final_status": final_status, "count": count}
-            for division, final_status, count in rows
-        ]
+        division_label = case(
+            (Warranty.division.in_(appl_divisions), "APPL"),
+            else_=Warranty.division
+        ).label("division")
 
-    async def warranty_srf_vs_delivery(self, session: AsyncSession):
+        pending_stmt = (
+            select(
+                division_label,
+                Warranty.final_status,
+                func.count().label("count")
+            )
+            .group_by(division_label, Warranty.final_status)
+            .order_by(division_label)
+        )
+
+        heads_stmt = select(
+            func.count(case((Warranty.head == "REPLACE", 1))).label("replace_count"),
+            func.count(case((Warranty.head == "REPAIR", 1))).label("repair_count"),
+        )
+
         today = date.today()
         sixty_days_ago = today - timedelta(days=60)
-
-        statement = (
+        srf_stmt = (
             select(
                 Warranty.srf_number,
                 Warranty.srf_date,
@@ -181,45 +224,72 @@ class MenuService:
             .limit(25)
         )
 
-        result = await session.execute(statement)
-        rows = result.all()
+        pending_rows = (await session.execute(pending_stmt)).all()
+        heads_row = (await session.execute(heads_stmt)).mappings().first() or {}
+        srf_rows = (await session.execute(srf_stmt)).all()
 
-        data = [
-            {
-                "srf_number": r.srf_number,
-                "srf_date": r.srf_date.isoformat(),
-                "delivery_date": r.delivery_date.isoformat(),
-            }
-            for r in rows
-        ]
-        return data
+        return {
+            "pending_completed": [
+                {
+                    "division": division,
+                    "final_status": final_status,
+                    "count": count
+                }
+                for division, final_status, count in pending_rows
+            ],
+            "heads": {
+                "replace": heads_row.get("replace_count", 0),
+                "repair": heads_row.get("repair_count", 0),
+            },
+            "srf_delivery": [
+                {
+                    "srf_number": r.srf_number,
+                    "srf_date": r.srf_date.isoformat(),
+                    "delivery_date": r.delivery_date.isoformat(),
+                }
+                for r in srf_rows
+            ]
+        }
 
-    async def ow_pending_completed_per_division(self, session: AsyncSession):
+    # ---------------------------
+    # GROUP 5 — OUT-OF-WARRANTY
+    # ---------------------------
+    async def out_of_warranty_overview(self, session: AsyncSession):
+        """
+        Returns:
+        {
+            "pending_completed": [{"division":..., "status":..., "count":...}, ...],
+            "count": int,
+            "srf_repair_delivery": [{"srf_number":..., "srf_date":..., "repair_date":..., "delivery_date":...}, ...]
+        }
+        """
+        appl_divisions = ["IWH", "SWH", "SDA", "COOLER"]
 
-        # Create a dynamic CASE column for status
+        division_label = case(
+            (OutOfWarranty.division.in_(appl_divisions), "APPL"),
+            else_=OutOfWarranty.division
+        ).label("division")
+
         status_case = case(
-            (OutOfWarranty.final_status == "Y", "COMPLETED"), else_="PENDING"
+            (OutOfWarranty.final_status == "Y", "COMPLETED"),
+            else_="PENDING",
         ).label("status")
 
-        statement = (
-            select(OutOfWarranty.division, status_case, func.count().label("count"))
-            .group_by(OutOfWarranty.division, status_case)
-            .order_by(OutOfWarranty.division)
+        pending_stmt = (
+            select(
+                division_label,
+                status_case,
+                func.count().label("count")
+            )
+            .group_by(division_label, status_case)
+            .order_by(division_label)
         )
 
-        result = await session.execute(statement)
-        rows = result.all()
+        count_stmt = select(func.count(OutOfWarranty.srf_number))
 
-        return [
-            {"division": division, "status": status, "count": count}
-            for division, status, count in rows
-        ]
-
-    async def ow_srf_vs_repair_vs_delivery(self, session: AsyncSession):
         today = date.today()
         sixty_days_ago = today - timedelta(days=60)
-
-        statement = (
+        srf_stmt = (
             select(
                 OutOfWarranty.srf_number,
                 OutOfWarranty.srf_date,
@@ -237,16 +307,61 @@ class MenuService:
             .limit(25)
         )
 
-        result = await session.execute(statement)
-        rows = result.all()
+        pending_rows = (await session.execute(pending_stmt)).all()
+        count_value = (await session.execute(count_stmt)).scalar() or 0
+        srf_rows = (await session.execute(srf_stmt)).all()
 
-        data = [
-            {
-                "srf_number": r.srf_number,
-                "srf_date": r.srf_date.isoformat(),
-                "repair_date": r.repair_date.isoformat(),
-                "delivery_date": r.delivery_date.isoformat(),
-            }
-            for r in rows
+        return {
+            "pending_completed": [
+                {"division": division, "status": status, "count": count}
+                for division, status, count in pending_rows
+            ],
+            "count": count_value,
+            "srf_repair_delivery": [
+                {
+                    "srf_number": r.srf_number,
+                    "srf_date": r.srf_date.isoformat(),
+                    "repair_date": r.repair_date.isoformat(),
+                    "delivery_date": r.delivery_date.isoformat(),
+                }
+                for r in srf_rows
+            ]
+        }
+
+    # ---------------------------
+    # MARKET (grouped — status + total)
+    # ---------------------------
+    async def market_overview(self, session: AsyncSession):
+        """
+        Returns:
+        {
+            "status_list": [
+                {"division": "...", "final_status": "...", "count": ...},
+                ...
+            ],
+            "total_markets": <sum of Market.quantity>
+        }
+        """
+
+        status_stmt = (
+            select(
+                Market.division,
+                Market.final_status,
+                func.count().label("count")
+            )
+            .group_by(Market.division, Market.final_status)
+            .order_by(Market.division)
+        )
+
+        total_stmt = select(func.coalesce(func.sum(Market.quantity), 0))
+
+        status_rows = (await session.execute(status_stmt)).all()
+        total_markets = (await session.execute(total_stmt)).scalar()
+
+        status_list = [
+            {"division": division, "final_status": final_status, "count": count}
+            for division, final_status, count in status_rows
         ]
-        return data
+
+        return {"status_list": status_list, "total_markets": total_markets}
+

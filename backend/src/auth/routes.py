@@ -49,7 +49,7 @@ async def login(user: UserLogin, session: AsyncSession = Depends(get_session)):
         httponly=True,
         secure=False,  # Set to True in production (requires HTTPS)
         samesite="lax",  # Or 'strict' or 'none' as needed
-        max_age=3600 * 3,  # 3 hours
+        max_age=3600 * 1,  # 1 hour
         path="/",
     )
     # Optionally, set the refresh token as a cookie too
@@ -59,7 +59,7 @@ async def login(user: UserLogin, session: AsyncSession = Depends(get_session)):
         httponly=True,
         secure=False,  # Set to True in production
         samesite="lax",
-        max_age=3600 * 8 * REFRESH_TOKEN_EXPIRY_DAYS,
+        max_age=3600 * 3 * REFRESH_TOKEN_EXPIRY_DAYS,
         path="/",
     )
     return response
@@ -124,7 +124,7 @@ async def refresh_token(token_data=Depends(refresh_token_bearer)):
             httponly=True,
             secure=False,  # Set to True in production
             samesite="lax",
-            max_age=3600 * 3,  # 3 hours
+            max_age=3600 * 1,  # 1 hour
             path="/",
         )
         return response
