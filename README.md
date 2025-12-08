@@ -185,9 +185,10 @@
 - [x] **Challan**
 - [x] **Warranty**
 - [x] **Out of Warranty**
-- [ ] **Final Deployment**
+- [x] **Final Deployment**
 
 ---
+
 
 
 
