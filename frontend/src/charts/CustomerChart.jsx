@@ -152,8 +152,7 @@ const CustomerChart = ({ data }) => {
                 opacity: 0.7,
                 fontSize: "2.5rem",
                 fontWeight: 900,
-                fontFamily:
-                  "Poppins, Montserrat, Segoe UI, Arial, sans-serif",
+                fontFamily: "Poppins, Montserrat, Segoe UI, Arial, sans-serif",
                 color: "#3a7bd5",
                 textAlign: "center",
                 userSelect: "none",
@@ -163,7 +162,14 @@ const CustomerChart = ({ data }) => {
               Top Customers
             </div>
 
-            <div style={{ width: "100%", height: "100%", position: "relative", zIndex: 2 }}>
+            <div
+              style={{
+                width: "100%",
+                height: "100%",
+                position: "relative",
+                zIndex: 2,
+              }}
+            >
               <Bar
                 data={{
                   labels: topCustomersArr.map((c) => c.name),

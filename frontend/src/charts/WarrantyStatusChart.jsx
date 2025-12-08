@@ -108,45 +108,59 @@ const WarrantyStatusChart = ({ data }) => {
           </span>
         </div>
       )}
-{data?.warranty?.warranty_heads && (
-  <div className="w-full flex flex-col items-center gap-3 mb-3 mt-1">
-
-    {/* Replace */}
-    <div
-      className="
-        flex flex-col items-center px-3 py-1 rounded-md w-fit
+      {data?.warranty?.warranty_heads && (
+        <div className="w-full flex flex-col items-center gap-3 mb-3 mt-1 ml-1 mr-1">
+          {/* Replace */}
+          <div
+            className="
+        flex flex-col items-center px-1 py-1 rounded-md w-fit
         bg-gradient-to-r from-blue-50 to-blue-100 
         border border-blue-300/60 
         shadow-[0_2px_4px_rgba(0,0,0,0.08)]
         backdrop-blur-sm
       "
-      style={{ boxShadow: "inset 0 0 4px rgba(59,130,246,0.15), 0 2px 5px rgba(0,0,0,0.08)" }}
-    >
-      <span className="text-blue-700 font-semibold text-sm">
-        {data.warranty.warranty_heads.replace} Items Replaced
-      </span>
-    </div>
+            style={{
+              boxShadow:
+                "inset 0 0 4px rgba(59,130,246,0.15), 0 2px 5px rgba(0,0,0,0.08)",
+            }}
+          >
+            <span
+              className="
+    text-blue-700 font-semibold 
+    whitespace-nowrap
+    text-[clamp(9px,1.6vw,14px)]
+  "
+            >
+              {data.warranty.warranty_heads.replace} Items Replaced
+            </span>
+          </div>
 
-    {/* Repair */}
-    <div
-      className="
-        flex flex-col items-center px-3 py-1 rounded-md w-fit
+          {/* Repair */}
+          <div
+            className="
+        flex flex-col items-center px-1 py-1 rounded-md w-fit
         bg-gradient-to-r from-pink-50 to-pink-100 
         border border-pink-300/60
         shadow-[0_2px_4px_rgba(0,0,0,0.08)]
         backdrop-blur-sm
       "
-      style={{ boxShadow: "inset 0 0 4px rgba(236,72,153,0.15), 0 2px 5px rgba(0,0,0,0.08)" }}
-    >
-      <span className="text-pink-700 font-semibold text-sm">
-        {data.warranty.warranty_heads.repair} Items Repaired
-      </span>
-    </div>
-
-  </div>
-)}
-
-
+            style={{
+              boxShadow:
+                "inset 0 0 4px rgba(236,72,153,0.15), 0 2px 5px rgba(0,0,0,0.08)",
+            }}
+          >
+            <span
+              className="
+    text-pink-700 font-semibold 
+    whitespace-nowrap
+    text-[clamp(9px,1.6vw,14px)]
+  "
+            >
+              {data.warranty.warranty_heads.repair} Items Repaired
+            </span>
+          </div>
+        </div>
+      )}
 
       <div className="flex flex-row items-start justify-start gap-0 w-full h-full">
         {/* Horizontal bars and labels */}
@@ -176,7 +190,7 @@ const WarrantyStatusChart = ({ data }) => {
                   {item.division}
                 </span>
                 {/* Stacked horizontal bar: green left, red right */}
-<div className="relative flex flex-row h-5 w-full rounded overflow-hidden">
+                <div className="relative flex flex-row h-5 w-full rounded overflow-hidden">
                   {/* Completed (Y) - green left */}
                   <div
                     className="bg-green-500 h-full transition-all duration-700 cursor-pointer relative"

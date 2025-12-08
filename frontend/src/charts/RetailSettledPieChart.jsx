@@ -57,44 +57,43 @@ const RetailSettledPieChart = ({ data }) => {
     ],
   };
 
-const centerTextPlugin = {
-  id: "centerTextPlugin",
-  afterDraw(chart) {
-    const active = chart.getActiveElements();
+  const centerTextPlugin = {
+    id: "centerTextPlugin",
+    afterDraw(chart) {
+      const active = chart.getActiveElements();
 
-    // Hide text when user hovers any slice
-    if (active && active.length > 0) {
-      return;
-    }
+      // Hide text when user hovers any slice
+      if (active && active.length > 0) {
+        return;
+      }
 
-    const { ctx, chartArea } = chart;
-    const { left, right, top, bottom } = chartArea;
+      const { ctx, chartArea } = chart;
+      const { left, right, top, bottom } = chartArea;
 
-    const dataset = chart.data.datasets[0].data;
+      const dataset = chart.data.datasets[0].data;
 
-    const settledValue = dataset[3] || 0; // Settled slice
-    const totalValue = dataset.reduce((a, b) => a + b, 0);
+      const settledValue = dataset[3] || 0; // Settled slice
+      const totalValue = dataset.reduce((a, b) => a + b, 0);
 
-    const settledPercent =
-      totalValue > 0 ? ((settledValue / totalValue) * 100).toFixed(1) : 0;
+      const settledPercent =
+        totalValue > 0 ? ((settledValue / totalValue) * 100).toFixed(1) : 0;
 
-    const xCenter = (left + right) / 2;
-    const yPosition = top + (bottom - top) * 0.75; // 75% vertical
+      const xCenter = (left + right) / 2;
+      const yPosition = top + (bottom - top) * 0.75; // 75% vertical
 
-    ctx.save();
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
+      ctx.save();
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
 
-    ctx.font = "bold 16px sans-serif";
-    ctx.fillText(`${settledPercent}%`, xCenter, yPosition - 10);
+      ctx.font = "bold 16px sans-serif";
+      ctx.fillText(`${settledPercent}%`, xCenter, yPosition - 10);
 
-    ctx.font = "400 14px sans-serif";
-    ctx.fillText("Settled", xCenter, yPosition + 10);
+      ctx.font = "400 14px sans-serif";
+      ctx.fillText("Settled", xCenter, yPosition + 10);
 
-    ctx.restore();
-  },
-};
-
+      ctx.restore();
+    },
+  };
 
   const options = {
     responsive: true,

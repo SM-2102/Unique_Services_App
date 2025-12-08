@@ -84,145 +84,134 @@ const OutOfWarrantyStatusChart = ({ data, loading, error }) => {
     );
 
   return (
-    
-  <div className="w-full">
-{/* Frosted Card */}
-{data?.out_of_warranty?.out_of_warranty_count !== undefined && (
-  <div className="w-full flex justify-center ml-2 mt-2">
-    <div
-      className="
-        px-1 py-0.5
-        rounded-xl
-        bg-white/60
-        backdrop-blur-2xl
-        shadow-[0_10px_35px_rgba(0,0,0,0.18)]
-        border border-white/70
-        text-center
-      "
-      style={{
-        backgroundImage:
-          "linear-gradient(to bottom right, rgba(255,255,255,0.7), rgba(245,245,245,0.6))",
-      }}
-    >
-      <div className="text-lg font-extrabold text-gray-900 tracking-wide drop-shadow-sm">
-        {data.out_of_warranty.out_of_warranty_count}+ Products
-      </div>
-
-      <div className="text-sm font-medium text-gray-700 tracking-wide">
-        Repaired
-      </div>
-    </div>
-  </div>
-)}
-
-{/* Chart container (unchanged) */}
-<div className="flex flex-row items-start justify-end gap-0 w-full max-w-[350px] pt-1">
-  {/* bars here */}
-</div>
-
-
-
-
-
-    <div className="flex justify-center">
-
-      {/* Tooltip */}
-      {tooltip.show && (
-        <div
-          className="pointer-events-none fixed z-50 px-3 py-1.5 rounded-lg shadow-xl text-xs font-semibold bg-white text-gray-900 border border-gray-200"
-          style={{
-            left: tooltip.x + 10,
-            top: tooltip.y + 10,
-            minWidth: 70,
-            textAlign: "center",
-            letterSpacing: "0.01em",
-          }}
-        >
-          <span className="block">{tooltip.label}</span>
-          <span className="block font-bold">
-            {tooltip.value}
-            {tooltip.count !== null && (
-              <span className="ml-1 text-gray-500">({tooltip.count})</span>
-            )}
-          </span>
+    <div className="w-full">
+      {/* Frosted Card */}
+      {data?.out_of_warranty?.out_of_warranty_count !== undefined && (
+        <div className="w-full flex justify-center ml-2 mt-2">
+          <div
+            className="
+    w-22 h-22
+    flex flex-col items-center justify-center
+    rounded-full
+    text-center
+    shadow-md
+    text-white
+    bg-[radial-gradient(circle,_#ff9f40_35%,_#dc2626_100%)]
+  "
+          >
+            <div className="text-md font-extrabold">
+              {data.out_of_warranty.out_of_warranty_count}+ Products
+            </div>
+            <div className="text-sm font-medium">Repaired</div>
+          </div>
         </div>
-      )}      
-          
-      <div className="flex flex-row items-start justify-end gap-0 w-full max-w-[350px] pt-2">
-        {/* Horizontal bars and labels */}
-        <div className="flex flex-col gap-2 w-full min-w-0 overflow-y-auto">
-          {chartData.map((item, idx) => {
-            const total = item.COMPLETED + item.PENDING;
-            const completedPercentage =
-              total > 0 ? (item.COMPLETED / total) * 100 : 0;
-            const pendingPercentage =
-              total > 0 ? (item.PENDING / total) * 100 : 0;
-            const barState = barStates[idx] || {
-              completed: false,
-              pending: false,
-            };
-            return (
-              <div
-                key={item.division}
-                className="flex items-end justify-end w-full"
-              >
-                {/* Fixed width label */}
-                <span
-                  className="text-xs font-medium text-gray-700 text-right mr-1"
-                  style={{
-                    width: "50px",
-                    flexShrink: 0,
-                    display: "inline-block",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                  }}
+      )}
+
+      {/* Chart container (unchanged) */}
+      <div className="flex flex-row items-start justify-end gap-0 w-full max-w-[350px]">
+        {/* bars here */}
+      </div>
+
+      <div className="flex justify-center">
+        {/* Tooltip */}
+        {tooltip.show && (
+          <div
+            className="pointer-events-none fixed z-50 px-3 py-1.5 rounded-lg shadow-xl text-xs font-semibold bg-white text-gray-900 border border-gray-200"
+            style={{
+              left: tooltip.x + 10,
+              top: tooltip.y + 10,
+              minWidth: 70,
+              textAlign: "center",
+              letterSpacing: "0.01em",
+            }}
+          >
+            <span className="block">{tooltip.label}</span>
+            <span className="block font-bold">
+              {tooltip.value}
+              {tooltip.count !== null && (
+                <span className="ml-1 text-gray-500">({tooltip.count})</span>
+              )}
+            </span>
+          </div>
+        )}
+
+        <div className="flex flex-row items-start justify-end gap-0 w-full max-w-[350px] pt-2">
+          {/* Horizontal bars and labels */}
+          <div className="flex flex-col gap-2 w-full min-w-0 overflow-y-auto">
+            {chartData.map((item, idx) => {
+              const total = item.COMPLETED + item.PENDING;
+              const completedPercentage =
+                total > 0 ? (item.COMPLETED / total) * 100 : 0;
+              const pendingPercentage =
+                total > 0 ? (item.PENDING / total) * 100 : 0;
+              const barState = barStates[idx] || {
+                completed: false,
+                pending: false,
+              };
+              return (
+                <div
+                  key={item.division}
+                  className="flex items-end justify-end w-full"
                 >
-                  {item.division}
-                </span>
-                {/* Stacked horizontal bar: blue left, orange right */}
-                <div className="relative flex flex-row h-4 w-full rounded overflow-hidden">
-                  {/* Completed - blue left */}
-                  <div
-                    className="bg-blue-500 h-full transition-all duration-700 cursor-pointer relative"
+                  {/* Fixed width label */}
+                  <span
+                    className="text-xs font-medium text-gray-700 text-right mr-1"
                     style={{
-                      width: barState.completed ? `${completedPercentage}%` : 0,
-                      transitionDelay: "0ms",
+                      width: "50px",
+                      flexShrink: 0,
+                      display: "inline-block",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
                     }}
-                    onMouseOver={(e) =>
-                      handleMouseOver(
-                        e,
-                        `${completedPercentage.toFixed(1)}%`,
-                        "Completed",
-                        item.COMPLETED,
-                      )
-                    }
-                    onMouseOut={handleMouseOut}
-                  ></div>
-                  {/* Pending - orange right */}
-                  <div
-                    className="bg-orange-500 h-full transition-all duration-700 cursor-pointer relative"
-                    style={{
-                      width: barState.pending ? `${pendingPercentage}%` : 0,
-                      transitionDelay: "0ms",
-                    }}
-                    onMouseOver={(e) =>
-                      handleMouseOver(
-                        e,
-                        `${pendingPercentage.toFixed(1)}%`,
-                        "Pending",
-                        item.PENDING,
-                      )
-                    }
-                    onMouseOut={handleMouseOut}
-                  ></div>
+                  >
+                    {item.division}
+                  </span>
+                  {/* Stacked horizontal bar: blue left, orange right */}
+                  <div className="relative flex flex-row h-4 w-full rounded overflow-hidden">
+                    {/* Completed - blue left */}
+                    <div
+                      className="bg-blue-500 h-full transition-all duration-700 cursor-pointer relative"
+                      style={{
+                        width: barState.completed
+                          ? `${completedPercentage}%`
+                          : 0,
+                        transitionDelay: "0ms",
+                      }}
+                      onMouseOver={(e) =>
+                        handleMouseOver(
+                          e,
+                          `${completedPercentage.toFixed(1)}%`,
+                          "Completed",
+                          item.COMPLETED,
+                        )
+                      }
+                      onMouseOut={handleMouseOut}
+                    ></div>
+                    {/* Pending - orange right */}
+                    <div
+                      className="bg-orange-500 h-full transition-all duration-700 cursor-pointer relative"
+                      style={{
+                        width: barState.pending ? `${pendingPercentage}%` : 0,
+                        transitionDelay: "0ms",
+                      }}
+                      onMouseOver={(e) =>
+                        handleMouseOver(
+                          e,
+                          `${pendingPercentage.toFixed(1)}%`,
+                          "Pending",
+                          item.PENDING,
+                        )
+                      }
+                      onMouseOut={handleMouseOut}
+                    ></div>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
-      </div>
-      <style>{`
+        <style>{`
         @media (max-width: 600px) {
           .out-of-warranty-bar-label {
             font-size: 0.7rem;
@@ -230,8 +219,8 @@ const OutOfWarrantyStatusChart = ({ data, loading, error }) => {
           }
         }
       `}</style>
+      </div>
     </div>
-  </div>
   );
 };
 

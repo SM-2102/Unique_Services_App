@@ -46,7 +46,7 @@ const Header = () => {
               src={logo}
               alt="Logo"
               className="h-12 w-12 sm:h-16 sm:w-auto mb-2 sm:mb-0"
-              />
+            />
           </div>
         </div>
         <div className="flex flex-col justify-center items-center sm:items-start text-center sm:text-left w-full">
@@ -64,22 +64,18 @@ const Header = () => {
           </span>
         </div>
       </div>
-     {!isLoginPage && (
-  <div className="flex items-center space-x-2 sm:space-x-4 mt-2 sm:mt-0 mr-0 sm:mr-14">
+      {!isLoginPage && (
+        <div className="flex items-center space-x-2 sm:space-x-4 mt-2 sm:mt-0 mr-0 sm:mr-14">
+          {/* Reserved space for GoBack button */}
+          <div className="w-6 h-10 flex items-center justify-center">
+            {showGoBackIcon && <GoBackIcon onClick={() => navigate(-1)} />}
+          </div>
 
-    {/* Reserved space for GoBack button */}
-    <div className="w-6 h-10 flex items-center justify-center">
-      {showGoBackIcon && (
-        <GoBackIcon onClick={() => navigate(-1)} />
+          <DashboardButton />
+          <UserMenu />
+          <Logout />
+        </div>
       )}
-    </div>
-
-    <DashboardButton />
-    <UserMenu />
-    <Logout />
-  </div>
-)}
-
 
       {showNavIcon && <NavBar open={navOpen} setOpen={setNavOpen} />}
     </header>

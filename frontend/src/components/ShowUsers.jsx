@@ -38,7 +38,12 @@ const ShowUsers = ({ users = [], title = "List of Registered Users" }) => {
         {title}
       </Typography>
 
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        mb={2}
+      >
         <Typography variant="subtitle1" color="text.secondary">
           Total Users: <b>{users.length}</b>
         </Typography>

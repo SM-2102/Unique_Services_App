@@ -113,10 +113,7 @@ const WarrantySRFDeliveryTimelineChart = ({ data }) => {
             allowDataOverflow={true}
             width={22}
             padding={{ top: 0, bottom: 5 }}
-            domain={[
-              () => 0,
-              (dataMax) => dataMax + 1,
-            ]}
+            domain={[() => 0, (dataMax) => dataMax + 1]}
           />
 
           <Tooltip content={<CustomTooltip />} />

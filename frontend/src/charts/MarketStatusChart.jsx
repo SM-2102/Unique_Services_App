@@ -47,25 +47,24 @@ const MarketStatusChart = ({ data }) => {
   };
   const handleMouseOut = () => setTooltip({ ...tooltip, show: false });
   const StylishCounter = ({ total }) => {
-  return (
-    <div className="w-full flex justify-center">
-      <div
-        className="
+    return (
+      <div className="w-full flex justify-center">
+        <div
+          className="
           flex items-center gap-2
         "
-      >
-        <span className="text-2xl font-extrabold text-yellow-500 tracking-tight">
-          {total} +
-        </span>
+        >
+          <span className="text-2xl font-extrabold text-yellow-500 tracking-tight">
+            {total} +
+          </span>
 
-        <span className="text-md font-semibold text-purple-800 tracking-wide">
-          Products Replaced
-        </span>
+          <span className="text-md font-semibold text-purple-800 tracking-wide">
+            Products Replaced
+          </span>
+        </div>
       </div>
-    </div>
-  );
-};
-
+    );
+  };
 
   // Animation state for each bar: animate green first, then red
   const [barStates, setBarStates] = useState([]);
@@ -116,11 +115,11 @@ const MarketStatusChart = ({ data }) => {
           </span>
         </div>
       )}
-   {data?.market?.total_markets !== undefined && (
-  <StylishCounter total={data.market.total_markets} />
-)}
+      {data?.market?.total_markets !== undefined && (
+        <StylishCounter total={data.market.total_markets} />
+      )}
 
-              <div className="flex flex-row items-center justify-center gap-8 w-full">
+      <div className="flex flex-row items-center justify-center gap-8 w-full">
         {/* Horizontal bars and labels */}
         <div
           className="flex flex-row gap-2 w-full items-center mt-5"
