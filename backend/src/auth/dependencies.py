@@ -6,7 +6,6 @@ from sqlalchemy.ext.asyncio.session import AsyncSession
 
 from auth.models import User
 from db.db import get_session
-from db.jti import jti_in_blocklist
 from exceptions import (
     AccessDenied,
     AccessTokenRequired,
@@ -41,8 +40,6 @@ class TokenBearer(HTTPBearer):
             raise InvalidToken()
         token_data = decode_user_token(token)
         if not self.token_valid(token):
-            raise InvalidToken()
-        if await jti_in_blocklist(token_data["jti"]):
             raise InvalidToken()
         self.verify_token_data(token_data)
         return token_data

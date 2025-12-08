@@ -7,7 +7,6 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from auth.dependencies import AccessTokenBearer, RefreshTokenBearer
 from auth.service import AuthService
 from db.db import get_session
-from db.jti import add_jti_to_blocklist
 from exceptions import InvalidToken
 
 from .schemas import UserLogin, UserResponse
@@ -72,8 +71,6 @@ async def login(user: UserLogin, session: AsyncSession = Depends(get_session)):
 
 @auth_router.post("/logout", status_code=status.HTTP_200_OK)
 async def logout(token_details=Depends(access_token_bearer)):
-    jti = token_details["jti"]
-    await add_jti_to_blocklist(jti)
     response = JSONResponse(
         content={
             "message": f"User {token_details['user']['username']} logged out successfully."

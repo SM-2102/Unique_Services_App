@@ -1,7 +1,7 @@
 """
 Standalone database backup script.
 Exports all tables from the database to CSV files.
-Excludes 'alembic_version' and 'blockedjti' tables."""
+Excludes 'alembic_version' table."""
 
 import csv
 import os
@@ -36,7 +36,7 @@ def create_backup_directory():
 
 def get_all_tables(cursor):
     """Get all table names from the database, excluding certain tables."""
-    exclude_tables = {"alembic_version", "blockedjti"}
+    exclude_tables = {"alembic_version"}
     cursor.execute(
         """
         SELECT table_name 
@@ -47,26 +47,6 @@ def get_all_tables(cursor):
     """
     )
     return [row[0] for row in cursor.fetchall() if row[0] not in exclude_tables]
-
-
-def trim_blockedjti(cursor):
-    """If blockedjti has more than 300 rows, delete the oldest 200 rows by id."""
-    cursor.execute("SELECT COUNT(*) FROM blockedjti")
-    count = cursor.fetchone()[0]
-    if count > 300:
-        cursor.execute("SELECT jti FROM blockedjti ORDER BY expires_at ASC LIMIT 200")
-        jtis = [row[0] for row in cursor.fetchall()]
-        if jtis:
-            cursor.execute("DELETE FROM blockedjti WHERE jti = ANY(%s)", (jtis,))
-            print(f"[INFO] Trimmed blockedjti: deleted oldest 200 rows")
-            print("────────────────────────────────────────────────────────────\n")
-        else:
-            print(
-                "[INFO] blockedjti has >300 rows but could not determine jtis to delete."
-            )
-    else:
-        print(f"[INFO] BlockedJTI has {count} rows. No trimming needed.")
-        print("────────────────────────────────────────────────────────────\n")
 
 
 def export_table_to_csv(cursor, table_name, backup_dir):
@@ -101,11 +81,6 @@ def backup_database():
         # Connect to the database
         connection = psycopg2.connect(db_url)
         cursor = connection.cursor()
-
-        # Trim blockedjti if needed
-        print("[CHECK] Checking blockedjti table for row limit...")
-        trim_blockedjti(cursor)
-        connection.commit()
 
         # Create backup directory and get timestamp
         backup_dir, timestamp = create_backup_directory()

@@ -88,10 +88,10 @@ const OutOfWarrantyStatusChart = ({ data, loading, error }) => {
   <div className="w-full">
 {/* Frosted Card */}
 {data?.out_of_warranty?.out_of_warranty_count !== undefined && (
-  <div className="w-full flex justify-center ml-2 mt-1">
+  <div className="w-full flex justify-center ml-2 mt-2">
     <div
       className="
-        px-1 py-1.5
+        px-1 py-0.5
         rounded-xl
         bg-white/60
         backdrop-blur-2xl

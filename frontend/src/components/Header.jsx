@@ -26,7 +26,7 @@ const Header = () => {
       <div className="flex flex-col sm:flex-row items-center w-full sm:w-auto">
         <div
           className="relative flex items-center"
-          style={{ minWidth: 190, minHeight: 48 }}
+          style={{ minWidth: 160, minHeight: 48 }}
         >
           <div className="absolute left-0 top-1/2 -translate-y-1/2">
             {showNavIcon && (
@@ -38,16 +38,15 @@ const Header = () => {
                 >
                   <FaBars className="text-2xl" />
                 </button>
-                {showGoBackIcon && <GoBackIcon onClick={() => navigate(-1)} />}
               </div>
             )}
           </div>
-          <div className="flex items-center justify-center w-16 h-12 ml-30">
+          <div className="flex items-center justify-center w-16 h-12 ml-20">
             <img
               src={logo}
               alt="Logo"
               className="h-12 w-12 sm:h-16 sm:w-auto mb-2 sm:mb-0"
-            />
+              />
           </div>
         </div>
         <div className="flex flex-col justify-center items-center sm:items-start text-center sm:text-left w-full">
@@ -65,13 +64,23 @@ const Header = () => {
           </span>
         </div>
       </div>
-      {!isLoginPage && (
-        <div className="flex items-center space-x-2 sm:space-x-4 mt-2 sm:mt-0 mr-0 sm:mr-14">
-          <DashboardButton />
-          <UserMenu />
-          <Logout />
-        </div>
+     {!isLoginPage && (
+  <div className="flex items-center space-x-2 sm:space-x-4 mt-2 sm:mt-0 mr-0 sm:mr-14">
+
+    {/* Reserved space for GoBack button */}
+    <div className="w-6 h-10 flex items-center justify-center">
+      {showGoBackIcon && (
+        <GoBackIcon onClick={() => navigate(-1)} />
       )}
+    </div>
+
+    <DashboardButton />
+    <UserMenu />
+    <Logout />
+  </div>
+)}
+
+
       {showNavIcon && <NavBar open={navOpen} setOpen={setNavOpen} />}
     </header>
   );
