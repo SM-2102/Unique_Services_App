@@ -36,30 +36,47 @@ const RoadChallanCreatePage = () => {
   const nameInputRef = useRef(null);
   const [nameInputWidth, setNameInputWidth] = useState("100%");
   const [maxChallanDate, setMaxChallanDate] = useState("");
+  const [minChallanDate, setMinChallanDate] = useState("");
+
   useEffect(() => {
     let mounted = true;
+
     fetchNextChallanNumber()
       .then((data) => {
         if (mounted && data) {
+          const today = new Date().toLocaleDateString("en-CA");
+
           setForm((prev) => ({
             ...prev,
             challan_number: data.challan_number || "",
-            challan_date: data.challan_date || "",
+            challan_date: today,     // default = today
           }));
-          setMaxChallanDate(data.challan_date || "");
+
+          setMaxChallanDate(today);       // max date = today
+          setMinChallanDate(data.challan_date || today);  // min date = backend value
         }
       })
       .catch(() => {
-        setForm((prev) => ({ ...prev, challan_number: "" }));
-        setMaxChallanDate("");
+        const today = new Date().toLocaleDateString("en-CA");
+
+        setForm((prev) => ({
+          ...prev,
+          challan_number: "",
+          challan_date: today,
+        }));
+
+        setMaxChallanDate(today);
+        setMinChallanDate(today);   // fallback
       })
       .finally(() => {
         setCodeLoading(false);
       });
+
     return () => {
       mounted = false;
     };
   }, []);
+
 
   useEffect(() => {
     if (nameInputRef.current) {
@@ -263,11 +280,13 @@ const RoadChallanCreatePage = () => {
               type="date"
               value={form.challan_date}
               onChange={handleChange}
-              className={`w-35 text-center px-2 py-1 rounded-lg border ${errs_label.challan_date ? "border-red-300" : "border-gray-300"} border-gray-300 text-gray-900 font-small`}
+              className={`w-35 text-center px-2 py-1 rounded-lg border ${
+                errs_label.challan_date ? "border-red-300" : "border-gray-300"
+              } text-gray-900`}
               required
               disabled={submitting}
-              min={maxChallanDate}
-              max={new Date().toLocaleDateString("en-CA")}
+              min={minChallanDate}   // backend challan_date
+              max={maxChallanDate}   // today
             />
           </div>
           {/* Name (label beside input, autocomplete, search) */}
