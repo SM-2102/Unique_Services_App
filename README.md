@@ -91,10 +91,10 @@
 - [x] **/master/fetch_address**
 
 ### Challan Module
-- [x] **/road_challan/next_code**
-- [x] **/road_challan/create**
-- [x] **/road_challan/last_challan_code**
-- [x] **/road_challan/print**
+- [x] **/challan/next_code**
+- [x] **/challan/create**
+- [x] **/challan/last_challan_code**
+- [x] **/challan/print**
 
 ### Market Module
 - [x] **/market/next_code** 
