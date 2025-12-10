@@ -57,6 +57,7 @@ const divisionOptions = [
   "SDA",
   "IWH",
   "SWH",
+  "UPS",
   "COOLER",
   "OTHERS",
 ];

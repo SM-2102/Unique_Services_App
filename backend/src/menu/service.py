@@ -184,7 +184,7 @@ class MenuService:
             "srf_delivery": [{"srf_number":..., "srf_date":..., "delivery_date":...}, ...]
         }
         """
-        appl_divisions = ["SDA", "IWH", "SWH", "COOLER"]
+        appl_divisions = ["SDA", "IWH", "SWH", "COOLER", "UPS"]
 
         division_label = case(
             (Warranty.division.in_(appl_divisions), "APPL"),
