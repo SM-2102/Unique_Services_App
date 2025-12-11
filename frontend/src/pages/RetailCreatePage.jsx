@@ -340,7 +340,7 @@ const RetailCreatePage = () => {
               value={form.details}
               onChange={handleChange}
               className={`w-full px-3 py-1 rounded-lg border ${errs_label.details ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
-              maxLength={40}
+              maxLength={50}
               disabled={submitting}
             />
           </div>
