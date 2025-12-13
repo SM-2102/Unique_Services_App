@@ -137,9 +137,9 @@
 
 ### Service Center Module
 - [x] **/service_center/list_names**
-- [x] **/service_center/create**
+- [x] **/service_center/create** - [ADMIN]
 
-### OutOfWarranty Module - [ADMIN]
+### OutOfWarranty Module 
 - [x] **out_of_warranty/next_srf_number**
 - [x] **out_of_warranty/create**
 - [x] **out_of_warranty/list_pending**
@@ -156,12 +156,12 @@
 - [x] **out_of_warranty/list_received_by**
 - [x] **out_of_warranty/vendor_not_settled**
 - [x] **out_of_warranty/update_vendor_unsettled**
-- [x] **out_of_warranty/list_of_final_vendor_settlement**
-- [x] **out_of_warranty/update_final_vendor_settlement**
+- [x] **out_of_warranty/list_of_final_vendor_settlement** - [ADMIN]
+- [x] **out_of_warranty/update_final_vendor_settlement** - [ADMIN]
 - [x] **out_of_warranty/srf_not_settled**
 - [x] **out_of_warranty/update_srf_unsettled**
-- [x] **out_of_warranty/list_of_final_srf_settlement**
-- [x] **out_of_warranty/update_final_srf_settlement**
+- [x] **out_of_warranty/list_of_final_srf_settlement** - [ADMIN]
+- [x] **out_of_warranty/update_final_srf_settlement** - [ADMIN]
 - [x] **out_of_warranty/show_receipt_names**
 - [x] **out_of_warranty/estimate_print**
 
