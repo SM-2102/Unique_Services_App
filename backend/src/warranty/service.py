@@ -494,8 +494,8 @@ class WarrantyService:
             division,
             challan_no,
             challan_date,
-            name_field="name",
-            number_field="sticker_number",
+            name_field,
+            number_field,
         ):
             packet = io.BytesIO()
             can = canvas.Canvas(packet, pagesize=A4)
@@ -529,7 +529,11 @@ class WarrantyService:
                 slno = str(w.serial_number or "")
                 complaint_no = w.complaint_number or ""
                 number = getattr(w, number_field, "") or ""
-                name = getattr(m, name_field, "") or ""
+                name = (
+                    getattr(m, name_field, None)
+                    or getattr(w, name_field, "")
+                    or ""
+                )
 
                 row_data = [str(idx), model, slno, complaint_no, number, name]
 

@@ -67,6 +67,16 @@ const OutOfWarrantyCreateVendorPage = () => {
       setUpdating(false);
       return;
     }
+    if (payload.length > 8) {
+      setError({
+        message: "Too many records selected.",
+        type: "warning",
+        resolution: "Maximum 8 record allowed.",
+      });
+      setShowToast(true);
+      setUpdating(false);
+      return;
+    }
     if (!form.received_by) {
       setError({
         message: "Received By is required.",

@@ -121,6 +121,7 @@ class MarketService:
         to_delivery_date: Optional[date] = None,
         delivered_by: Optional[str] = None,
         invoice_number: Optional[str] = None,
+        challan_number: Optional[str] = None,
     ) -> List[MarketEnquiry]:
         # Check if master name exists
         statement = select(Market, Master).join(Master, Master.code == Market.code)
@@ -144,8 +145,11 @@ class MarketService:
 
         if invoice_number:
             statement = statement.where(
-                Market.invoice_number.ilike(f"%{invoice_number}%")
-            )
+                Market.invoice_number == invoice_number)
+
+        if challan_number:
+            statement = statement.where(
+                Market.challan_number == challan_number)    
 
         statement = statement.order_by(Market.mcode)
 
@@ -160,6 +164,7 @@ class MarketService:
                 division=row.Market.division,
                 invoice_number=row.Market.invoice_number,
                 invoice_date=format_date_ddmmyyyy(row.Market.invoice_date),
+                challan_number=row.Market.challan_number,
                 quantity=row.Market.quantity,
                 delivery_date=(
                     format_date_ddmmyyyy(row.Market.delivery_date)

@@ -72,6 +72,16 @@ const WarrantyCreateCNFPage = () => {
       setUpdating(false);
       return;
     }
+    if (payload.length > 8) {
+      setError({
+        message: "Too many records selected.",
+        type: "warning",
+        resolution: "Maximum 8 record allowed.",
+      });
+      setShowToast(true);
+      setUpdating(false);
+      return;
+    }
     try {
       await createWarrantyCNFChallan(payload);
       setError({

@@ -115,6 +115,7 @@ async def master_enquiry(
     to_delivery_date: Optional[date] = None,
     delivered_by: Optional[str] = None,
     invoice_number: Optional[str] = None,
+    challan_number: Optional[str] = None,
     session: AsyncSession = Depends(get_session),
     _=Depends(access_token_bearer),
 ):

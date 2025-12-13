@@ -53,6 +53,7 @@ class MarketEnquiry(BaseModel):
     division: str
     invoice_number: str
     invoice_date: str
+    challan_number: Optional[str] = None
     quantity: int
     delivery_date: Optional[str] = None
     delivery_by: Optional[str] = None

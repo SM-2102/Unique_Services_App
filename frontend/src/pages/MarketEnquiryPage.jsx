@@ -32,6 +32,7 @@ const columns = [
   { key: "division", label: "Division" },
   { key: "invoice_number", label: "Invoice No." },
   { key: "invoice_date", label: "Invoice Date" },
+  { key: "challan_number", label: "Challan No." },
   { key: "quantity", label: "Quantity" },
   { key: "delivery_date", label: "Delivery Date" },
   { key: "delivery_by", label: "Delivered By" },
@@ -65,6 +66,8 @@ const Filter = ({
   setDeliveredBy,
   invoiceNo,
   setInvoiceNo,
+  challanNumber,
+  setChallanNumber,
   onSearch,
   masterNames,
   deliveredByOptions,
@@ -522,6 +525,46 @@ const Filter = ({
             </div>
           </div>
           <div style={{ marginBottom: 10 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <label
+                htmlFor="challan_number"
+                style={{
+                  fontWeight: 600,
+                  color: "#1976d2",
+                  letterSpacing: 0.5,
+                  fontSize: 13,
+                  width: 95,
+                }}
+              >
+                Challan No.
+              </label>
+              <div style={{ position: "relative" }}>
+                <input
+                  type="text"
+                  id="challan_number"
+                  name="challan_number"
+                  value={challanNumber}
+                  onChange={(e) => setChallanNumber(e.target.value)}
+                  placeholder="Challan Number"
+                  style={{
+                    padding: "4px 8px",
+                    border: "1px solid #d1d5db",
+                    borderRadius: 6,
+                    fontSize: 13,
+                    background: "#f7f9fc",
+                    outline: "none",
+                    boxShadow: "0 1px 2px rgba(25, 118, 210, 0.04)",
+                    width: "100%",
+                  }}
+                  onFocus={(e) =>
+                    (e.target.style.border = "1.5px solid #1976d2")
+                  }
+                />
+              </div>
+            </div>
+          </div>
+          
+          <div style={{ marginBottom: 10 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
               <label
                 htmlFor="finalStatus"
@@ -633,7 +676,7 @@ const MarketEnquiryPage = () => {
   const [toDeliveryDate, setToDeliveryDate] = useState("");
   const [deliveredBy, setDeliveredBy] = useState("");
   const [invoiceNo, setInvoiceNo] = useState("");
-
+  const [challanNumber, setChallanNumber] = useState("");
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false); // Don't load on mount
   const [error, setError] = useState(null);
@@ -649,6 +692,7 @@ const MarketEnquiryPage = () => {
     setToDeliveryDate("");
     setDeliveredBy("");
     setInvoiceNo("");
+    setChallanNumber("");
     setSearched(false);
     setData([]);
     setError(null);
@@ -699,6 +743,7 @@ const MarketEnquiryPage = () => {
       if (toDeliveryDate) params.to_delivery_date = toDeliveryDate;
       if (deliveredBy) params.delivered_by = deliveredBy;
       if (invoiceNo) params.invoice_number = invoiceNo;
+      if (challanNumber) params.challan_number = challanNumber;
       const res = await marketEnquiry(params);
       setData(res);
     } catch (err) {
@@ -728,6 +773,8 @@ const MarketEnquiryPage = () => {
         setDeliveredBy={setDeliveredBy}
         invoiceNo={invoiceNo}
         setInvoiceNo={setInvoiceNo}
+        challan_number={challanNumber}
+        setChallanNumber={setChallanNumber}
         onSearch={handleSearch}
         masterNames={masterNames}
         deliveredByOptions={deliveredByOptions}
