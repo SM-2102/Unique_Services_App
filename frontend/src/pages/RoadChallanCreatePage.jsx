@@ -49,11 +49,11 @@ const RoadChallanCreatePage = () => {
           setForm((prev) => ({
             ...prev,
             challan_number: data.challan_number || "",
-            challan_date: today,     // default = today
+            challan_date: today, // default = today
           }));
 
-          setMaxChallanDate(today);       // max date = today
-          setMinChallanDate(data.challan_date || today);  // min date = backend value
+          setMaxChallanDate(today); // max date = today
+          setMinChallanDate(data.challan_date || today); // min date = backend value
         }
       })
       .catch(() => {
@@ -66,7 +66,7 @@ const RoadChallanCreatePage = () => {
         }));
 
         setMaxChallanDate(today);
-        setMinChallanDate(today);   // fallback
+        setMinChallanDate(today); // fallback
       })
       .finally(() => {
         setCodeLoading(false);
@@ -76,7 +76,6 @@ const RoadChallanCreatePage = () => {
       mounted = false;
     };
   }, []);
-
 
   useEffect(() => {
     if (nameInputRef.current) {
@@ -285,8 +284,8 @@ const RoadChallanCreatePage = () => {
               } text-gray-900`}
               required
               disabled={submitting}
-              min={minChallanDate}   // backend challan_date
-              max={maxChallanDate}   // today
+              min={minChallanDate} // backend challan_date
+              max={maxChallanDate} // today
             />
           </div>
           {/* Name (label beside input, autocomplete, search) */}

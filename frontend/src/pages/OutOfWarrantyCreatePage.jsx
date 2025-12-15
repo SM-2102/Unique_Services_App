@@ -34,7 +34,15 @@ const divisionOptions = [
   "OTHERS",
 ];
 
-const headOptions = ["STPM", "MINI", "PRESSURE", "OPENWELL", "SUB UPTO 2HP", "SUB ABOVE 2HP", "AGRICULTURE"];
+const headOptions = [
+  "STPM",
+  "MINI",
+  "PRESSURE",
+  "OPENWELL",
+  "SUB UPTO 2HP",
+  "SUB ABOVE 2HP",
+  "AGRICULTURE",
+];
 
 const OutOfWarrantyCreatePage = () => {
   const [form, setForm] = useState(initialForm);
