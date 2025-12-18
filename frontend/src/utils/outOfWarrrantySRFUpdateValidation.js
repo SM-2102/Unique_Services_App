@@ -135,6 +135,10 @@ function validateOutOfWarrantyUpdate(form) {
       errs.push("Delivery Date is required");
       errs_label["delivery_date"] = true;
     }
+    if(!form.work_done) {
+      errs.push("Work Done is required");
+      errs_label["work_done"] = true;
+    }
     if (!form.pc_number && form.gst === "N") {
       errs.push("PC Number is required");
       errs_label["pc_number"] = true;
