@@ -7,12 +7,15 @@ import UserMenu from "./UserMenu";
 import Logout from "./Logout";
 import DashboardButton from "./Dashboard";
 import GoBackIcon from "./GoBackIcon";
+import { useDashboardData } from "../hooks/useDashboardData";
+import { FiRefreshCw } from "react-icons/fi";
 
 const Header = () => {
   const location = useLocation();
   const isLoginPage = location.pathname === "/";
   const isMenuPage = location.pathname === "/MenuDashboard";
   const [navOpen, setNavOpen] = React.useState(false);
+  const { refetch, loading } = useDashboardData();
 
   const navigate = useNavigate();
 
@@ -26,7 +29,7 @@ const Header = () => {
       <div className="flex flex-col sm:flex-row items-center w-full sm:w-auto">
         <div
           className="relative flex items-center"
-          style={{ minWidth: 160, minHeight: 48 }}
+          style={{ minWidth: 170, minHeight: 48 }}
         >
           <div className="absolute left-0 top-1/2 -translate-y-1/2">
             {showNavIcon && (
@@ -41,11 +44,11 @@ const Header = () => {
               </div>
             )}
           </div>
-          <div className="flex items-center justify-center w-16 h-12 ml-20">
+          <div className="flex items-center justify-center w-18 h-18 ml-20">
             <img
               src={logo}
               alt="Logo"
-              className="h-12 w-12 sm:h-16 sm:w-auto mb-2 sm:mb-0"
+              className="h-18 w-18 sm:h-18 sm:w-18 sm:mb-0"
             />
           </div>
         </div>
@@ -67,8 +70,26 @@ const Header = () => {
       {!isLoginPage && (
         <div className="flex items-center space-x-2 sm:space-x-4 mt-2 sm:mt-0 mr-0 sm:mr-14">
           {/* Reserved space for GoBack button */}
-          <div className="w-6 h-10 flex items-center justify-center">
+          <div className="flex items-center gap-3 mt-2 sm:mt-0 mr-0 sm:mr-4">
             {showGoBackIcon && <GoBackIcon onClick={() => navigate(-1)} />}
+
+            {isMenuPage && (
+              <button
+                onClick={refetch}
+                disabled={loading}
+                aria-label="Refresh Dashboard"
+                title="Refresh Dashboard"
+                className="w-10 h-10 text-white
+               disabled:opacity-60 disabled:cursor-not-allowed
+               flex items-center justify-center hover:bg-blue-700 rounded-full"
+              >
+                <FiRefreshCw
+                  size={20}
+                  strokeWidth={3}
+                  className={loading ? "animate-spin" : ""}
+                />
+              </button>
+            )}
           </div>
 
           <DashboardButton />
@@ -76,7 +97,6 @@ const Header = () => {
           <Logout />
         </div>
       )}
-
       {showNavIcon && <NavBar open={navOpen} setOpen={setNavOpen} />}
     </header>
   );

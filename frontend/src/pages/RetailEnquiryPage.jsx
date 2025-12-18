@@ -419,7 +419,9 @@ const RetailEnquiryPage = () => {
   const getDefaultToRetailDate = () => {
     return new Date().toLocaleDateString("en-CA");
   };
-  const [fromRetailDate, setFromRetailDate] = useState(getDefaultFromRetailDate);
+  const [fromRetailDate, setFromRetailDate] = useState(
+    getDefaultFromRetailDate,
+  );
   const [toRetailDate, setToRetailDate] = useState(getDefaultToRetailDate);
   const [received, setReceived] = useState("");
 
