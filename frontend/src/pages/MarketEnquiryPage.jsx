@@ -672,8 +672,16 @@ const MarketEnquiryPage = () => {
   const [finalStatus, setFinalStatus] = useState("");
   const [name, setName] = useState("");
   const [division, setDivision] = useState("");
-  const [fromDeliveryDate, setFromDeliveryDate] = useState("");
-  const [toDeliveryDate, setToDeliveryDate] = useState("");
+   const getDefaultFromDate = () => {
+    const today = new Date();
+    today.setMonth(today.getMonth() - 6);
+    return today.toLocaleDateString("en-CA");
+  };
+  const getDefaultToDate = () => {
+    return new Date().toLocaleDateString("en-CA");
+  };
+  const [fromDeliveryDate, setFromDeliveryDate] = useState(getDefaultFromDate);
+  const [toDeliveryDate, setToDeliveryDate] = useState(getDefaultToDate);
   const [deliveredBy, setDeliveredBy] = useState("");
   const [invoiceNo, setInvoiceNo] = useState("");
   const [challanNumber, setChallanNumber] = useState("");
@@ -688,8 +696,8 @@ const MarketEnquiryPage = () => {
     setFinalStatus("");
     setName("");
     setDivision("");
-    setFromDeliveryDate("");
-    setToDeliveryDate("");
+    setFromDeliveryDate(getDefaultFromDate);
+    setToDeliveryDate(getDefaultToDate);
     setDeliveredBy("");
     setInvoiceNo("");
     setChallanNumber("");
