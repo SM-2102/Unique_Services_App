@@ -1,5 +1,4 @@
 from datetime import date
-from email.policy import default
 
 import sqlalchemy.dialects.postgresql as pg
 from sqlalchemy import ForeignKey
