@@ -48,7 +48,7 @@ const Header = () => {
             <img
               src={logo}
               alt="Logo"
-              className="h-18 w-18 sm:h-18 sm:w-18 sm:mb-0"
+              className="h-16 w-16 sm:h-16 sm:w-16 sm:mb-0"
             />
           </div>
         </div>

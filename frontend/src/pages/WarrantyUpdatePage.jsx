@@ -636,6 +636,7 @@ const WarrantyUpdatePage = () => {
                   className={`w-full px-3 py-1 rounded-lg border ${errs_label.final_remark ? "border-red-300" : "border-gray-300"} bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-400 font-small`}
                   disabled={isLocked || submitting}
                   autoComplete="final_remark"
+                  maxlength={40}
                 ></input>
               </div>
             </div>
