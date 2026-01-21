@@ -50,7 +50,7 @@ function validateWarrantyUpdate(form) {
   }
 
   if (form.challan_date) {
-    const challanDate = new Date(form.challan_date);
+    const challanDate = parseDDMMYYYY(form.challan_date);
     const receiveDate = new Date(form.receive_date);
     const repairDate = new Date(form.repair_date);
     const invoiceDate = new Date(form.invoice_date);
